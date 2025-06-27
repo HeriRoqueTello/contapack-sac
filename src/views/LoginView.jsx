@@ -18,7 +18,7 @@ export function LoginView() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Aquí iría la lógica de autenticación
+    // Aquí iría la lógica de autenticacióna
     console.log("Login datos:", { email, password });
   };
 
