@@ -13,7 +13,6 @@ export function Contacto() {
         />
 
         <div className="grid lg:grid-cols-2 gap-16">
-          {/* Contact Form */}
           <div className="bg-white p-8 rounded-2xl shadow-lg">
             <h3 className="text-2xl font-bold text-gray-900 mb-6">
               Envíanos un mensaje
@@ -21,11 +20,10 @@ export function Contacto() {
             <ContactForm />
           </div>
 
-          {/* Contact Information */}
           <div className="space-y-8">
             <ContactInfo />
 
-            {/* Map Placeholder */}
+            {/* Mapa */}
             <div className="bg-gray-200 rounded-2xl h-64 flex items-center justify-center">
               <div className="text-center text-gray-500">
                 <MapPin className="w-12 h-12 mx-auto mb-2" />

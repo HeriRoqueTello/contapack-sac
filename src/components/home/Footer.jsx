@@ -39,7 +39,7 @@ export function Footer() {
             </div>
             <p className="text-gray-300 leading-relaxed max-w-md">
               Líderes en procesamiento y empaque de productos agrícolas con más
-              de 20 años de experiencia, garantizando calidad peruana en cada
+              de 3 años de experiencia, garantizando calidad peruana en cada
               producto.
             </p>
             <div className="space-y-2">

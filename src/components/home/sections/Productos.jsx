@@ -16,18 +16,6 @@ export function Productos() {
         "Palta premium seleccionados para mercados nacionales e internacionales.",
       image: "/palta.jpg",
     },
-    // {
-    //   name: "Brócoli",
-    //   description:
-    //     "Brócoli fresco de la más alta calidad, procesado con tecnología de punta.",
-    //   image: "/placeholder.svg?height=300&width=400",
-    // },
-    // {
-    //   name: "Espárragos",
-    //   description:
-    //     "Espárragos premium cultivados bajo estrictos estándares de calidad.",
-    //   image: "/placeholder.svg?height=300&width=400",
-    // },
     {
       name: "Uvas",
       description:

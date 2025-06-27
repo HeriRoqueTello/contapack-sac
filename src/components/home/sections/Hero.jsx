@@ -3,7 +3,7 @@ import { StatsCard } from "../ui/StatsCard";
 
 export function Hero() {
   const stats = [
-    { number: "20+", label: "Años de Experiencia" },
+    { number: "3+", label: "Años de Experiencia" },
     { number: "500+", label: "Productos Procesados" },
     { number: "100%", label: "Calidad Garantizada" },
   ];
@@ -24,7 +24,7 @@ export function Hero() {
               </h1>
               <p className="text-lg text-gray-600 leading-relaxed text-pretty">
                 Líderes en procesamiento y empaque de productos agrícolas con
-                más de 20 años de experiencia, garantizando calidad peruana en
+                más de 3 años de experiencia, garantizando calidad peruana en
                 cada producto.
               </p>
             </div>
