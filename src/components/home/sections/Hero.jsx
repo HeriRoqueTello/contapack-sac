@@ -4,7 +4,7 @@ import { StatsCard } from "../ui/StatsCard";
 export function Hero() {
   const stats = [
     { number: "3+", label: "Años de Experiencia" },
-    { number: "500+", label: "Productos Procesados" },
+    { number: "1000+", label: "Productos Procesados" },
     { number: "100%", label: "Calidad Garantizada" },
   ];
 
