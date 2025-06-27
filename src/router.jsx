@@ -2,6 +2,8 @@ import { BrowserRouter, Route, Routes } from "react-router";
 import { HomeView } from "@/views/HomeView";
 import { HomeLayout } from "./layout/HomeLayout";
 import { LoginView } from "./views/LoginView";
+import { DashboardView } from "./views/DashboardView";
+import { AdminLayout } from "./layout/AdminLayout";
 
 export default function Router() {
   return (
@@ -9,10 +11,10 @@ export default function Router() {
       <Routes>
         <Route path="/auth/login" element={<LoginView />} />
 
-        {/* <Route path="/admin" element={<AppLayout />}>
-          <Route index={true} element={<Dashboard />} />
-          <Route path="profile" element={<ProfileView />} />
-        </Route> */}
+        <Route path="/admin" element={<AdminLayout />}>
+          <Route index element={<DashboardView />} />
+          {/* <Route path="profile" element={<ProfileView />} /> */}
+        </Route>
 
         {/* <Route path="/:handle" element={<AuthLayout />}>
           <Route element={<HandleView />} index={true} />
