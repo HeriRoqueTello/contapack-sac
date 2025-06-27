@@ -1,11 +1,10 @@
 import {
-  MapPin,
-  Phone,
-  Mail,
   Facebook,
-  Twitter,
   Instagram,
   Linkedin,
+  Mail,
+  MapPin,
+  Twitter,
 } from "lucide-react";
 import { Link as LinkScroll } from "react-scroll";
 
@@ -48,10 +47,6 @@ export function Footer() {
                 <span className="text-gray-300">
                   Av. Industrial 123, Lima, Perú
                 </span>
-              </div>
-              <div className="flex items-center space-x-3">
-                <Phone className="w-4 h-4 text-primary-400" />
-                <span className="text-gray-300">+51 1 234-5678</span>
               </div>
               <div className="flex items-center space-x-3">
                 <Mail className="w-4 h-4 text-primary-400" />

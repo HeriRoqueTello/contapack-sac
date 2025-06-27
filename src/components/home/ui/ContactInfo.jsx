@@ -8,11 +8,6 @@ export function ContactInfo() {
       content: "Av. Industrial 123, Lima, Perú",
     },
     {
-      icon: Phone,
-      title: "Teléfono",
-      content: "+51 1 234-5678",
-    },
-    {
       icon: Mail,
       title: "Email",
       content: "info@contapack.com",
