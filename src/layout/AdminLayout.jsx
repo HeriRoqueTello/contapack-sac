@@ -6,9 +6,11 @@ export function AdminLayout() {
   return (
     <SidebarProvider>
       <AppSidebar />
-      <main>
+      <main className="flex flex-1 flex-col">
         <SidebarTrigger />
-        <Outlet />
+        <div className="@container/main flex flex-1 flex-col gap-2">
+          <Outlet />
+        </div>
       </main>
     </SidebarProvider>
   );
