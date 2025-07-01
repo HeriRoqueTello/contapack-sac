@@ -10,12 +10,12 @@ export default function Router() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/auth/login" element={<LoginView />} />
-
         <Route path="/admin" element={<AdminLayout />}>
           <Route index={true} element={<DashboardView />} />
           <Route path="embarque" element={<EmbarqueView />} />
         </Route>
+
+        <Route path="/auth/login" element={<LoginView />} />
 
         {/* <Route path="/:handle" element={<AuthLayout />}>
           <Route element={<HandleView />} index={true} />
