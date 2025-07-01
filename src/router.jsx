@@ -4,6 +4,7 @@ import { HomeLayout } from "./layout/HomeLayout";
 import { LoginView } from "./views/LoginView";
 import { DashboardView } from "./views/DashboardView";
 import { AdminLayout } from "./layout/AdminLayout";
+import { EmbarqueView } from "./views/EmbarqueView";
 
 export default function Router() {
   return (
@@ -12,8 +13,8 @@ export default function Router() {
         <Route path="/auth/login" element={<LoginView />} />
 
         <Route path="/admin" element={<AdminLayout />}>
-          <Route index element={<DashboardView />} />
-          {/* <Route path="profile" element={<ProfileView />} /> */}
+          <Route index={true} element={<DashboardView />} />
+          <Route path="embarque" element={<EmbarqueView />} />
         </Route>
 
         {/* <Route path="/:handle" element={<AuthLayout />}>
@@ -21,7 +22,7 @@ export default function Router() {
         </Route> a*/}
 
         <Route path="/" element={<HomeLayout />}>
-          <Route element={<HomeView />} index />
+          <Route element={<HomeView />} index={true} />
         </Route>
 
         {/* <Route path="/404" element={<AuthLayout />}>
