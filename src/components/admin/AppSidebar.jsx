@@ -1,8 +1,9 @@
-import { Calendar, Home, Inbox, Search, Settings } from "lucide-react";
+import { Calendar, Home, Inbox, Package, Search } from "lucide-react";
 
 import {
   Sidebar,
   SidebarContent,
+  SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
   SidebarGroupLabel,
@@ -10,6 +11,16 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
+import { Link } from "react-router";
+import { NavUser } from "./nav-user";
+
+const user = {
+  name: "contapack",
+  email: "m@contapack.com",
+  avatar: "#",
+  shortname: "CP",
+  rol: "encargado",
+};
 
 // Menu items.
 const items = [
@@ -33,6 +44,11 @@ const items = [
     url: "#",
     icon: Search,
   },
+  {
+    title: "Embarque",
+    url: "embarque",
+    icon: Package,
+  },
 ];
 
 export function AppSidebar() {
@@ -40,16 +56,19 @@ export function AppSidebar() {
     <Sidebar>
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>ContaPack SAC</SidebarGroupLabel>
+          <SidebarGroupLabel>
+            <img src="/logo.svg" alt="Logo" className="w-6 h-6 pr-1" />
+            ContaPack SAC
+          </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {items.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild>
-                    <a href={item.url}>
+                    <Link to={`/admin/${item.url}`}>
                       <item.icon />
                       <span>{item.title}</span>
-                    </a>
+                    </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
@@ -57,6 +76,9 @@ export function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
+      <SidebarFooter>
+        <NavUser user={user} />
+      </SidebarFooter>
     </Sidebar>
   );
 }
