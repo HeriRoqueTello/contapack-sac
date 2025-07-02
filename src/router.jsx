@@ -5,14 +5,16 @@ import { LoginView } from "./views/LoginView";
 import { DashboardView } from "./views/DashboardView";
 import { AdminLayout } from "./layout/AdminLayout";
 import { EmbarqueView } from "./views/EmbarqueView";
+import { AnexoView } from "./views/AnexoView";
 
 export default function Router() {
   return (
     <BrowserRouter>
       <Routes>
         <Route path="/admin" element={<AdminLayout />}>
-          <Route index={true} element={<DashboardView />} />
+          <Route index element={<DashboardView />} />
           <Route path="embarque" element={<EmbarqueView />} />
+          <Route path="anexo" element={<AnexoView />} />
         </Route>
 
         <Route path="/auth/login" element={<LoginView />} />
@@ -22,7 +24,7 @@ export default function Router() {
         </Route> a*/}
 
         <Route path="/" element={<HomeLayout />}>
-          <Route element={<HomeView />} index={true} />
+          <Route element={<HomeView />} index />
         </Route>
 
         {/* <Route path="/404" element={<AuthLayout />}>

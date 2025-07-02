@@ -69,14 +69,16 @@ export function Header() {
           <div className="md:hidden py-4 border-t animate-slide-up">
             <nav className="flex flex-col space-y-4">
               {navItems.map((item) => (
-                <a
+                <LinkScroll
                   key={item.name}
-                  href={item.href}
+                  to={item.href}
+                  smooth={true}
+                  duration={500}
                   className="text-gray-700 hover:text-primary-600 transition-colors duration-200 font-medium py-2 px-4 rounded-lg hover:bg-primary-50"
                   onClick={() => setIsMenuOpen(false)}
                 >
                   {item.name}
-                </a>
+                </LinkScroll>
               ))}
               <Button className="gradient-primary text-white px-6 py-2 rounded-lg font-medium w-fit mx-4 hover:shadow-primary transition-all duration-200">
                 Acceder

@@ -1,4 +1,11 @@
-import { Calendar, Home, Inbox, Package, Search } from "lucide-react";
+import {
+  Calendar,
+  DonutIcon,
+  Home,
+  Inbox,
+  Package,
+  Search,
+} from "lucide-react";
 
 import {
   Sidebar,
@@ -31,18 +38,23 @@ const items = [
   },
   {
     title: "Recepcion",
-    url: "#",
+    url: "recepcion",
     icon: Inbox,
   },
   {
     title: "Produccion",
-    url: "#",
+    url: "produccion",
     icon: Calendar,
   },
   {
     title: "Calidad",
-    url: "#",
+    url: "calidad",
     icon: Search,
+  },
+  {
+    title: "Anexo",
+    url: "anexo",
+    icon: DonutIcon,
   },
   {
     title: "Embarque",
