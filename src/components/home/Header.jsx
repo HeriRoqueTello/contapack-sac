@@ -74,6 +74,7 @@ export function Header() {
                   to={item.href}
                   smooth={true}
                   duration={500}
+                  offset={-350}
                   className="text-gray-700 hover:text-primary-600 transition-colors duration-200 font-medium py-2 px-4 rounded-lg hover:bg-primary-50"
                   onClick={() => setIsMenuOpen(false)}
                 >
