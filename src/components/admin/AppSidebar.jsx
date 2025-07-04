@@ -5,6 +5,7 @@ import {
   Inbox,
   Package,
   Search,
+  Tag,
 } from "lucide-react";
 
 import {
@@ -60,6 +61,11 @@ const items = [
     title: "Embarque",
     url: "embarque",
     icon: Package,
+  },
+  {
+    title: "Etiqueta",
+    url: "taetiqueta",
+    icon: Tag,
   },
 ];
 
