@@ -10,8 +10,8 @@ import {
 
 import { ArrowUpDown, ChevronDown, MoreHorizontal } from "lucide-react"
 
-import { Button } from "./button"
-import { Checkbox } from "./checkbox"
+import { Button } from "@/components/ui/button"
+import { Checkbox } from "@/components/ui/checkbox"
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -20,8 +20,8 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "./dropdown-menu"
-import { Input } from "./input"
+} from "@/components/ui/dropdown-menu"
+import { Input } from "@/components/ui/input"
 import {
   Table,
   TableBody,
@@ -29,13 +29,13 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "./table"
+} from "@/components/ui/table"
 
 // ✅ Datos simples sin tipado
 const data = [
   {
     id: "01",
-    estado: "Procesado",
+    estado: "Confirmado",
     exportador: "Heri Roque",
     codLote: "0101",
     categoria: "Palta",
@@ -48,7 +48,7 @@ const data = [
   },
   {
     id: "02",
-    estado: "Procesado",
+    estado: "Confirmado",
     exportador: "Anthony Diaz",
     codLote: "0201",
     categoria: "Palta",
@@ -61,7 +61,7 @@ const data = [
   },
   {
     id: "03",
-    estado: "No Procesado",
+    estado: "No Confirmado",
     exportador: "Juan Condor",
     codLote: "0301",
     categoria: "Palta",
@@ -74,7 +74,7 @@ const data = [
   },
   {
     id: "04",
-    estado: "Procesado",
+    estado: "Confirmado",
     exportador: "Nick Ruiz",
     codLote: "0401",
     categoria: "Palta",
@@ -87,7 +87,7 @@ const data = [
   },
   {
     id: "05",
-    estado: " No Procesado",
+    estado: "No confirmado",
     exportador: "Jhon Vasquez",
     codLote: "0502",
     categoria: "Palta",
