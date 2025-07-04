@@ -7,19 +7,32 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-node_modules
-dist
-dist-ssr
-*.local
+# Directorios de módulos y compilación
+# Ignora node_modules en la raíz y en cualquier subdirectorio
+**/node_modules/
+# Ignora dist en la raíz y en cualquier subdirectorio
+**/dist/
+**/dist-ssr/ # Para proyectos que usan SSR (Server-Side Rendering) como algunos frameworks de frontend
 
-# Editor directories and files
-.vscode/*
-!.vscode/extensions.json
-.idea
+# Archivos de configuración local y temporales
+*.local
+**/.env/ # Ignora archivos .env en cualquier parte del repo
+.env
+
+# Directorios y archivos de editor (se aplican a todo el monorepo)
+.vscode/
+!.vscode/extensions.json # Excepto este archivo específico de VS Code
+.idea/
 .DS_Store
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
 *.sw?
-.env
+
+# Archivos de caché o temporales de desarrollo específicos (si los hay)
+# Por ejemplo, si usas Vite, Next.js, etc.
+.nuxt/
+.next/
+.parcel-cache/
+.vite/
