@@ -19,6 +19,7 @@ import { LogOut, User } from "lucide-react";
 export function NavUser({ user }) {
   const { isMobile } = useSidebar();
   console.log(user);
+
   return (
     <SidebarMenu>
       <SidebarMenuItem>
@@ -29,13 +30,13 @@ export function NavUser({ user }) {
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
               <Avatar className="h-8 w-8 rounded-lg grayscale">
-                <AvatarImage src={user.avatar} alt={user.name} />
+                <AvatarImage src={user.avatar} alt={user.Nombres} />
                 <AvatarFallback className="rounded-lg">
-                  {user.shortname}
+                  <User />
                 </AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-medium">{user.name}</span>
+                <span className="truncate font-medium">{user.Nombres}</span>
                 <span className="text-muted-foreground truncate text-xs">
                   {user.rol}
                 </span>
@@ -50,7 +51,7 @@ export function NavUser({ user }) {
           >
             <DropdownMenuItem>
               <User />
-              {user.email}
+              {user.Email}
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem>
