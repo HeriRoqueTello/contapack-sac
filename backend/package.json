@@ -1,7 +1,7 @@
 {
   "name": "itree",
   "version": "1.0.1",
-  "main": "index.js",
+  "main": "dist/server.js",
   "scripts": {
     "dev": "nodemon src/index.ts",
     "dev:api": "nodemon src/index.ts --api",
