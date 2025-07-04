@@ -18,7 +18,7 @@ import { LogOut, User } from "lucide-react";
 
 export function NavUser({ user }) {
   const { isMobile } = useSidebar();
-
+  console.log(user);
   return (
     <SidebarMenu>
       <SidebarMenuItem>

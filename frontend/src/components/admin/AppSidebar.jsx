@@ -22,14 +22,6 @@ import {
 import { Link } from "react-router";
 import { NavUser } from "./nav-user";
 
-const user = {
-  name: "contapack",
-  email: "m@contapack.com",
-  avatar: "#",
-  shortname: "CP",
-  rol: "encargado",
-};
-
 // Menu items.
 const items = [
   {
@@ -69,7 +61,7 @@ const items = [
   },
 ];
 
-export function AppSidebar() {
+export function AppSidebar({ data }) {
   return (
     <Sidebar>
       <SidebarContent>
@@ -95,7 +87,7 @@ export function AppSidebar() {
         </SidebarGroup>
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={user} />
+        <NavUser user={data} />
       </SidebarFooter>
     </Sidebar>
   );

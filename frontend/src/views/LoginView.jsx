@@ -11,6 +11,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Eye, EyeOff, Leaf, Mail, Lock } from "lucide-react";
 import { useNavigate } from "react-router";
+import { useMutation } from "@tanstack/react-query";
+import { login } from "@/api/api";
 
 export function LoginView() {
   const [showPassword, setShowPassword] = useState(false);
@@ -18,10 +20,14 @@ export function LoginView() {
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
+  const mutation = useMutation({
+    mutationFn: login,
+  });
+
   const handleSubmit = (e) => {
     e.preventDefault();
     // Aquí iría la lógica de autenticacióna
-    console.log("Login datos:", { email, password });
+    mutation.mutate({ email, password });
     navigate("/admin");
   };
 
