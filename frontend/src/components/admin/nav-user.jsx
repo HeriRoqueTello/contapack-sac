@@ -15,10 +15,27 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import { LogOut, User } from "lucide-react";
+import { useNavigate } from "react-router";
 
 export function NavUser({ user }) {
   const { isMobile } = useSidebar();
   console.log(user);
+  const navigate = useNavigate();
+
+  function removeAuthTokenFromLocalStorage() {
+    try {
+      localStorage.removeItem("AUTH_TOKEN");
+      console.log("AUTH_TOKEN eliminado del localStorage.");
+      navigate("/");
+    } catch (error) {
+      // Captura cualquier error que pueda ocurrir al acceder a localStorage
+      // (ej. si localStorage no está disponible en el entorno, o problemas de seguridad)
+      console.error(
+        "Error al intentar eliminar AUTH_TOKEN del localStorage:",
+        error
+      );
+    }
+  }
 
   return (
     <SidebarMenu>
@@ -54,7 +71,7 @@ export function NavUser({ user }) {
               {user.Email}
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={removeAuthTokenFromLocalStorage}>
               <LogOut />
               Log out
             </DropdownMenuItem>
