@@ -7,7 +7,7 @@ export const corsConfig: CorsOptions = {
     console.log('Petición entrante desde el ORIGIN:', origin); // ESTO ES CLAVE
     console.log('Valor de process.env.FRONTEND_URL:', process.env.FRONTEND_URL);
 
-    const whiteList = [process.env.FRONTEND_URL, 'https://contapack-sac.vercel.app', undefined]
+    const whiteList = [process.env.FRONTEND_URL]
 
     console.log('Lista blanca configurada (Array):', whiteList);
     console.log('¿Origin está incluido en la lista blanca?', whiteList.includes(origin));
