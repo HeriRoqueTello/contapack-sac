@@ -1,0 +1,145 @@
+export const fields = [
+    {
+      name: "cliente",
+      label: "Cliente",
+      type: "text",
+      required: "true",
+    },
+    {
+      name: "fecha",
+      label: "Fecha",
+      type: "text",
+      required: "true",
+    },
+    {
+      name: "n°contenedor",
+      label: "N°Contenedor",
+      type: "text",
+      required: "true",
+    },
+    {
+      name: "puntos chequeados",
+      label: "Puntos chequeados:",
+      required: true,
+      type: "checkboxGroup",
+      options: ["1", "2", "3", "4", "5"],
+    },
+    {
+      name: "inspector",
+      label: "Inspector",
+      type: "text",
+      required: "true",
+    },
+    {
+      type: "sectionTitle",
+      label: "1. Verificación de contenedor en rampa",
+    },
+    {
+      name: "contenedor limpio",
+      label: "Contenedor limpio",
+      type: "radioGroup",
+      required: true,
+      options: ["SI", "NO", "N/A"],
+    },
+    {
+      name: "roturas internas del contenedor",
+      label: "Roturas internas del contenedor",
+      type: "radioGroup",
+      required: true,
+      options: ["SI", "NO", "N/A"],
+    },
+    {
+      name: "obs",
+      label: "Obs",
+      type: "text",
+      required: false,
+    },
+    {
+      type: "sectionTitle",
+      label: "2. Documento que acompañan al contenedor",
+    },
+    {
+      name: "precintos",
+      label: "Precintos",
+      type: "radioGroup",
+      required: true,
+      options: ["SI", "NO", "N/A"],
+    },
+    {
+      name: "cortina de aire",
+      label: "Cortina de aire",
+      type: "radioGroup",
+      required: true,
+      options: ["SI", "NO", "N/A"],
+    },
+    {
+      name: "termo registro (colocar)",
+      label: "Termo registro (colocar)",
+      type: "radioGroup",
+      required: true,
+      options: ["SI", "NO", "N/A"],
+    },
+    {
+      type: "sectionTitle",
+      label: "3. Identificación correcta del envío",
+    },
+    {
+      name: "etiquetas de trazabilidad completa",
+      label: "Etiquetas de trazabilidad completa",
+      type: "radioGroup",
+      required: true,
+      options: ["SI", "NO", "N/A"],
+    },
+    {
+      name: "etiquetas de pallets completas",
+      label: "Etiquetas de pallets completas",
+      type: "radioGroup",
+      required: true,
+      options: ["SI", "NO", "N/A"],
+    },
+    {
+      type: "palletBlock",
+      label: "Distribución de Pallets",
+    },
+    {
+      type: "sectionTitle",
+      label: "4. Entrega y logística"
+    },
+    {
+      name: "entrega de documentacion completa",
+      label: "Entrega de documentacion completa",
+      type: "radioGroup",
+      required: true,
+      options: ["SI", "NO", "N/A"]
+    },
+    {
+      name: "hora inicial (primer pallet)",
+      label: "Hora inicial (Primer Pallet)",
+      type: "text",
+      required: true,
+    },
+    {
+      name: "hora final (cierre de contenedor)",
+      label: "Hora final (Cierre de Contenedor)",
+      type: "text",
+      required: true,
+    },
+    {
+      name: "precinto planta",
+      label: "Precinto Planta",
+      type: "text",
+      required: false,
+    },
+    {
+      name: "precinto aduana",
+      label: "Precinto Aduana",
+      type: "text",
+      required: false,
+    },
+    {
+      name: "precinto linea",
+      label: "Precinto Linea",
+      type: "text",
+      required: false,
+    },
+  ];
