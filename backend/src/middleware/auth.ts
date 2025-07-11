@@ -1,9 +1,6 @@
-import type { Request, Response, NextFunction } from "express"
-import jwt from "jsonwebtoken";
-import { dataSource } from "../config/db";
-import { Usuario } from "../models/Usuario";
-
-const userRepository = dataSource.getRepository(Usuario);
+import { NextFunction, Request, Response } from "express"
+import jwt from "jsonwebtoken"
+import Usuario from "../models/Usuario"
 
 declare global {
   namespace Express {
@@ -17,40 +14,28 @@ export const authenticate = async (req: Request, res: Response, next: NextFuncti
   const bearer = req.headers.authorization
 
   if (!bearer) {
-    const error = new Error('No autorizado');
+    const error = new Error('No Autorizado')
     res.status(401).json({ error: error.message })
     return
   }
 
-  const [, token] = bearer.split(' ');
+  const [, token] = bearer.split(' ')
 
   if (!token) {
-    const error = new Error('No autorizado');
+    const error = new Error('No Autorizado')
     res.status(401).json({ error: error.message })
     return
   }
 
   try {
-    const result = jwt.verify(token, process.env.JWT_SECRET);
-    if (typeof result === 'object' && result.id) {
-      const user = await userRepository.findOne({
-        where: { IdUsuario: result.id },
-        select: [ // Especifica las columnas que quieres seleccionar (todas menos password)
-          "IdUsuario", "Nombres", "Apellido", "Telefono", "Email", "Estado",
-          "IdRol", "IdArea"
-          // Asegúrate de incluir aquí todas las columnas que quieres que el frontend reciba
-          // y que no sean sensibles (como 'password')
-        ]
-      });
-      if (!user) {
-        const error = new Error('Usuario no encontrado');
-        res.status(404).json({ error: error.message })
-        return
-      }
-      req.user = user;
-      next();
+    const decoded = jwt.verify(token, process.env.JWT_SECRET)
+    if (typeof decoded === 'object' && decoded.id) {
+      req.user = await Usuario.findByPk(decoded.id, {
+        attributes: ['id', 'name', 'email']
+      })
+      next()
     }
   } catch (error) {
-    res.status(500).json({ error: "Token invalido" });
+    res.status(500).json({ error: 'Error en el servidor' })
   }
 }

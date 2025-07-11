@@ -1,15 +1,15 @@
-// src/entity/Area.ts
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
-import { Usuario } from './Usuario';
+import { AllowNull, Column, DataType, Model, Table } from "sequelize-typescript";
 
-@Entity('Area') // Mapea a la tabla 'Area' en tu base de datos
-export class Area {
-  @PrimaryGeneratedColumn()
-  IdArea!: number;
+@Table({
+  tableName: 'area'
+})
 
-  @Column({ name: 'NomArea', type: 'varchar', length: 255, nullable: false }) // Ajusta la longitud según tu (?)
-  NomArea!: string;
-
-  @OneToMany(() => Usuario, usuario => usuario.area)
-  usuarios!: Usuario[]; // Un Area puede tener muchos Usuarios
+class Area extends Model {
+  @AllowNull(false)
+  @Column({
+    type: DataType.STRING(100)
+  })
+  declare descripcion: string
 }
+
+export default Area

@@ -1,15 +1,15 @@
-// src/entity/Rol.ts
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
-import { Usuario } from './Usuario';
+import { AllowNull, Column, DataType, Model, Table } from "sequelize-typescript";
 
-@Entity('Rol') // Mapea a la tabla 'Rol' en tu base de datos
-export class Rol {
-  @PrimaryGeneratedColumn()
-  IdRol!: number;
+@Table({
+  tableName: 'rol'
+})
 
-  @Column({ name: 'NomRol', type: 'varchar', length: 255, nullable: false }) // Ajusta la longitud según tu (?)
-  NomRol!: string;
-
-  @OneToMany(() => Usuario, usuario => usuario.rol)
-  usuarios!: Usuario[]; // Un Rol puede tener muchos Usuarios
+class Rol extends Model {
+  @AllowNull(false)
+  @Column({
+    type: DataType.STRING(100)
+  })
+  declare descripcion: string
 }
+
+export default Rol
