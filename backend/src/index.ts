@@ -1,19 +1,8 @@
-import colors from 'colors';
-import server from "./server";
-import { connectToDatabase } from './config/db';
+import colors from 'colors'
+import server from './server'
 
-const port = process.env.PORT || 4000;
+const port = process.env.PORT || 4000
 
-async function startServer() {
-  try {
-    await connectToDatabase();
-    server.listen(port, () => {
-      console.log(colors.magenta.bold(`Servidor Funcionando en el puerto ${port}`));
-    });
-  } catch (error) {
-    process.exit(1);
-  }
-}
-startServer();
-
-
+server.listen(port, () => {
+  console.log(colors.cyan.bold(`REST API en el puerto ${port}`))
+})
