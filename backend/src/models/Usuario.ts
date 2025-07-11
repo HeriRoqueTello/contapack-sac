@@ -3,7 +3,7 @@ import Area from "./Area";
 import Rol from "./Rol";
 
 @Table({
-  tableName: 'usuario'
+  tableName: 'usuarios'
 })
 
 class Usuario extends Model {

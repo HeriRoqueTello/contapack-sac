@@ -20,6 +20,7 @@ export const authenticate = async (req: Request, res: Response, next: NextFuncti
   }
 
   const [, token] = bearer.split(' ')
+  console.log({ token })
 
   if (!token) {
     const error = new Error('No Autorizado')
@@ -30,10 +31,18 @@ export const authenticate = async (req: Request, res: Response, next: NextFuncti
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET)
     if (typeof decoded === 'object' && decoded.id) {
-      req.user = await Usuario.findByPk(decoded.id, {
-        attributes: ['id', 'name', 'email']
+      console.log({ decoded }, typeof decoded, { id: decoded.id })
+      const user = await Usuario.findByPk(decoded.id, {
+        attributes: ['id', 'nombre', 'email']
       })
-      next()
+
+      if (user) {
+        req.user = user
+        next()
+      } else {
+        // El token es válido, pero el usuario no se encuentra
+        res.status(401).json({ error: 'No autorizado: Usuario no encontrado' })
+      }
     }
   } catch (error) {
     res.status(500).json({ error: 'Error en el servidor' })
