@@ -55,7 +55,7 @@ export class AuthController {
       return
     }
 
-    const token = generateJWT(user.id)
+    const token = generateJWT({ id: user.id })
 
     res.json(token)
   }
@@ -63,5 +63,6 @@ export class AuthController {
   static user = async (req: Request, res: Response) => {
     res.json(req.user)
   }
+
 
 }
