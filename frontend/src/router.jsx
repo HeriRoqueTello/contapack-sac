@@ -9,6 +9,8 @@ import { AnexoView } from "./views/AnexoView";
 import { TaEtiquetaView } from "./views/TaEtiquetaView";
 import { NotFound } from "./views/NotFound";
 import { NosotrosView } from "./views/NosotrosView";
+import ServiciosView from "./views/ServiciosView";
+import ProductosView from "./views/ProductosView";
 
 export default function Router() {
   return (
@@ -30,6 +32,8 @@ export default function Router() {
         <Route path="/" element={<HomeLayout />}>
           <Route element={<HomeView />} index />
           <Route path="nosotros" element={<NosotrosView />} />
+          <Route path="servicios" element={<ServiciosView />} />
+          <Route path="productos" element={<ProductosView />} />
         </Route>
 
         <Route path="/*" element={<NotFound />} />
