@@ -65,7 +65,7 @@ export function LoginView() {
           </div>
           <div className="space-y-2">
             <CardTitle className="text-2xl font-bold text-gray-900">
-              Conta Pack SA
+              Conta Pack SAC
             </CardTitle>
             <CardDescription className="text-gray-600">
               Sistema Agroindustrial Privado
