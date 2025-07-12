@@ -8,7 +8,7 @@ export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const navItems = [
-    { name: "Inicio", href: "inicio" },
+    { name: "Inicio", href: "" },
     { name: "Nosotros", href: "nosotros" },
     { name: "Servicios", href: "servicios" },
     { name: "Productos", href: "productos" },
@@ -32,15 +32,13 @@ export function Header() {
           {/* Desktop Navigation */}
           <nav className="hidden md:flex space-x-8">
             {navItems.map((item) => (
-              <LinkScroll
+              <Link
                 key={item.name}
                 to={item.href}
-                smooth={true}
-                duration={500}
                 className="text-gray-700 hover:text-primary-600 transition-colors duration-200 font-medium relative after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-primary-600 after:transition-all after:duration-200 hover:after:w-full cursor-pointer"
               >
                 {item.name}
-              </LinkScroll>
+              </Link>
             ))}
           </nav>
 
@@ -69,17 +67,14 @@ export function Header() {
           <div className="md:hidden py-4 border-t animate-slide-up">
             <nav className="flex flex-col space-y-4">
               {navItems.map((item) => (
-                <LinkScroll
+                <Link
                   key={item.name}
                   to={item.href}
-                  smooth={true}
-                  duration={500}
-                  offset={-350}
                   className="text-gray-700 hover:text-primary-600 transition-colors duration-200 font-medium py-2 px-4 rounded-lg hover:bg-primary-50"
                   onClick={() => setIsMenuOpen(false)}
                 >
                   {item.name}
-                </LinkScroll>
+                </Link>
               ))}
               <Button className="gradient-primary text-white px-6 py-2 rounded-lg font-medium w-fit mx-4 hover:shadow-primary transition-all duration-200">
                 Acceder
