@@ -9,26 +9,43 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Eye, EyeOff, Leaf, Mail, Lock } from "lucide-react";
+import { Eye, EyeOff, Lock, Mail } from "lucide-react";
 import { useNavigate } from "react-router";
 import { useMutation } from "@tanstack/react-query";
 import { login } from "@/api/api";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
+import { isAxiosError } from "axios";
 
 export function LoginView() {
   const [showPassword, setShowPassword] = useState(false);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const navigate = useNavigate();
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    defaultValues: { email: "", password: "" },
+  });
 
   const mutation = useMutation({
     mutationFn: login,
+    onSuccess: () => {
+      toast.success("Inicio de sesión exitoso");
+      navigate("/admin");
+    },
+    onError: (error) => {
+      if (isAxiosError(error) && error.response) {
+        toast.error(error.response.data.error || "Credenciales incorrectas");
+      } else {
+        toast.error("Ocurrió un error al iniciar sesión");
+      }
+    },
   });
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // Aquí iría la lógica de autenticacióna
-    mutation.mutate({ email, password });
-    navigate("/admin");
+  const onSubmit = (formData) => {
+    mutation.mutate({ ...formData });
   };
 
   return (
@@ -46,7 +63,6 @@ export function LoginView() {
           <div className="mx-auto w-16 h-16 rounded-2xl flex items-center justify-center shadow-lg">
             <img src="/logo.svg" className="w-8 h-8 text-white" />
           </div>
-
           <div className="space-y-2">
             <CardTitle className="text-2xl font-bold text-gray-900">
               Conta Pack SA
@@ -56,9 +72,8 @@ export function LoginView() {
             </CardDescription>
           </div>
         </CardHeader>
-
         <CardContent className="space-y-6">
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             {/* Email */}
             <div className="space-y-2">
               <Label
@@ -73,14 +88,22 @@ export function LoginView() {
                   id="email"
                   type="email"
                   placeholder="usuario@contapack.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
                   className="pl-10 h-12 border-gray-200 focus:border-green-500 focus:ring-green-500"
-                  required
+                  {...register("email", {
+                    required: "El Email es obligatorio",
+                    pattern: {
+                      value: /\S+@\S+\.\S+/,
+                      message: "E-mail no válido",
+                    },
+                  })}
                 />
               </div>
+              {errors.email && (
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.email.message}
+                </p>
+              )}
             </div>
-
             {/* Password */}
             <div className="space-y-2">
               <Label
@@ -95,10 +118,10 @@ export function LoginView() {
                   id="password"
                   type={showPassword ? "text" : "password"}
                   placeholder="••••••••"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
                   className="pl-10 pr-10 h-12 border-gray-200 focus:border-green-500 focus:ring-green-500"
-                  required
+                  {...register("password", {
+                    required: "La Contraseña es obligatoria",
+                  })}
                 />
                 <button
                   type="button"
@@ -112,17 +135,23 @@ export function LoginView() {
                   )}
                 </button>
               </div>
+              {errors.password && (
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.password.message}
+                </p>
+              )}
             </div>
-
             {/* Login Button */}
             <Button
               type="submit"
               className="w-full h-12 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-medium shadow-lg hover:shadow-xl transition-all duration-200"
+              disabled={mutation.isPending}
             >
-              Acceder al Sistema
+              {mutation.isPending
+                ? "Iniciando sesión..."
+                : "Acceder al Sistema"}
             </Button>
           </form>
-
           {/* Footer */}
           <div className="text-center pt-4 border-t border-gray-100">
             <p className="text-xs text-gray-500">
