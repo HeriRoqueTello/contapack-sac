@@ -1,8 +1,9 @@
 import { getUser } from "@/api/api";
-import { AppSidebar } from "@/components/admin/AppSidebar";
+import { Navbar } from "@/components/admin/dashboard/navbar";
+import { Sidebar } from "@/components/admin/dashboard/sidebar";
 import Loader from "@/components/ui/Loader";
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { useQuery } from "@tanstack/react-query";
+import { useState } from "react";
 import { Navigate, Outlet } from "react-router";
 
 export function AdminLayout() {
@@ -11,19 +12,29 @@ export function AdminLayout() {
     queryKey: ["user"],
     refetchOnWindowFocus: false,
   });
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   if (isLoading) return <Loader />;
   if (isError) return <Navigate to={"/auth/login"} />;
 
   return (
-    <SidebarProvider>
-      <AppSidebar data={data} />
-      <main className="flex flex-1 flex-col">
-        <SidebarTrigger />
-        <div className="@container/main flex flex-1 flex-col gap-2">
-          <Outlet />
-        </div>
-      </main>
-    </SidebarProvider>
+    <div className="flex h-screen bg-gray-50">
+      {/* Sidebar */}
+      <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+
+      {/* Main Content Area */}
+      <div className="flex-1 flex flex-col overflow-hidden px-4">
+        <Navbar data={data} onMenuClick={() => setSidebarOpen(true)} />
+        <Outlet />
+      </div>
+
+      {/* mobile */}
+      {sidebarOpen && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
+    </div>
   );
 }
