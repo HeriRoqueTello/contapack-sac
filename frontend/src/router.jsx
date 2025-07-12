@@ -7,7 +7,8 @@ import { AdminLayout } from "./layout/AdminLayout";
 import { EmbarqueView } from "./views/EmbarqueView";
 import { AnexoView } from "./views/AnexoView";
 import { TaEtiquetaView } from "./views/TaEtiquetaView";
- 
+import { NotFound } from "./views/NotFound";
+
 export default function Router() {
   return (
     <BrowserRouter>
@@ -18,20 +19,18 @@ export default function Router() {
           <Route path="anexo" element={<AnexoView />} />
           <Route path="taetiqueta" element={<TaEtiquetaView />} />
         </Route>
- 
+
         <Route path="/auth/login" element={<LoginView />} />
- 
+
         {/* <Route path="/:handle" element={<AuthLayout />}>
           <Route element={<HandleView />} index={true} />
         </Route> a*/}
- 
+
         <Route path="/" element={<HomeLayout />}>
           <Route element={<HomeView />} index />
         </Route>
- 
-        {/* <Route path="/404" element={<AuthLayout />}>
-          <Route element={<NotFoundView />} index />
-        </Route> */}
+
+        <Route path="/*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>
   );
