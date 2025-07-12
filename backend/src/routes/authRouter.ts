@@ -7,7 +7,7 @@ import { authenticate } from "../middleware/auth";
 
 const router = Router()
 
-router.use(limiter)
+// router.use(limiter)
 
 router.post('/create-account',
   body('nombre')
