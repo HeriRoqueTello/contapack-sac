@@ -6,7 +6,7 @@ import { ServicesCTA } from "@/components/home/servicios/ServicesCTA";
 import { ServicesHero } from "@/components/home/servicios/ServicesHero";
 import { ServicesOverview } from "@/components/home/servicios/ServicesOverview";
 
-export default function ServiciosView() {
+export function ServiciosView() {
   return (
     <div className="min-h-screen bg-white">
       <ServicesHero />

@@ -3,7 +3,7 @@ import { ProductsGrid } from "@/components/home/productos/ProductsGrid";
 import { ProductsHero } from "@/components/home/productos/ProductsHero";
 import { ProductsStats } from "@/components/home/productos/ProductsStats";
 
-export default function ProductosView() {
+export function ProductosView() {
   return (
     <div className="min-h-screen bg-white">
       <ProductsHero />
