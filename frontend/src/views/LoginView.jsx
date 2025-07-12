@@ -37,9 +37,9 @@ export function LoginView() {
     },
     onError: (error) => {
       if (isAxiosError(error) && error.response) {
-        toast.error(error.response.data.error || "Credenciales incorrectas");
+        toast.error(error.message || "Credenciales incorrectas");
       } else {
-        toast.error("Ocurrió un error al iniciar sesión");
+        toast.error(error.message);
       }
     },
   });
