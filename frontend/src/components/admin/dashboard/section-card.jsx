@@ -37,21 +37,9 @@ const metrics = [
   },
 ];
 
-const metricsGridStyle = {
-  display: "grid",
-  gridTemplateColumns:
-    window.innerWidth >= 1024
-      ? "repeat(4, 1fr)"
-      : window.innerWidth >= 640
-      ? "repeat(2, 1fr)"
-      : "1fr",
-  gap: "16px",
-  marginBottom: "32px",
-};
-
 export function SectionCards() {
   return (
-    <div style={metricsGridStyle}>
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8 px-4 lg:px-6">
       {metrics.map((metric, index) => (
         <MetricCard key={index} {...metric} />
       ))}
