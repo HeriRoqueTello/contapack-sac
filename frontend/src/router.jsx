@@ -8,6 +8,7 @@ import { EmbarqueView } from "./views/EmbarqueView";
 import { AnexoView } from "./views/AnexoView";
 import { TaEtiquetaView } from "./views/TaEtiquetaView";
 import { NotFound } from "./views/NotFound";
+import { NosotrosView } from "./views/NosotrosView";
 
 export default function Router() {
   return (
@@ -28,6 +29,7 @@ export default function Router() {
 
         <Route path="/" element={<HomeLayout />}>
           <Route element={<HomeView />} index />
+          <Route path="nosotros" element={<NosotrosView />} />
         </Route>
 
         <Route path="/*" element={<NotFound />} />
