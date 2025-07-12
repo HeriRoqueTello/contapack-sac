@@ -63,8 +63,6 @@ export function Footer() {
                 <li key={link.name}>
                   <Link
                     to={link.href}
-                    smooth={true}
-                    duration={500}
                     className="text-gray-300 hover:text-primary-400 transition-colors duration-200 cursor-pointer"
                   >
                     {link.name}
