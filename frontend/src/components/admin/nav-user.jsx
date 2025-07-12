@@ -47,13 +47,13 @@ export function NavUser({ user }) {
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
               <Avatar className="h-8 w-8 rounded-lg grayscale">
-                <AvatarImage src={user.avatar} alt={user.Nombres} />
+                <AvatarImage src={user.avatar} alt={user.nombre} />
                 <AvatarFallback className="rounded-lg">
                   <User />
                 </AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-medium">{user.Nombres}</span>
+                <span className="truncate font-medium">{user.nombre}</span>
                 <span className="text-muted-foreground truncate text-xs">
                   {user.rol}
                 </span>
@@ -68,7 +68,7 @@ export function NavUser({ user }) {
           >
             <DropdownMenuItem>
               <User />
-              {user.Email}
+              {user.email}
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={removeAuthTokenFromLocalStorage}>
