@@ -13,10 +13,12 @@ import { ProductosView } from "./views/ProductosView";
 import { ServiciosView } from "./views/ServiciosView";
 import { ContactoView } from "./views/ContactoView";
 import { ProductoView } from "./views/ProductoView";
+import ScrollToTop from "./hooks/ScrollToTop";
 
 export default function Router() {
   return (
     <BrowserRouter>
+      <ScrollToTop />
       <Routes>
         <Route path="/admin" element={<AdminLayout />}>
           <Route index element={<DashboardView />} />
