@@ -12,6 +12,7 @@ import { NosotrosView } from "./views/NosotrosView";
 import { ProductosView } from "./views/ProductosView";
 import { ServiciosView } from "./views/ServiciosView";
 import { ContactoView } from "./views/ContactoView";
+import { ProductoView } from "./views/ProductoView";
 
 export default function Router() {
   return (
@@ -26,16 +27,13 @@ export default function Router() {
 
         <Route path="/auth/login" element={<LoginView />} />
 
-        {/* <Route path="/:handle" element={<AuthLayout />}>
-          <Route element={<HandleView />} index={true} />
-        </Route> a*/}
-
         <Route path="/" element={<HomeLayout />}>
           <Route element={<HomeView />} index />
           <Route path="nosotros" element={<NosotrosView />} />
           <Route path="servicios" element={<ServiciosView />} />
           <Route path="contacto" element={<ContactoView />} />
           <Route path="productos" element={<ProductosView />} />
+          <Route path="productos/:slug" element={<ProductoView />} />
         </Route>
 
         <Route path="/*" element={<NotFound />} />
