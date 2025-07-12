@@ -41,10 +41,9 @@ export function DashboardView() {
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">Todos los Productos</SelectItem>
-            <SelectItem value="lacteos">Lácteos</SelectItem>
-            <SelectItem value="bebidas">Bebidas</SelectItem>
-            <SelectItem value="conservas">Conservas</SelectItem>
-            <SelectItem value="cereales">Cereales</SelectItem>
+            <SelectItem value="verduras">Verduras</SelectItem>
+            <SelectItem value="frutas">Frutas</SelectItem>
+            <SelectItem value="otros">Otros</SelectItem>
           </SelectContent>
         </Select>
         <DatePicker selected={selectedDate} onSelect={setSelectedDate} />

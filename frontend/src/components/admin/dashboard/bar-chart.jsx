@@ -11,10 +11,8 @@ import {
 
 const BarChart = ({ selectedProduct }) => {
   const allData = [
-    { name: "Lácteos", value: 450, color: "#16a34a" },
-    { name: "Bebidas", value: 320, color: "#22c55e" },
-    { name: "Conservas", value: 280, color: "#4ade80" },
-    { name: "Cereales", value: 197, color: "#86efac" },
+    { name: "Verduras", value: 450, color: "#16a34a" },
+    { name: "Frutas", value: 320, color: "#22c55e" },
     { name: "Otros", value: 150, color: "#bbf7d0" },
   ];
 
