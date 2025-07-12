@@ -33,7 +33,7 @@ export const authenticate = async (req: Request, res: Response, next: NextFuncti
     if (typeof decoded === 'object' && decoded.id) {
       console.log({ decoded }, typeof decoded, { id: decoded.id })
       const user = await Usuario.findByPk(decoded.id, {
-        attributes: ['id', 'nombre', 'email']
+        attributes: ['id', 'nombre', 'apellido', 'email']
       })
 
       if (user) {
