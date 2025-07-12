@@ -6,7 +6,7 @@ import {
   MapPin,
   Twitter,
 } from "lucide-react";
-import { Link as LinkScroll } from "react-scroll";
+import { Link } from "react-router";
 
 export function Footer() {
   const socialLinks = [
@@ -61,14 +61,14 @@ export function Footer() {
             <ul className="space-y-3">
               {quickLinks.map((link) => (
                 <li key={link.name}>
-                  <LinkScroll
+                  <Link
                     to={link.href}
                     smooth={true}
                     duration={500}
                     className="text-gray-300 hover:text-primary-400 transition-colors duration-200 cursor-pointer"
                   >
                     {link.name}
-                  </LinkScroll>
+                  </Link>
                 </li>
               ))}
             </ul>

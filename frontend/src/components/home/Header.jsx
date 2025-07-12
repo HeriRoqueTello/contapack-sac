@@ -2,7 +2,6 @@ import { useState } from "react";
 import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router";
-import { Link as LinkScroll } from "react-scroll";
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
