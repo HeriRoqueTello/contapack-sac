@@ -24,8 +24,7 @@
     "morgan": "^1.10.0",
     "mysql2": "^3.14.1",
     "reflect-metadata": "^0.2.2",
-    "sequelize-typescript": "^2.1.6",
-    "uuid": "^11.1.0"
+    "sequelize-typescript": "^2.1.6"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.2",
