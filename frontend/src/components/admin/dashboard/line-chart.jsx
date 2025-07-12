@@ -25,7 +25,7 @@ const data = [
   { month: "Dic", embarques: 94 },
 ];
 
-export function ChartAreaInteractive() {
+export function LineChart({ selectedProduct }) {
   return (
     <Card className="bg-white border border-gray-200">
       <CardHeader>
