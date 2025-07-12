@@ -1,8 +1,10 @@
 import colors from 'colors'
 import express from 'express'
+import cors from "cors";
 import morgan from 'morgan'
 import { db } from './config/db'
 import authRouter from './routes/authRouter'
+import { corsConfig } from "./config/cors";
 
 async function connectDB() {
   try {
@@ -18,6 +20,8 @@ async function connectDB() {
 connectDB()
 
 const app = express()
+
+app.use(cors(corsConfig))
 
 app.use(morgan('dev'))
 
