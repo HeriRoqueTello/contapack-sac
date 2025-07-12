@@ -17,7 +17,7 @@ export async function login({ email, password }) {
 
 export async function getUser() {
   try {
-    const { data } = await api.get(`/user`);
+    const { data } = await api.get(`/auth/user`);
     return data;
   } catch (error) {
     if (isAxiosError(error) && error.response) {
