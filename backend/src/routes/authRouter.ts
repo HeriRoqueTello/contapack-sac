@@ -6,11 +6,8 @@ import { authenticate } from "../middleware/auth";
 
 const router = Router()
 
-<<<<<<< HEAD
 // router.use(limiter)
 
-=======
->>>>>>> 1efb5cccc269374d48d2b2bbb05412efa26d6162
 router.post('/create-account',
   body('nombre')
     .notEmpty().withMessage("El nombre no puede ir vacio"),
