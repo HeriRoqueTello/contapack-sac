@@ -1,6 +1,5 @@
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { Bell, LogOut, Menu, Settings, User } from "lucide-react";
-import { useNavigate } from "react-router";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -9,7 +8,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { LogOut, Menu, Star, UserCog } from "lucide-react";
+import { useNavigate } from "react-router";
 
 export const Navbar = ({ data, onMenuClick }) => {
   const navigate = useNavigate();
@@ -98,9 +98,14 @@ export const Navbar = ({ data, onMenuClick }) => {
                 </div>
               </DropdownMenuLabel>
               <DropdownMenuSeparator />
+              <DropdownMenuLabel>Información</DropdownMenuLabel>
               <DropdownMenuItem>
-                <User className="mr-2 h-4 w-4" />
-                <span>Rol</span>
+                <UserCog className="mr-2 h-4 w-4" />
+                <span>{data.Rol.descripcion}</span>
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                <Star className="mr-2 h-4 w-4" />
+                <span>{data.Area.descripcion}</span>
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem
