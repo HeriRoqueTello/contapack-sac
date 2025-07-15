@@ -27,7 +27,7 @@ export function DashboardView() {
       </div>
       <SectionCards />
       {/* Filters */}
-      <div className="flex flex-col sm:flex-row gap-4 mb-6">
+      <div className="flex flex-col sm:flex-row gap-4 mb-6 px-4 lg:px-6">
         <div className="flex-1">
           <SearchInput
             value={searchTerm}
