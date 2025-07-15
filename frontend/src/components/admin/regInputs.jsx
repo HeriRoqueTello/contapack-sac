@@ -100,9 +100,14 @@ export const RegInputs = ({ fields }) => {
             );
           }
 
-          // Inputs normales
+          // Inputs normales con control de ancho
           return (
-            <div key={field.name} className="flex flex-col w-full">
+            <div
+              key={field.name}
+              className={`flex flex-col w-full
+              ${field.fullRow ? "col-span-full rounded-lg" : ""}
+              `}
+            >
               {field.type === "checkboxGroup" && (
                 <CheckboxGroupInput field={field} />
               )}
@@ -113,6 +118,7 @@ export const RegInputs = ({ fields }) => {
                 "sectionTitle",
                 "palletBlock",
               ].includes(field.type) && <StandardInput field={field} />}
+
               {errors[field.name] && (
                 <span className="text-sm text-red-500 mt-1">
                   {errors[field.name].message}

@@ -14,6 +14,9 @@ import { ServiciosView } from "./views/ServiciosView";
 import { ContactoView } from "./views/ContactoView";
 import { ProductoView } from "./views/ProductoView";
 import ScrollToTop from "./hooks/ScrollToTop";
+import { ProduccionView } from "./views/ProduccionView";
+import { RotuloView } from "./views/RotuloView";
+import { LoteView } from "./views/LoteView";
 
 export default function Router() {
   return (
@@ -25,6 +28,9 @@ export default function Router() {
           <Route path="embarque" element={<EmbarqueView />} />
           <Route path="anexo" element={<AnexoView />} />
           <Route path="taetiqueta" element={<TaEtiquetaView />} />
+          <Route path="produccion" element={<ProduccionView />} />
+          <Route path="recepcion/rotulo" element={<RotuloView />} />
+          <Route path="recepcion/lote" element={<LoteView />} />
         </Route>
 
         <Route path="/auth/login" element={<LoginView />} />
