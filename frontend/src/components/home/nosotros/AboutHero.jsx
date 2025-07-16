@@ -51,7 +51,7 @@ export function AboutHero() {
           <div className="relative">
             <div className="aspect-[4/3] rounded-2xl overflow-hidden shadow-2xl">
               <img
-                src="/instalaciones.jpeg"
+                src="/nosotros.jpg"
                 alt="Instalaciones ContaPack"
                 className="w-full h-full object-cover"
               />
