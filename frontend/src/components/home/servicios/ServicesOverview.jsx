@@ -51,7 +51,7 @@ export function ServicesOverview() {
           <div className="relative">
             <div className="aspect-[4/3] bg-gradient-to-br from-primary-100 to-primary-200 rounded-2xl overflow-hidden shadow-2xl">
               <img
-                src="/placeholder.svg?height=600&width=800"
+                src="/servicios.jpg"
                 alt="Servicios ContaPack"
                 className="w-full h-full object-cover"
               />
