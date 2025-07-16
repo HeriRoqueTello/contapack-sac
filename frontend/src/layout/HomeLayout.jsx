@@ -6,7 +6,7 @@ export function HomeLayout() {
   return (
     <div className="flex flex-col min-h-screen">
       <Header />
-      <main className="flex-grow pt-8">
+      <main className="flex-grow py-8 px-6">
         <Outlet />
       </main>
       <Footer />
