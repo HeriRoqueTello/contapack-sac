@@ -1,7 +1,7 @@
-import { useState } from "react";
-import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Link } from "react-router";
+import { Menu, X } from "lucide-react";
+import { useState } from "react";
+import { Link, NavLink } from "react-router";
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -31,13 +31,20 @@ export function Header() {
           {/* Desktop Navigation */}
           <nav className="hidden md:flex space-x-8">
             {navItems.map((item) => (
-              <Link
+              <NavLink
                 key={item.name}
                 to={item.href}
-                className="text-gray-700 hover:text-primary-600 transition-colors duration-200 font-medium relative after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-primary-600 after:transition-all after:duration-200 hover:after:w-full cursor-pointer"
+                end={item.href == "/productos"}
+                className={({ isActive }) =>
+                  `text-gray-700 hover:text-primary-600 transition-colors duration-200 font-medium relative after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-primary-600 after:transition-all after:duration-200 hover:after:w-full cursor-pointer ${
+                    isActive
+                      ? "text-green-700 after:w-full after:bg-green-700" // Estilo activo
+                      : ""
+                  }`
+                }
               >
                 {item.name}
-              </Link>
+              </NavLink>
             ))}
           </nav>
 
@@ -66,14 +73,21 @@ export function Header() {
           <div className="md:hidden py-4 border-t animate-slide-up">
             <nav className="flex flex-col space-y-4">
               {navItems.map((item) => (
-                <Link
+                <NavLink
                   key={item.name}
                   to={item.href}
-                  className="text-gray-700 hover:text-primary-600 transition-colors duration-200 font-medium py-2 px-4 rounded-lg hover:bg-primary-50"
+                  end={item.href == "/productos"}
+                  className={({ isActive }) =>
+                    `py-2 px-4 rounded-lg font-medium transition-colors duration-200 ${
+                      isActive
+                        ? "bg-green-100 text-green-700 hover:bg-green-200" // Estilo activo para móvil
+                        : "text-gray-700 hover:text-primary-600 hover:bg-primary-50" // Estilo inactivo
+                    }`
+                  }
                   onClick={() => setIsMenuOpen(false)}
                 >
                   {item.name}
-                </Link>
+                </NavLink>
               ))}
               <Button className="gradient-primary text-white px-6 py-2 rounded-lg font-medium w-fit mx-4 hover:shadow-primary transition-all duration-200">
                 Acceder
