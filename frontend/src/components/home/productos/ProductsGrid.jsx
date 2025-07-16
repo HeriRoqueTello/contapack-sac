@@ -54,7 +54,7 @@ export function ProductsGrid() {
       category: "Frutas",
       description:
         "Uvas frescas de mesa con excelente sabor y presentación, ideales para exportación.",
-      image: "/placeholder.svg?height=400&width=600",
+      image: "/uvas-principal.jpg",
       season: "Dic - Abr",
       origin: "Valles de Piura",
       rating: 5,
