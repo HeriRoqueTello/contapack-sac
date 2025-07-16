@@ -5,15 +5,9 @@ export function ProductGallery({ product }) {
   const [selectedImage, setSelectedImage] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  console.log({ product });
   // Simulated gallery images
-  const galleryImages = [
-    product.image,
-    "/placeholder.svg?height=600&width=800",
-    "/placeholder.svg?height=600&width=800",
-    "/placeholder.svg?height=600&width=800",
-    "/placeholder.svg?height=600&width=800",
-    "/placeholder.svg?height=600&width=800",
-  ];
+  const galleryImages = [...product.images];
 
   const nextImage = () => {
     setSelectedImage((prev) => (prev + 1) % galleryImages.length);
