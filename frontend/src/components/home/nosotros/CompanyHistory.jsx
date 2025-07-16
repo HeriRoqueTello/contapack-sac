@@ -51,7 +51,7 @@ export function CompanyHistory() {
             Nuestra Historia
           </h2>
           <p className="text-lg text-gray-600 max-w-3xl mx-auto">
-            Dos décadas de crecimiento, innovación y compromiso con la
+            Más de 3 años de crecimiento, innovación y compromiso con la
             excelencia en la agroindustria peruana
           </p>
         </div>
