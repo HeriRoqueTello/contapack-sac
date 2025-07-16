@@ -16,6 +16,7 @@ const productsData = {
     description:
       "Palta Hass premium de exportación, cultivada en los mejores valles del Perú con estrictos controles de calidad.",
     image: "/placeholder.svg?height=600&width=800",
+    images: ["/brocoli-1.jpg", "/brocoli-2.jpg"],
     specs: {
       calibres: ["12", "14", "16", "18", "20", "22", "24"],
       temporada: "Marzo - Septiembre",
@@ -44,6 +45,7 @@ const productsData = {
     description:
       "Brócoli fresco de la más alta calidad, procesado con tecnología de punta para mantener sus propiedades nutricionales.",
     image: "/placeholder.svg?height=600&width=800",
+    images: ["/brocoli-1.jpg", "/brocoli-2.jpg"],
     specs: {
       calibres: ["14-16cm", "16-18cm", "18-20cm"],
       temporada: "Todo el año",
@@ -71,7 +73,8 @@ const productsData = {
     category: "Verduras",
     description:
       "Espárragos premium cultivados bajo estrictos estándares de calidad en los mejores suelos del Perú.",
-    image: "/placeholder.svg?height=600&width=800",
+    image: "/brocoli.jpg",
+    images: ["/brocoli-1.jpg", "/brocoli-2.jpg"],
     specs: {
       calibres: ["S", "M", "L", "XL", "XXL"],
       temporada: "Septiembre - Diciembre",
@@ -99,7 +102,8 @@ const productsData = {
     category: "Frutas",
     description:
       "Uvas frescas Red Globe de exportación, seleccionadas para mercados internacionales exigentes.",
-    image: "/placeholder.svg?height=600&width=800",
+    image: "/uvas-principal.jpg",
+    images: ["/uvas-1.jpg", "/uvas-2.jpg", "/uvas-3.webp"],
     specs: {
       calibres: ["18mm", "20mm", "22mm", "24mm+"],
       temporada: "Diciembre - Abril",
