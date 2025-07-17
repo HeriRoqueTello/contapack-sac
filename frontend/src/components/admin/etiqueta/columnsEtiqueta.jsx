@@ -51,38 +51,65 @@ export const columnsEtiqueta = [
   {
     accessorKey: "exportador",
     header: "Exportador",
+    cell: ({ row }) => (
+      <div className="text-center">{row.getValue("exportador")}</div>
+    ),
   },
   {
     accessorKey: "codLote",
     header: "Lote",
+    cell: ({ row }) => (
+      <div className="text-center">{row.getValue("codLote")}</div>
+    ),
   },
   {
     accessorKey: "categoria",
     header: "Categoría",
+    cell: ({ row }) => (
+      <div className="text-center">{row.getValue("categoria")}</div>
+    ),
   },
   {
     accessorKey: "calibre",
     header: "Calibre",
+    cell: ({ row }) => (
+      <div className="text-center">{row.getValue("calibre")}</div>
+    ),
   },
   {
     accessorKey: "pesoUni",
     header: "Peso por unidad",
+    cell: ({ row }) => (
+      <div className="text-center">{row.getValue("pesoUni")}</div>
+    ),
   },
   {
     accessorKey: "codEmp",
     header: "Código de Empaque",
+    cell: ({ row }) => (
+      <div className="text-center">{row.getValue("codEmp")}</div>
+    ),
   },
   {
     accessorKey: "clp",
     header: "CLP",
+    cell: ({ row }) => (
+      <div className="text-center">{row.getValue("clp")}</div>
+    ),
   },
   {
     accessorKey: "fecha",
     header: "Fecha",
+    cell: ({ row }) => (
+      <div className="text-center">{row.getValue("fecha")}</div>
+    ),
   },
   {
     accessorKey: "trazabilidad",
     header: "Trazabilidad",
+    cell: ({ row }) => (
+      <div className="text-center">{row.getValue("trazabilidad")}</div>
+    ),
   },
   {
     id: "actions",

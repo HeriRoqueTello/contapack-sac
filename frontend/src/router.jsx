@@ -6,7 +6,7 @@ import { DashboardView } from "./views/DashboardView";
 import { AdminLayout } from "./layout/AdminLayout";
 import { EmbarqueView } from "./views/EmbarqueView";
 import { AnexoView } from "./views/AnexoView";
-import { TaEtiquetaView } from "./views/TaEtiquetaView";
+import { EtiquetaView } from "./views/EtiquetaView";
 import { NotFound } from "./views/NotFound";
 import { NosotrosView } from "./views/NosotrosView";
 import { ProductosView } from "./views/ProductosView";
@@ -27,7 +27,7 @@ export default function Router() {
           <Route index element={<DashboardView />} />
           <Route path="embarque" element={<EmbarqueView />} />
           <Route path="anexo" element={<AnexoView />} />
-          <Route path="taetiqueta" element={<TaEtiquetaView />} />
+          <Route path="taetiqueta" element={<EtiquetaView />} />
           <Route path="produccion" element={<ProduccionView />} />
           <Route path="recepcion/rotulo" element={<RotuloView />} />
           <Route path="recepcion/lote" element={<LoteView />} />

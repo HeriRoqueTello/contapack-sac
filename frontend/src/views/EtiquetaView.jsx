@@ -4,7 +4,7 @@ import { fields } from "@/components/admin/etiqueta/fieldsEtiqueta";
 import { DataTable } from "@/components/admin/DataTable";
 import { columnsEtiqueta } from "@/components/admin/etiqueta/columnsEtiqueta";
 
-export function TaEtiquetaView() {
+export function EtiquetaView() {
   //tabla definida
   const [dataEtiqueta, setDataEtiqueta] = useState([
     {
@@ -12,7 +12,7 @@ export function TaEtiquetaView() {
       estado: "Confirmado",
       exportador: "Heri Roque",
       codLote: "0101",
-      categoria: "Palta",
+      categoria: "I",
       calibre: "10",
       pesoUni: "10 kg",
       codEmp: "1111",
