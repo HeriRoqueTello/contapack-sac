@@ -72,10 +72,24 @@ export const columnsProduccion = (onConfirmar) => [
     ),
   },
   {
+    accessorKey: "tipEmp",
+    header: "Tipo de empaque",
+    cell: ({ row }) => (
+      <div className="text-center">{row.getValue("tipEmp")}</div>
+    ),
+  },
+  {
     accessorKey: "pesoEmp",
     header: "Peso por empaque",
     cell: ({ row }) => (
       <div className="text-center">{row.getValue("pesoEmp")}</div>
+    ),
+  },
+  {
+    accessorKey: "cantEmp",
+    header: "Cantidad de empaques",
+    cell: ({ row }) => (
+      <div className="text-center">{row.getValue("cantEmp")}</div>
     ),
   },
   {

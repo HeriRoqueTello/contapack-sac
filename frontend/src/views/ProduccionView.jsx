@@ -13,8 +13,9 @@ export function ProduccionView() {
       nrPallet: "101",
       categoria: "I",
       calibre: "10",
+      tipEmp: "Cajas",
       pesoEmp: "10 kg",
-      
+      cantEmp: "30"
     },
   ]);
 
