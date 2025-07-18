@@ -13,19 +13,23 @@ export function useTableData(key, initialData = []) {
   const addRegistro = (newData) => {
     setData((prev) => {
       const maxId =
-        prev.length > 0
-          ? Math.max(...prev.map((item) => Number(item.id)))
-          : 0;
+        prev.length > 0 ? Math.max(...prev.map((item) => Number(item.id))) : 0;
       const newId = (maxId + 1).toString();
       const newRecord = { id: newId, estado: "No Confirmado", ...newData };
       return [...prev, newRecord];
     });
   };
 
-  const confirmRegistro= (id) => {
+  const confirmRegistro = (id) => {
     setData((prev) =>
       prev.map((item) =>
-        item.id === id ? { ...item, estado: "Confirmado" } : item
+        item.id === id
+          ? {
+              ...item,
+              estado:
+                item.estado === "Confirmado" ? "No Confirmado" : "Confirmado",
+            }
+          : item
       )
     );
   };
@@ -34,13 +38,5 @@ export function useTableData(key, initialData = []) {
     setData((prev) => prev.filter((item) => item.id !== id));
   };
 
-  const actualizarRegistro = (actualizado) => {
-  setData((prev) =>
-    prev.map((item) =>
-      item.id === actualizado.id ? { ...item, ...actualizado } : item
-    )
-  );
-};
-
-  return { data, addRegistro, confirmRegistro, deleteRegistro, actualizarRegistro };
+  return { data, addRegistro, confirmRegistro, deleteRegistro };
 }

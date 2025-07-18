@@ -132,7 +132,7 @@ export const columnsEtiqueta = (
               Copiar ID
             </DropdownMenuItem>
             <DropdownMenuItem onClick={() => onConfirmar(etiqueta.id)}>
-              Confirmar
+              {etiqueta.estado === "Confirmado" ? "No confirmar" : "Confirmar"}
             </DropdownMenuItem>
             <DropdownMenuItem
               onClick={() => {

@@ -117,7 +117,7 @@ export const columnsProduccion = (
               Copiar ID
             </DropdownMenuItem>
             <DropdownMenuItem onClick={() => onConfirmar(produccion.id)}>
-              Confirmar
+              {produccion.estado === "Confirmado" ? "No confirmar" : "Confirmar"}
             </DropdownMenuItem>
             <DropdownMenuItem
               onClick={() => {
