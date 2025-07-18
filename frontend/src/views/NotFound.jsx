@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Home, ArrowLeft, Search, AlertTriangle } from "lucide-react";
 import { useState } from "react";
-import { useNavigate } from "react-router";
+import { Link, useNavigate } from "react-router";
 
 export const NotFound = () => {
   const [isAnimating, setIsAnimating] = useState(false);
@@ -100,11 +100,12 @@ export const NotFound = () => {
           <h3 className="text-gray-700 font-medium mb-4">Enlaces rápidos:</h3>
           <div className="flex flex-wrap justify-center gap-4">
             <Button
+              asChild
               variant="ghost"
               size="sm"
               className="text-green-600 hover:text-green-700 hover:bg-green-50"
             >
-              Inicio
+              <Link to={`/`}>Inicio</Link>
             </Button>
           </div>
         </div>

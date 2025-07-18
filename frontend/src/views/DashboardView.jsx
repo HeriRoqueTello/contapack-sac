@@ -1,4 +1,5 @@
 import BarChart from "@/components/admin/dashboard/bar-chart";
+import { DataTable } from "@/components/admin/dashboard/data-table";
 import DatePicker from "@/components/admin/dashboard/date-picker";
 import { LineChart } from "@/components/admin/dashboard/line-chart";
 import SearchInput from "@/components/admin/dashboard/search-input";
@@ -54,8 +55,12 @@ export function DashboardView() {
           <BarChart selectedProduct={selectedProduct} />
           <LineChart selectedProduct={selectedProduct} />
         </div>
+        <DataTable
+          searchTerm={searchTerm}
+          selectedProduct={selectedProduct}
+          selectedDate={selectedDate}
+        />
       </div>
-      {/* <DataTable data={data} /> */}
     </div>
   );
 }
