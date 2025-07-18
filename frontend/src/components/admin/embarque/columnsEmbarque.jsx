@@ -1,5 +1,5 @@
-import { Checkbox } from "@/components/ui/checkbox"
-import { Button } from "@/components/ui/button"
+import { Checkbox } from "@/components/ui/checkbox";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -10,7 +10,12 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { MoreHorizontal } from "lucide-react"
 
-export const columnsEmbarque = (onConfirmar, onEliminar) => [
+export const columnsEmbarque = (
+  onConfirmar,
+  onEliminar,
+  setRegistroEditando,
+  setDialogOpen
+) => [
   {
     accessorKey: "id",
     header: () => null,
@@ -56,7 +61,7 @@ export const columnsEmbarque = (onConfirmar, onEliminar) => [
 
   { accessorKey: "nrContenedor", header: "N° Contenedor", 
     cell: ({ row }) => 
-    <div className="text-center">{row.getValue("n°contenedor")}</div> },
+    <div className="text-center">{row.getValue("nrContenedor")}</div> },
 
   { accessorKey: "puntosCheck", header: "Puntos chequeados", 
     cell: ({ row }) => 
@@ -136,15 +141,19 @@ export const columnsEmbarque = (onConfirmar, onEliminar) => [
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Opciones</DropdownMenuLabel>
+          
+            <DropdownMenuItem onClick={() => onConfirmar(embarque.id)}>
+              {embarque.estado === "Confirmado" ? "No confirmar" : "Confirmar"}
+            </DropdownMenuItem>
             <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(embarque.id)}
+              onClick={() => {
+                setRegistroEditando(embarque);
+                setDialogOpen(true);
+              }}
             >
-              Copiar ID
+              Editar
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => onConfirmar?.(embarque.id)}>
-              Confirmar R
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
+    
             <DropdownMenuItem onClick={() => onEliminar?.(embarque.id)}>
               Eliminar
             </DropdownMenuItem>

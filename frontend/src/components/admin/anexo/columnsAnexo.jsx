@@ -174,11 +174,7 @@ export const columnsAnexo = (onConfirmar, onEliminar) => [
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Opciones</DropdownMenuLabel>
-            <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(lote.id)}
-            >
-              Copiar ID
-            </DropdownMenuItem>
+            
             <DropdownMenuItem onClick={() => onConfirmar(lote.id)}>
               Confirmar
             </DropdownMenuItem>

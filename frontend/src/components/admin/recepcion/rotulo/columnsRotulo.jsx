@@ -193,11 +193,7 @@ export const columnsRotulo = (
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Opciones</DropdownMenuLabel>
-            <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(rotulo.id)}
-            >
-              Copiar ID
-            </DropdownMenuItem>
+            
             <DropdownMenuItem onClick={() => onConfirmar(rotulo.id)}>
               {rotulo.estado === "Confirmado" ? "No confirmar" : "Confirmar"}
             </DropdownMenuItem>
