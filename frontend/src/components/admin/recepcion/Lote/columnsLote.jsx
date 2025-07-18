@@ -184,11 +184,7 @@ export const columnsLote = (
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Opciones</DropdownMenuLabel>
-            <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(lote.id)}
-            >
-              Copiar ID
-            </DropdownMenuItem>
+            
             <DropdownMenuItem onClick={() => onConfirmar(lote.id)}>
               {lote.estado === "Confirmado" ? "No confirmar" : "Confirmar"}
             </DropdownMenuItem>

@@ -111,11 +111,7 @@ export const columnsProduccion = (
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Opciones</DropdownMenuLabel>
-            <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(produccion.id)}
-            >
-              Copiar ID
-            </DropdownMenuItem>
+            
             <DropdownMenuItem onClick={() => onConfirmar(produccion.id)}>
               {produccion.estado === "Confirmado" ? "No confirmar" : "Confirmar"}
             </DropdownMenuItem>

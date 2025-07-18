@@ -126,11 +126,7 @@ export const columnsEtiqueta = (
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Opciones</DropdownMenuLabel>
-            <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(etiqueta.id)}
-            >
-              Copiar ID
-            </DropdownMenuItem>
+            
             <DropdownMenuItem onClick={() => onConfirmar(etiqueta.id)}>
               {etiqueta.estado === "Confirmado" ? "No confirmar" : "Confirmar"}
             </DropdownMenuItem>
