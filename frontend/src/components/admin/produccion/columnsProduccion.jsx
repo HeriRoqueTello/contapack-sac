@@ -1,5 +1,5 @@
-import { Checkbox } from "@/components/ui/checkbox"
-import { Button } from "@/components/ui/button"
+import { Checkbox } from "@/components/ui/checkbox";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -7,10 +7,15 @@ import {
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
-} from "@/components/ui/dropdown-menu"
-import { MoreHorizontal } from "lucide-react"
+} from "@/components/ui/dropdown-menu";
+import { MoreHorizontal } from "lucide-react";
 
-export const columnsProduccion = (onConfirmar, eliminarRegistro) => [
+export const columnsProduccion = (
+  onConfirmar,
+  eliminarRegistro,
+  setRegistroEditando,
+  setDialogOpen
+) => [
   {
     accessorKey: "id",
     header: () => null,
@@ -29,7 +34,7 @@ export const columnsProduccion = (onConfirmar, eliminarRegistro) => [
           onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
           aria-label="Select all"
         />
-     </div>
+      </div>
     ),
     cell: ({ row }) => (
       <div className="flex justify-center items-center">
@@ -37,8 +42,8 @@ export const columnsProduccion = (onConfirmar, eliminarRegistro) => [
           checked={row.getIsSelected()}
           onCheckedChange={(value) => row.toggleSelected(!!value)}
           aria-label="Select row"
-      />
-    </div>
+        />
+      </div>
     ),
     enableSorting: false,
     enableHiding: false,
@@ -96,7 +101,7 @@ export const columnsProduccion = (onConfirmar, eliminarRegistro) => [
     id: "actions",
     enableHiding: false,
     cell: ({ row }) => {
-      const produccion = row.original
+      const produccion = row.original;
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -112,15 +117,22 @@ export const columnsProduccion = (onConfirmar, eliminarRegistro) => [
               Copiar ID
             </DropdownMenuItem>
             <DropdownMenuItem onClick={() => onConfirmar(produccion.id)}>
-              Confirmar R
+              Confirmar
             </DropdownMenuItem>
-            <DropdownMenuItem>Editar</DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => {
+                setRegistroEditando(produccion);
+                setDialogOpen(true);
+              }}
+            >
+              Editar
+            </DropdownMenuItem>
             <DropdownMenuItem onClick={() => eliminarRegistro(produccion.id)}>
               Eliminar
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
-      )
+      );
     },
   },
-]
+];

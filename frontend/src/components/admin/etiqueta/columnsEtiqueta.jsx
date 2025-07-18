@@ -10,7 +10,12 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { MoreHorizontal } from "lucide-react";
 
-export const columnsEtiqueta = (onConfirmar, onEliminar) => [
+export const columnsEtiqueta = (
+  onConfirmar,
+  onEliminar,
+  setRegistroEditando,
+  setDialogOpen
+) => [
   {
     accessorKey: "id",
     header: () => null,
@@ -91,9 +96,7 @@ export const columnsEtiqueta = (onConfirmar, onEliminar) => [
   {
     accessorKey: "clp",
     header: "CLP",
-    cell: ({ row }) => (
-      <div className="text-center">{row.getValue("clp")}</div>
-    ),
+    cell: ({ row }) => <div className="text-center">{row.getValue("clp")}</div>,
   },
   {
     accessorKey: "fecha",
@@ -129,7 +132,15 @@ export const columnsEtiqueta = (onConfirmar, onEliminar) => [
               Copiar ID
             </DropdownMenuItem>
             <DropdownMenuItem onClick={() => onConfirmar(etiqueta.id)}>
-              Confirmar R
+              Confirmar
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => {
+                setRegistroEditando(etiqueta);
+                setDialogOpen(true);
+              }}
+            >
+              Editar
             </DropdownMenuItem>
             <DropdownMenuItem onClick={() => onEliminar(etiqueta.id)}>
               Eliminar
@@ -140,7 +151,3 @@ export const columnsEtiqueta = (onConfirmar, onEliminar) => [
     },
   },
 ];
-
-
-
-

@@ -3,6 +3,7 @@ import { fields } from "@/components/admin/produccion/fieldsProduccion";
 import { DataTable } from "@/components/admin/DataTable";
 import { columnsProduccion } from "@/components/admin/produccion/columnsProduccion";
 import { useTableData } from "@/hooks/useTableData";
+import { useState } from "react";
 
 export function ProduccionView() {
   const {
@@ -10,6 +11,7 @@ export function ProduccionView() {
     addRegistro,
     confirmRegistro,
     deleteRegistro,
+    actualizarRegistro,
   } = useTableData("dataProduccion", [
     {
       id: "1",
@@ -22,16 +24,30 @@ export function ProduccionView() {
       cantEmp: "30",
     },
   ]);
+  const [registroEditando, setRegistroEditando] = useState(null);
+  const [dialogOpen, setDialogOpen] = useState(false);
 
   return (
     <div className="text-end">
       <DialogDemo
         fields={fields}
         title="Registro de Producción Diaria"
-        onSubmit={addRegistro}
+        onSubmit={registroEditando ? actualizarRegistro : addRegistro}
+        initialData={registroEditando}
+        onClose={() => {
+          setRegistroEditando(null);
+          setDialogOpen(false);
+        }}
+        open={dialogOpen}
+        setOpen={setDialogOpen}
       />
       <DataTable
-        columns={columnsProduccion(confirmRegistro, deleteRegistro)}
+        columns={columnsProduccion(
+          confirmRegistro,
+          deleteRegistro,
+          setRegistroEditando,
+          setDialogOpen
+        )}
         data={dataProduccion}
         filterColumnKey="id"
         placeholder="Buscar por ID"

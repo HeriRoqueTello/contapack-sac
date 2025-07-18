@@ -3,15 +3,16 @@ import { DialogDemo } from "@/components/admin/dialogDemo";
 import { fields } from "@/components/admin/etiqueta/fieldsEtiqueta";
 import { DataTable } from "@/components/admin/DataTable";
 import { columnsEtiqueta } from "@/components/admin/etiqueta/columnsEtiqueta";
+import { useState } from "react";
 
 export function EtiquetaView() {
- 
   const {
-      data: dataEtiqueta,
-      addRegistro,
-      confirmRegistro,
-      deleteRegistro,
-    } = useTableData("dataEtiqueta",[
+    data: dataEtiqueta,
+    addRegistro,
+    confirmRegistro,
+    deleteRegistro,
+    actualizarRegistro,
+  } = useTableData("dataEtiqueta", [
     {
       id: "1",
       estado: "Confirmado",
@@ -26,9 +27,8 @@ export function EtiquetaView() {
       trazabilidad: "5121321321321",
     },
   ]);
-
-
-
+  const [registroEditando, setRegistroEditando] = useState(null);
+  const [dialogOpen, setDialogOpen] = useState(false);
 
   return (
     <>
@@ -36,11 +36,23 @@ export function EtiquetaView() {
         <DialogDemo
           fields={fields}
           title="Registro de Etiqueta"
-          onSubmit={addRegistro} 
+          onSubmit={registroEditando ? actualizarRegistro : addRegistro}
+          initialData={registroEditando}
+          onClose={() => {
+            setRegistroEditando(null);
+            setDialogOpen(false);
+          }}
+          open={dialogOpen}
+          setOpen={setDialogOpen}
         />
       </div>
       <DataTable
-        columns={columnsEtiqueta(confirmRegistro, deleteRegistro)}
+        columns={columnsEtiqueta(
+          confirmRegistro,
+          deleteRegistro,
+          setRegistroEditando,
+          setDialogOpen
+        )}
         data={dataEtiqueta}
         filterColumnKey="id"
         placeholder="Buscar por ID"
@@ -48,4 +60,3 @@ export function EtiquetaView() {
     </>
   );
 }
-
