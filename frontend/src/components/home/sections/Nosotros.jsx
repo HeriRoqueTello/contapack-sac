@@ -34,7 +34,7 @@ export function Nosotros() {
     <section id="nosotros" className="py-20 bg-white">
       <div className="container mx-auto">
         <SectionHeader
-          title="Nosotros"
+          title="Historia"
           subtitle="Conoce nuestra historia, misión y valores que nos impulsan cada día"
         />
 

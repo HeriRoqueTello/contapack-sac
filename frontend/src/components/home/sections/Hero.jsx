@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { StatsCard } from "../ui/StatsCard";
+import { Link } from "react-router";
 
 export function Hero() {
   const stats = [
@@ -31,9 +32,10 @@ export function Hero() {
 
             <Button
               size="lg"
+              asChild
               className="gradient-primary text-white px-8 py-4 rounded-lg font-medium text-lg border-2 hover:shadow-primary-lg transition-all duration-200 hover:scale-105"
             >
-              Conocer Más
+              <Link to={`/nosotros`}>Conocer Más</Link>
             </Button>
 
             {/* Stats */}
