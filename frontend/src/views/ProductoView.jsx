@@ -15,8 +15,14 @@ const productsData = {
     category: "Frutas",
     description:
       "Palta Hass premium de exportación, cultivada en los mejores valles del Perú con estrictos controles de calidad.",
-    image: "/placeholder.svg?height=600&width=800",
-    images: ["/brocoli-1.jpg", "/brocoli-2.jpg"],
+    image: "/palta-hass.jpge",
+    images: [
+      "/palta.jpg",
+      "/palta-1.jpg",
+      "/palta-2.jpg",
+      "/palta-3.jpg",
+      "/palta-4.avif",
+    ],
     specs: {
       calibres: ["12", "14", "16", "18", "20", "22", "24"],
       temporada: "Marzo - Septiembre",
@@ -44,8 +50,13 @@ const productsData = {
     category: "Verduras",
     description:
       "Brócoli fresco de la más alta calidad, procesado con tecnología de punta para mantener sus propiedades nutricionales.",
-    image: "/placeholder.svg?height=600&width=800",
-    images: ["/brocoli-1.jpg", "/brocoli-2.jpg"],
+    image: "/brocoli.jpge",
+    images: [
+      "/brocoli-1.jpg",
+      "/brocoli-2.jpg",
+      "/brocoli-3.jpg",
+      "/brocoli-4.jpg",
+    ],
     specs: {
       calibres: ["14-16cm", "16-18cm", "18-20cm"],
       temporada: "Todo el año",
@@ -73,8 +84,15 @@ const productsData = {
     category: "Verduras",
     description:
       "Espárragos premium cultivados bajo estrictos estándares de calidad en los mejores suelos del Perú.",
-    image: "/brocoli.jpg",
-    images: ["/brocoli-1.jpg", "/brocoli-2.jpg"],
+    image: "/esparragos.jpg",
+    images: [
+      "/esparragos-1.jpg",
+      "/esparragos-2.jpg",
+      "/esparragos-3.jpg",
+      "/esparragos-4.jpg",
+      "/esparragos-5.webp",
+      "/esparragos-6.jpg",
+    ],
     specs: {
       calibres: ["S", "M", "L", "XL", "XXL"],
       temporada: "Septiembre - Diciembre",
