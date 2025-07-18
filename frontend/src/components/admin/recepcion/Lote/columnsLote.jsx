@@ -190,7 +190,7 @@ export const columnsLote = (
               Copiar ID
             </DropdownMenuItem>
             <DropdownMenuItem onClick={() => onConfirmar(lote.id)}>
-              Confirmar
+              {lote.estado === "Confirmado" ? "No confirmar" : "Confirmar"}
             </DropdownMenuItem>
             <DropdownMenuItem
               onClick={() => {

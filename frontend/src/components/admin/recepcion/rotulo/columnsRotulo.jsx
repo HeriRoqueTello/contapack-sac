@@ -10,7 +10,12 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { MoreHorizontal } from "lucide-react";
 
-export const columnsRotulo = (onConfirmar, onEliminar, setRegistroEditando, setDialogOpen) => [
+export const columnsRotulo = (
+  onConfirmar,
+  onEliminar,
+  setRegistroEditando,
+  setDialogOpen
+) => [
   {
     accessorKey: "id",
     header: () => null,
@@ -194,7 +199,7 @@ export const columnsRotulo = (onConfirmar, onEliminar, setRegistroEditando, setD
               Copiar ID
             </DropdownMenuItem>
             <DropdownMenuItem onClick={() => onConfirmar(rotulo.id)}>
-              Confirmar
+              {rotulo.estado === "Confirmado" ? "No confirmar" : "Confirmar"}
             </DropdownMenuItem>
             <DropdownMenuItem
               onClick={() => {
