@@ -10,7 +10,7 @@ export function ProductsGrid() {
       category: "Frutas",
       description:
         "Palta premium seleccionada para mercados internacionales con alto contenido de grasas saludables.",
-      image: "/palta-hass.jpge",
+      image: "/palta-hass.jpg",
       season: "Mar - Sep",
       origin: "Valles de Lima",
       rating: 5,
@@ -26,7 +26,7 @@ export function ProductsGrid() {
       category: "Verduras",
       description:
         "Brócoli fresco procesado con tecnología de punta, rico en vitaminas y antioxidantes naturales.",
-      image: "/brocoli.jpge",
+      image: "/brocoli.jpeg",
       season: "Todo el año",
       origin: "Valles de Arequipa",
       rating: 5,
