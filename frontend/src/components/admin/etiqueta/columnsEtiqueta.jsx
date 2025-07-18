@@ -1,5 +1,5 @@
-import { Checkbox } from "@/components/ui/checkbox"
-import { Button } from "@/components/ui/button"
+import { Checkbox } from "@/components/ui/checkbox";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -7,19 +7,16 @@ import {
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
-} from "@/components/ui/dropdown-menu"
-import { MoreHorizontal } from "lucide-react"
+} from "@/components/ui/dropdown-menu";
+import { MoreHorizontal } from "lucide-react";
 
-export const columnsEtiqueta = [
-
+export const columnsEtiqueta = (onConfirmar, onEliminar) => [
   {
     accessorKey: "id",
     header: () => null,
-    cell: () => null, // oculta la celda
-    enableHiding: false, // evita que aparezca en el menú de columnas
+    cell: () => null,
+    enableHiding: false,
   },
-
-
   {
     id: "select",
     header: ({ table }) => (
@@ -42,11 +39,12 @@ export const columnsEtiqueta = [
     enableSorting: false,
     enableHiding: false,
   },
-
   {
     accessorKey: "estado",
     header: "Estado",
-    cell: ({ row }) => <div className="capitalize">{row.getValue("estado")}</div>,
+    cell: ({ row }) => (
+      <div className="capitalize text-center">{row.getValue("estado")}</div>
+    ),
   },
   {
     accessorKey: "exportador",
@@ -115,7 +113,7 @@ export const columnsEtiqueta = [
     id: "actions",
     enableHiding: false,
     cell: ({ row }) => {
-      const etiqueta = row.original
+      const etiqueta = row.original;
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -130,15 +128,19 @@ export const columnsEtiqueta = [
             >
               Copiar ID
             </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>Editar</DropdownMenuItem>
-            <DropdownMenuItem>Eliminar</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => onConfirmar(etiqueta.id)}>
+              Confirmar R
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => onEliminar(etiqueta.id)}>
+              Eliminar
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
-      )
+      );
     },
   },
-]
+];
+
 
 
 
