@@ -7,25 +7,25 @@ export function RelatedProducts({ currentProduct }) {
       slug: "palta",
       name: "Palta Hass",
       category: "Frutas",
-      image: "/placeholder.svg?height=300&width=400",
+      image: "/palta-hass.jpg",
     },
     {
       slug: "brocoli",
       name: "Brócoli Premium",
       category: "Verduras",
-      image: "/placeholder.svg?height=300&width=400",
+      image: "/brocoli.jpeg",
     },
     {
       slug: "esparragos",
       name: "Espárragos Verdes",
       category: "Verduras",
-      image: "/placeholder.svg?height=300&width=400",
+      image: "/esparragos.jpg",
     },
     {
       slug: "uvas",
       name: "Uvas Red Globe",
       category: "Frutas",
-      image: "/placeholder.svg?height=300&width=400",
+      image: "/uvas-principal.jpg",
     },
   ];
 
