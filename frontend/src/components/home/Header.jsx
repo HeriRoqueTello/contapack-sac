@@ -89,9 +89,11 @@ export function Header() {
                   {item.name}
                 </NavLink>
               ))}
-              <Button className="gradient-primary text-white px-6 py-2 rounded-lg font-medium w-fit mx-4 hover:shadow-primary transition-all duration-200">
-                Acceder
-              </Button>
+              <Link to="/auth/login">
+                <Button className="gradient-primary text-white px-6 py-2 rounded-lg font-medium cursor-pointer transition-all duration-200 hover:scale-105">
+                  Acceder
+                </Button>
+              </Link>
             </nav>
           </div>
         )}
