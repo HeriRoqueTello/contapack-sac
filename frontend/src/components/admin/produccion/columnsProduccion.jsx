@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { MoreHorizontal } from "lucide-react"
 
-export const columnsProduccion = (onConfirmar) => [
+export const columnsProduccion = (onConfirmar, eliminarRegistro) => [
   {
     accessorKey: "id",
     header: () => null,
@@ -115,7 +115,9 @@ export const columnsProduccion = (onConfirmar) => [
               Confirmar R
             </DropdownMenuItem>
             <DropdownMenuItem>Editar</DropdownMenuItem>
-            <DropdownMenuItem>Eliminar</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => eliminarRegistro(produccion.id)}>
+              Eliminar
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       )

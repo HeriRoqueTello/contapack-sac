@@ -1,14 +1,19 @@
-import { useState } from "react";
+import { useTableData } from "@/hooks/useTableData";
 import { DialogDemo } from "@/components/admin/dialogDemo";
 import { fields } from "@/components/admin/etiqueta/fieldsEtiqueta";
 import { DataTable } from "@/components/admin/DataTable";
 import { columnsEtiqueta } from "@/components/admin/etiqueta/columnsEtiqueta";
 
 export function EtiquetaView() {
-  //tabla definida
-  const [dataEtiqueta, setDataEtiqueta] = useState([
+ 
+  const {
+      data: dataEtiqueta,
+      addRegistro,
+      confirmRegistro,
+      deleteRegistro,
+    } = useTableData("dataEtiqueta",[
     {
-      id: "01",
+      id: "1",
       estado: "Confirmado",
       exportador: "Heri Roque",
       codLote: "0101",
@@ -23,11 +28,7 @@ export function EtiquetaView() {
   ]);
 
 
-  const handleAddEtiqueta = (newData) => {
-    const id = Date.now().toString()
-    const newRecord = { id, ...newData }
-    setDataEtiqueta((prev) => [...prev, newRecord])
-  }
+
 
   return (
     <>
@@ -35,11 +36,11 @@ export function EtiquetaView() {
         <DialogDemo
           fields={fields}
           title="Registro de Etiqueta"
-          onSubmit={handleAddEtiqueta} 
+          onSubmit={addRegistro} 
         />
       </div>
       <DataTable
-        columns={columnsEtiqueta}
+        columns={columnsEtiqueta(confirmRegistro, deleteRegistro)}
         data={dataEtiqueta}
         filterColumnKey="id"
         placeholder="Buscar por ID"
