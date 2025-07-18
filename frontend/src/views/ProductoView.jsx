@@ -15,14 +15,8 @@ const productsData = {
     category: "Frutas",
     description:
       "Palta Hass premium de exportación, cultivada en los mejores valles del Perú con estrictos controles de calidad.",
-    image: "/palta-hass.jpge",
-    images: [
-      "/palta.jpg",
-      "/palta-1.jpg",
-      "/palta-2.jpg",
-      "/palta-3.jpg",
-      "/palta-4.avif",
-    ],
+    image: "/palta-hass.jpg",
+    images: ["/palta-1.jpg", "/palta-2.jpg", "/palta-3.jpg", "/palta-4.avif"],
     specs: {
       calibres: ["12", "14", "16", "18", "20", "22", "24"],
       temporada: "Marzo - Septiembre",
@@ -50,7 +44,7 @@ const productsData = {
     category: "Verduras",
     description:
       "Brócoli fresco de la más alta calidad, procesado con tecnología de punta para mantener sus propiedades nutricionales.",
-    image: "/brocoli.jpge",
+    image: "/brocoli.jpeg",
     images: [
       "/brocoli-1.jpg",
       "/brocoli-2.jpg",
