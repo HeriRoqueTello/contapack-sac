@@ -1,20 +1,20 @@
 export const fields = [
-  { name: "fecha", label: "fecha", type: "text", required: true },
+  { name: "fecha", label: "Fecha", type: "text", required: true },
   {
-    name: "prodProv",
+    name: "productorProveedor",
     label: "Productor/Proveedor",
     type: "text",
     required: true,
   },
   {
-    name: "kgIng",
+    name: "kgIngresados",
     label: "KG Ingresados",
     type: "text",
     required: true,
   },
   { name: "producto", label: "Producto", type: "text", required: true },
   { name: "variedad", label: "Variedad", type: "text", required: true },
-  { name: "numIng", label: "N° Ingreso", type: "text", required: true },
+  { name: "numIngreso", label: "N° Ingreso", type: "text", required: true },
   { name: "exportador", label: "Exportador", type: "text", required: true },
   { name: "responsable", label: "Responsable", type: "text", required: true },
   {
@@ -25,7 +25,7 @@ export const fields = [
   },
   { name: "numPallet", label: "N° Pallet", type: "text", required: true },
   {
-    name: "trazRecep",
+    name: "trazRecepcion",
     label: "Trazabilidad Recepcion",
     type: "text",
     required: true,
@@ -37,29 +37,28 @@ export const fields = [
     required: true,
   },
   {
-    name: "pesoJabaBand",
+    name: "pesoJabaBandeja",
     label: "Peso Jaba/Bandeja",
     type: "text",
     required: true,
   },
   { name: "firma", label: "Firma", type: "text", required: false },
   {
-    name: "descargado",
-    label: "Descargado por",
-    type: "text",
-    required: false,
-  },
-  {
-    name: "detServ",
-    label: "Detalle servicio",
-    type: "text",
-    required: false,
-  },
-  {
     name: "obs",
     label: "Observaciones",
     type: "text",
     required: false,
+  },
+  {
+    name: "registroMateriaPrimaId",
+    label: "Lote asociado",
+    type: "select",
+    required: true,
+    options: (fields) =>
+      fields.dynamic.registros.map((r) => ({
+        label: r.nombreLote || `Lote #${r.id}`,
+        value: r.id,
+      })),
   },
   {
     name: "chequeos",

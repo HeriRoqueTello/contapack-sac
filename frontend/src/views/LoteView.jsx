@@ -1,44 +1,61 @@
 import { DialogDemo } from "@/components/admin/dialogDemo";
 import { DataTable } from "@/components/admin/DataTable";
-import { useTableData } from "@/hooks/useTableData";
 import { fields } from "@/components/admin/recepcion/Lote/fieldsLote";
 import { columnsLote } from "@/components/admin/recepcion/Lote/columnsLote";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import {
+  actualizarRegistroMP,
+  crearRegistroMP,
+  eliminarRegistroMP,
+  obtenerRegistroMP,
+} from "@/services/registroMPService";
 
 export function LoteView() {
-  //tabla definida
-  const {
-    data: dataLote,
-    addRegistro,
-    confirmRegistro,
-    deleteRegistro,
-    actualizarRegistro,
-  } = useTableData("dataLote", [
-    {
-      id: "1",
-      estado: "Confirmado",
-      placa: "ABC-123",
-      horaDesc: "08:30",
-      exportador: "AgroExport Perú",
-      numSemana: "29",
-      ordenVolc: "VOLC-456",
-      fechaRecep: "2025-07-18",
-      guiaProd: "GP-789456",
-      prodProv: "Campos del Sur",
-      codLote: "0101",
-      clp: "163516345261",
-      pesoNeto: "1200",
-      cantJabas: "60",
-      pesoDesc: "50",
-      difPeso: "1150",
-      empTrans: "Transporte Andino SAC",
-      chofer: "Luis Mendoza",
-      licCond: "B12345678",
-      obs: "Entrega sin novedades",
-    },
-  ]);
   const [registroEditando, setRegistroEditando] = useState(null);
+
   const [dialogOpen, setDialogOpen] = useState(false);
+
+  const [dataLote, setDataLote] = useState([]);
+  useEffect(() => {
+    obtenerRegistroMP().then(setDataLote);
+  }, []);
+
+  //Agregar registro
+  const handleAdd = async (nuevoRegistro) => {
+    try {
+      await crearRegistroMP(nuevoRegistro);
+      const actualizados = await obtenerRegistroMP();
+      setDataLote(actualizados);
+      setDialogOpen(false);
+    } catch (error) {
+      console.error("Error al agregar", error);
+    }
+  };
+
+  //Actualizar un registro existente
+  const handleUpdate = async (registroActualizado) => {
+    try {
+      await actualizarRegistroMP(registroEditando.id, registroActualizado);
+      const actualizados = await obtenerRegistroMP();
+      setDataLote(actualizados);
+      setRegistroEditando(null);
+      setDialogOpen(false);
+    } catch (error) {
+      console.log("Error al actualizar: ", error);
+    }
+  };
+
+  //Eliminar Registro
+  const handleEliminar = async (id) => {
+    try {
+      await eliminarRegistroMP(id);
+      //Actualizar la tabla después de eliminar
+      const nuevosDatos = await obtenerRegistroMP();
+      setDataLote(nuevosDatos);
+    } catch (error) {
+      console.log("Error al eliminar registro: ", error);
+    }
+  };
 
   return (
     <>
@@ -46,7 +63,7 @@ export function LoteView() {
         <DialogDemo
           fields={fields}
           title="Registro de Lote"
-          onSubmit={registroEditando ? actualizarRegistro : addRegistro}
+          onSubmit={registroEditando ? handleUpdate : handleAdd}
           initialData={registroEditando}
           onClose={() => {
             setRegistroEditando(null);
@@ -58,8 +75,8 @@ export function LoteView() {
       </div>
       <DataTable
         columns={columnsLote(
-          confirmRegistro,
-          deleteRegistro,
+          null, //O eliminá este si el archivo permite
+          handleEliminar,
           setRegistroEditando,
           setDialogOpen
         )}

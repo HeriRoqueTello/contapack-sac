@@ -1,5 +1,6 @@
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
+import { detectarChequeo } from "@/utils/chequeosUtils";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -63,17 +64,17 @@ export const columnsRotulo = (
     ),
   },
   {
-    accessorKey: "prodProv",
+    accessorKey: "productorProveedor",
     header: "Producto/Proveedor",
     cell: ({ row }) => (
-      <div className="text-center">{row.getValue("prodProv")}</div>
+      <div className="text-center">{row.getValue("productorProveedor")}</div>
     ),
   },
   {
-    accessorKey: "kgIng",
+    accessorKey: "kgIngresados",
     header: "KG Ingresados",
     cell: ({ row }) => (
-      <div className="text-center">{row.getValue("kgIng")}</div>
+      <div className="text-center">{row.getValue("kgIngresados")}</div>
     ),
   },
   {
@@ -91,10 +92,10 @@ export const columnsRotulo = (
     ),
   },
   {
-    accessorKey: "numIng",
+    accessorKey: "numIngreso",
     header: "N° Ingreso",
     cell: ({ row }) => (
-      <div className="text-center">{row.getValue("numIng")}</div>
+      <div className="text-center">{row.getValue("numIngreso")}</div>
     ),
   },
   {
@@ -126,10 +127,10 @@ export const columnsRotulo = (
     ),
   },
   {
-    accessorKey: "trazRecep",
+    accessorKey: "trazRecepcion",
     header: "Trazabilidad Recepción",
     cell: ({ row }) => (
-      <div className="text-center">{row.getValue("trazRecep")}</div>
+      <div className="text-center">{row.getValue("trazRecepcion")}</div>
     ),
   },
   {
@@ -140,10 +141,10 @@ export const columnsRotulo = (
     ),
   },
   {
-    accessorKey: "pesoJabaBand",
+    accessorKey: "pesoJabaBandeja",
     header: "Peso Jaba/Bandeja",
     cell: ({ row }) => (
-      <div className="text-center">{row.getValue("pesoJabaBand")}</div>
+      <div className="text-center">{row.getValue("pesoJabaBandeja")}</div>
     ),
   },
   {
@@ -154,20 +155,6 @@ export const columnsRotulo = (
     ),
   },
   {
-    accessorKey: "descargado",
-    header: "Descargado por",
-    cell: ({ row }) => (
-      <div className="text-center">{row.getValue("descargado")}</div>
-    ),
-  },
-  {
-    accessorKey: "detServ",
-    header: "Detalle Servicio",
-    cell: ({ row }) => (
-      <div className="text-center">{row.getValue("detServ")}</div>
-    ),
-  },
-  {
     accessorKey: "obs",
     header: "Observaciones",
     cell: ({ row }) => <div className="text-center">{row.getValue("obs")}</div>,
@@ -175,8 +162,19 @@ export const columnsRotulo = (
   {
     accessorKey: "chequeos",
     header: "Chequeos",
+    cell: ({ row }) => {
+      const registro = row.original;
+      const valor = detectarChequeo(registro);
+      return <div className="text-center">{valor || "—"}</div>;
+    },
+  },
+  {
+    accessorKey: "registroMateriaPrimaId",
+    header: "Lote asociado",
     cell: ({ row }) => (
-      <div className="text-center">{row.getValue("chequeos")}</div>
+      <div className="text-center">
+        {row.getValue("registroMateriaPrimaId")}
+      </div>
     ),
   },
   {
@@ -193,7 +191,7 @@ export const columnsRotulo = (
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Opciones</DropdownMenuLabel>
-            
+
             <DropdownMenuItem onClick={() => onConfirmar(rotulo.id)}>
               {rotulo.estado === "Confirmado" ? "No confirmar" : "Confirmar"}
             </DropdownMenuItem>
