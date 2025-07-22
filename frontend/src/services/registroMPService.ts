@@ -1,12 +1,6 @@
+import api from "@/config/axios";
 import axios from "axios";
 import { data } from "react-router";
-
-const api = axios.create({
-  baseURL: "http://localhost:3000/api",
-  headers: {
-    "Content-Type": "application/json",
-  },
-});
 
 //Obtener todos los registros
 export const obtenerRegistroMP = async () => {
