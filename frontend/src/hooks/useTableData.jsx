@@ -33,10 +33,17 @@ export function useTableData(key, initialData = []) {
       )
     );
   };
+  const actualizarRegistro = (actualizado) => {
+    setData((prev) =>
+      prev.map((item) =>
+        item.id === actualizado.id ? { ...item, ...actualizado } : item
+      )
+    );
+  };
 
   const deleteRegistro = (id) => {
     setData((prev) => prev.filter((item) => item.id !== id));
   };
 
-  return { data, addRegistro, confirmRegistro, deleteRegistro };
+  return { data, addRegistro, confirmRegistro, deleteRegistro, actualizarRegistro };
 }

@@ -56,6 +56,13 @@ export const columnsLote = (
     ),
   },
   {
+    accessorKey: "dirReferencia",
+    header: "Dirección de Referencia",
+    cell: ({ row }) => (
+      <div className="text-center">{row.getValue("dirReferencia")}</div>
+    ),
+  },
+  {
     accessorKey: "placa",
     header: "Placa",
     cell: ({ row }) => (
@@ -63,10 +70,31 @@ export const columnsLote = (
     ),
   },
   {
-    accessorKey: "horaDesc",
+    accessorKey: "placa2",
+    header: "Placa2",
+    cell: ({ row }) => (
+      <div className="text-center">{row.getValue("placa2")}</div>
+    ),
+  },
+  {
+    accessorKey: "horaDescarga",
     header: "Hora de descarga",
     cell: ({ row }) => (
-      <div className="text-center">{row.getValue("horaDesc")}</div>
+      <div className="text-center">{row.getValue("horaDescarga")}</div>
+    ),
+  },
+  {
+    accessorKey: "codNumero",
+    header: "Código de número",
+    cell: ({ row }) => (
+      <div className="text-center">{row.getValue("codNumero")}</div>
+    ),
+  },
+  {
+    accessorKey: "campaña",
+    header: "Campaña",
+    cell: ({ row }) => (
+      <div className="text-center">{row.getValue("campaña")}</div>
     ),
   },
   {
@@ -78,44 +106,79 @@ export const columnsLote = (
   },
   {
     accessorKey: "numSemana",
-    header: "# Semana",
+    header: "Número de semana",
     cell: ({ row }) => (
       <div className="text-center">{row.getValue("numSemana")}</div>
     ),
   },
   {
-    accessorKey: "ordenVolc",
-    header: "Orden de Volcado",
+    accessorKey: "ordenVolcado",
+    header: "Orden de volcado",
     cell: ({ row }) => (
-      <div className="text-center">{row.getValue("ordenVolc")}</div>
+      <div className="text-center">{row.getValue("ordenVolcado")}</div>
     ),
   },
   {
-    accessorKey: "fechaRecep",
+    accessorKey: "fechaRecepcion",
     header: "Fecha de recepción",
     cell: ({ row }) => (
-      <div className="text-center">{row.getValue("fechaRecep")}</div>
+      <div className="text-center">{row.getValue("fechaRecepcion")}</div>
     ),
   },
   {
-    accessorKey: "guiaProd",
-    header: "Guía Productor",
+    accessorKey: "fechaGuia",
+    header: "Fecha de guía",
     cell: ({ row }) => (
-      <div className="text-center">{row.getValue("guiaProd")}</div>
+      <div className="text-center">{row.getValue("fechaGuia")}</div>
     ),
   },
   {
-    accessorKey: "prodProv",
+    accessorKey: "guiaProductor",
+    header: "Guia productor",
+    cell: ({ row }) => (
+      <div className="text-center">{row.getValue("guiaProductor")}</div>
+    ),
+  },
+  {
+    accessorKey: "guiaSenasa",
+    header: "Guia SENASA",
+    cell: ({ row }) => (
+      <div className="text-center">{row.getValue("guiaSenasa")}</div>
+    ),
+  },
+  {
+    accessorKey: "guiaTransportista",
+    header: "Guia transportista",
+    cell: ({ row }) => (
+      <div className="text-center">{row.getValue("guiaSenasa")}</div>
+    ),
+  },
+  {
+    accessorKey: "glosa",
+    header: "Glosa",
+    cell: ({ row }) => (
+      <div className="text-center">{row.getValue("glosa")}</div>
+    ),
+  },
+  {
+    accessorKey: "productorProveedor",
     header: "Productor-Proveedor",
     cell: ({ row }) => (
-      <div className="text-center">{row.getValue("prodProv")}</div>
+      <div className="text-center">{row.getValue("productorProveedor")}</div>
     ),
   },
   {
-    accessorKey: "codLote",
-    header: "Codigo de Lote",
+    accessorKey: "codigo",
+    header: "Código",
     cell: ({ row }) => (
-      <div className="text-center">{row.getValue("codLote")}</div>
+      <div className="text-center">{row.getValue("codigo")}</div>
+    ),
+  },
+  {
+    accessorKey: "numIngreso",
+    header: "Número de ingreso",
+    cell: ({ row }) => (
+      <div className="text-center">{row.getValue("numIngreso")}</div>
     ),
   },
   {
@@ -132,16 +195,23 @@ export const columnsLote = (
   },
   {
     accessorKey: "cantJabas",
-    header: "Cantidad de Jabas",
+    header: "Cantidad de jabas",
     cell: ({ row }) => (
       <div className="text-center">{row.getValue("cantJabas")}</div>
     ),
   },
   {
-    accessorKey: "pesoDesc",
+    accessorKey: "pesoDescuento",
     header: "Peso descuento",
     cell: ({ row }) => (
-      <div className="text-center">{row.getValue("pesoDesc")}</div>
+      <div className="text-center">{row.getValue("pesoDescuento")}</div>
+    ),
+  },
+  {
+    accessorKey: "pesoGuia",
+    header: "Peso según Guía",
+    cell: ({ row }) => (
+      <div className="text-center">{row.getValue("pesoGuia")}</div>
     ),
   },
   {
@@ -152,23 +222,51 @@ export const columnsLote = (
     ),
   },
   {
-    accessorKey: "empTrans",
-    header: "Empresa de Transporte",
+    accessorKey: "responsable",
+    header: "Responsable",
     cell: ({ row }) => (
-      <div className="text-center">{row.getValue("empTrans")}</div>
+      <div className="text-center">{row.getValue("resposanble")}</div>
     ),
   },
   {
-    accessorKey: "licCond",
-    header: "Licencia de Conducir",
+    accessorKey: "empTransportes",
+    header: "Empresa de transportes",
     cell: ({ row }) => (
-      <div className="text-center">{row.getValue("licCond")}</div>
+      <div className="text-center">{row.getValue("empTransportes")}</div>
+    ),
+  },
+  {
+    accessorKey: "chofer",
+    header: "Chofer",
+    cell: ({ row }) => (
+      <div className="text-center">{row.getValue("chofer")}</div>
+    ),
+  },
+  {
+    accessorKey: "licConducir",
+    header: "Licencia de conducir",
+    cell: ({ row }) => (
+      <div className="text-center">{row.getValue("licConducir")}</div>
     ),
   },
   {
     accessorKey: "obs",
     header: "Observaciones",
     cell: ({ row }) => <div className="text-center">{row.getValue("obs")}</div>,
+  },
+  {
+    accessorKey: "descargado",
+    header: "Operario de descarga",
+    cell: ({ row }) => (
+      <div className="text-center">{row.getValue("descargado")}</div>
+    ),
+  },
+  {
+    accessorKey: "detServicio",
+    header: "Detalle servicio",
+    cell: ({ row }) => (
+      <div className="text-center">{row.getValue("detServicio")}</div>
+    ),
   },
   {
     id: "actions",
@@ -184,7 +282,7 @@ export const columnsLote = (
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Opciones</DropdownMenuLabel>
-            
+
             <DropdownMenuItem onClick={() => onConfirmar(lote.id)}>
               {lote.estado === "Confirmado" ? "No confirmar" : "Confirmar"}
             </DropdownMenuItem>
