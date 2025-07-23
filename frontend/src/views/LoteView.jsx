@@ -2,60 +2,84 @@ import { DialogDemo } from "@/components/admin/dialogDemo";
 import { DataTable } from "@/components/admin/DataTable";
 import { fields } from "@/components/admin/recepcion/Lote/fieldsLote";
 import { columnsLote } from "@/components/admin/recepcion/Lote/columnsLote";
-import { useEffect, useState } from "react";
-import {
-  actualizarRegistroMP,
-  crearRegistroMP,
-  eliminarRegistroMP,
-  obtenerRegistroMP,
-} from "@/services/registroMPService";
+import { useState } from "react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { confirmarRegistroMP, createRegistroMP, deleteRegistroMP, getRegistroMP, updateRegistroMP } from "@/api/registroMPApi";
 
 export function LoteView() {
-  const [registroEditando, setRegistroEditando] = useState(null);
+
+  const queryCliente = useQueryClient();
+
+  const {
+    isLoading,
+    data: dataLote,
+    isError,
+    error,
+  } = useQuery({
+    queryKey: ["lotes"],
+    queryFn: getRegistroMP,
+  });
+
+  const deleteRegistroMPMutation = useMutation({
+    mutationFn: deleteRegistroMP,
+    onSuccess: () => {
+      queryCliente.invalidateQueries(["lotes"]);
+    },
+  });
+
+  const updateRegistroMPMutation = useMutation({
+    mutationFn: ({ id, datos }) => updateRegistroMP(id, datos),
+    onSuccess: () => {
+      queryCliente.invalidateQueries(["lotes"]);
+    },
+  });
+
+  const addRegistroMPMutation = useMutation({
+    mutationFn: createRegistroMP,
+    onSuccess: () => {
+      queryCliente.invalidateQueries(["lotes"]);
+    },
+  });
+
+  const confirmarRegistroMPMutation = useMutation({
+    mutationFn: confirmarRegistroMP,
+    onSuccess: () => {
+      queryCliente.invalidateQueries(["lotes"]);
+    },
+  });
 
   const [dialogOpen, setDialogOpen] = useState(false);
-
-  const [dataLote, setDataLote] = useState([]);
-  useEffect(() => {
-    obtenerRegistroMP().then(setDataLote);
-  }, []);
+  const [registroEditando, setRegistroEditando] = useState(null);
 
   //Agregar registro
-  const handleAdd = async (nuevoRegistro) => {
-    try {
-      await crearRegistroMP(nuevoRegistro);
-      const actualizados = await obtenerRegistroMP();
-      setDataLote(actualizados);
-      setDialogOpen(false);
-    } catch (error) {
-      console.error("Error al agregar", error);
-    }
+  const handleAdd = (nuevoRegistro) => {
+    addRegistroMPMutation.mutate(nuevoRegistro);
+    setDialogOpen(false);
   };
 
   //Actualizar un registro existente
   const handleUpdate = async (registroActualizado) => {
-    try {
-      await actualizarRegistroMP(registroEditando.id, registroActualizado);
-      const actualizados = await obtenerRegistroMP();
-      setDataLote(actualizados);
-      setRegistroEditando(null);
-      setDialogOpen(false);
-    } catch (error) {
-      console.log("Error al actualizar: ", error);
-    }
+    updateRegistroMPMutation.mutate({
+      id: registroEditando.id,
+      datos: registroActualizado,
+    });
+    setRegistroEditando(null);
+    setDialogOpen(false);
   };
 
   //Eliminar Registro
   const handleEliminar = async (id) => {
-    try {
-      await eliminarRegistroMP(id);
-      //Actualizar la tabla después de eliminar
-      const nuevosDatos = await obtenerRegistroMP();
-      setDataLote(nuevosDatos);
-    } catch (error) {
-      console.log("Error al eliminar registro: ", error);
-    }
+    deleteRegistroMPMutation.mutate(id);
   };
+
+  //Confirmar Registro
+  const handleConfirmar = async (id) => {
+    confirmarRegistroMPMutation.mutate(id);
+  };
+
+  //Renderizado
+  if (isLoading) return <div>Cargando...</div>;
+  if (isError) return <div>Error: {error.message}</div>;
 
   return (
     <>
@@ -75,7 +99,7 @@ export function LoteView() {
       </div>
       <DataTable
         columns={columnsLote(
-          null, //O eliminá este si el archivo permite
+          handleConfirmar,
           handleEliminar,
           setRegistroEditando,
           setDialogOpen

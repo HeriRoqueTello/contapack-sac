@@ -15,7 +15,6 @@ export const obtenerRegistros = async (req: Request, res: Response) => {
 //crear registro -- POST
 export const crearRegistro = async (req: Request, res: Response) => {
   try {
-    console.log("🧾 Datos recibidos:", req.body);
     const nuevo = await RegistroMateriaPrima.create(req.body);
     res.status(201).json(nuevo);
   } catch (error) {
@@ -66,5 +65,30 @@ export const eliminarRegistro = async (req: Request, res: Response) => {
   } catch (error) {
     console.error("Error al eliminar registro: ", error);
     res.status(500).json({ mensaje: "Error interno al eliminar" });
+  }
+};
+
+//confirrmar Registro
+export const confirmarRegitro = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const registro = await RegistroMateriaPrima.findByPk(id);
+    if (!registro) return res.status(404).json({ mensaje: "no encontrado" });
+
+    registro.estado =
+      registro.estado === "Confirmado" ? "No confirmado" : "Confirmado";
+
+    // ----------Alternativa para cambiar el estado-----------
+    // if(registro.estado === "Confirmado") {
+    //   registro.estado = "No confirmado";
+    // } else {
+    //   registro.estado = "Confirmado";
+    // }
+
+    await registro.save();
+    res.status(200).json(registro);
+  } catch (error) {
+    console.error("Error al confirmar rotulo: ", error);
+    res.status(500).json({ mensaje: "Error interno al confirmar" });
   }
 };

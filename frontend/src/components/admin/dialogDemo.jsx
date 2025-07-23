@@ -10,6 +10,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { useEffect } from "react";
+import { DialogDescription } from "@radix-ui/react-dialog";
 
 export function DialogDemo({
   title,
@@ -29,10 +30,12 @@ export function DialogDemo({
   const { reset } = methods;
 
   useEffect(() => {
-    if (open) {
-      reset(initialData || { estado: "No Confirmado" });
+    if (initialData) {
+      reset(initialData);
+    } else {
+      reset({ estado: "No Confirmado" });
     }
-  }, [open, initialData, reset]);
+  }, [initialData, reset]);
 
   const agruparPallets = (pallets) => {
     const izquierda = [],
@@ -79,6 +82,9 @@ export function DialogDemo({
                   <DialogTitle className="text-3xl text-center mb-8">
                     {title}
                   </DialogTitle>
+                  <DialogDescription className="sr-only">
+                    Por favor, completa el formulario a continuación.
+                  </DialogDescription>
                 </DialogHeader>
 
                 <RegInputs fields={fields} />
