@@ -6,9 +6,11 @@ import {
   eliminarRegistro,
   confirmarRegitro,
 } from "../controllers/RegistroMPController";
+import { authenticate } from "../middleware/auth";
 
 const router = Router();
 
+router.use(authenticate)
 router.get("/", obtenerRegistros);
 router.post("/", crearRegistro);
 router.put("/:id", actualizarRegistro);

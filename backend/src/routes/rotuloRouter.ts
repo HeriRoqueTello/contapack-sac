@@ -6,13 +6,15 @@ import {
   eliminarRotulo,
   obtenerRotulo,
 } from "../controllers/rotuloController";
+import { authenticate } from "../middleware/auth";
 
 const router = Router();
 
-router.get("/", obtenerRotulo);
-router.post("/", crearRotulo);
-router.put("/:id", actualizarRotulo);
-router.delete("/:id", eliminarRotulo);
+router.use(authenticate)
+router.get("/rotulo", obtenerRotulo);
+router.post("/rotulo", crearRotulo);
+router.put("/rotulo/:id", actualizarRotulo);
+router.delete("/rotulo/:id", eliminarRotulo);
 
 router.patch("/confirmar/:id", confirmarRotulo);
 

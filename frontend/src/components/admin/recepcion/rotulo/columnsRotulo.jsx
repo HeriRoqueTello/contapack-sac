@@ -65,7 +65,7 @@ export const columnsRotulo = (
   },
   {
     accessorKey: "productorProveedor",
-    header: "Producto/Proveedor",
+    header: "Productor/Proveedor",
     cell: ({ row }) => (
       <div className="text-center">{row.getValue("productorProveedor")}</div>
     ),

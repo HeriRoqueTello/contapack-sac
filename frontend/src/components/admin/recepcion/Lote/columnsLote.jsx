@@ -162,7 +162,7 @@ export const columnsLote = (
   },
   {
     accessorKey: "productorProveedor",
-    header: "Productor-Proveedor",
+    header: "Productor/Proveedor",
     cell: ({ row }) => (
       <div className="text-center">{row.getValue("productorProveedor")}</div>
     ),
