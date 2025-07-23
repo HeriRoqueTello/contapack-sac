@@ -75,8 +75,20 @@ export const confirmarRotulo = async (req: Request, res: Response) => {
     const rotulo = await Rotulo.findByPk(id);
     if (!rotulo) return res.status(404).json({ mensaje: "no encontrado" });
 
-    rotulo.estado = "Confirmado";
+    rotulo.estado =
+      rotulo.estado === "Confirmado" ? "No confirmado" : "Confirmado";
+
+    // ----------Alternativa para cambiar el estado-----------
+    // if(rotulo.estado === "Confirmado") {
+    //   rotulo.estado = "No confirmado";
+    // } else {
+    //   rotulo.estado = "Confirmado";
+    // }
+
     await rotulo.save();
     res.status(200).json(rotulo);
-  } catch (error) {}
+  } catch (error) {
+    console.error("Error al confirmar rotulo: ", error);
+    res.status(500).json({ mensaje: "Error interno al confirmar" });
+  }
 };

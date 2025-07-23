@@ -14,6 +14,13 @@ import Rotulo from "./Rotulo";
 class RegistroMateriaPrima extends Model {
   @AllowNull(false)
   @Column({
+    type: DataType.STRING(25),
+    defaultValue: "No confirmado",
+  })
+  declare estado: string;
+
+  @AllowNull(false)
+  @Column({
     type: DataType.DATE,
   })
   declare horaDescarga: Date;

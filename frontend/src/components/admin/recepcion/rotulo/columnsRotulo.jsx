@@ -107,7 +107,7 @@ export const columnsRotulo = (
   },
   {
     accessorKey: "responsable",
-    header: "Resposanble",
+    header: "Responsable",
     cell: ({ row }) => (
       <div className="text-center">{row.getValue("responsable")}</div>
     ),

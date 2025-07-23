@@ -225,7 +225,7 @@ export const columnsLote = (
     accessorKey: "responsable",
     header: "Responsable",
     cell: ({ row }) => (
-      <div className="text-center">{row.getValue("resposanble")}</div>
+      <div className="text-center">{row.getValue("responsable")}</div>
     ),
   },
   {

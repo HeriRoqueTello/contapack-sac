@@ -31,7 +31,7 @@ app.use(express.json());
 
 app.use("/api/auth", authRouter);
 
-app.use("/api", registroMPRouter);
-app.use("/api", rotuloRouter);
+app.use("/api/registroMP", registroMPRouter);
+app.use("/api/rotulos", rotuloRouter);
 
 export default app;

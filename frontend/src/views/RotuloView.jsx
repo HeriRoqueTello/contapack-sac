@@ -2,86 +2,101 @@ import { DialogDemo } from "@/components/admin/dialogDemo";
 import { DataTable } from "@/components/admin/DataTable";
 import { columnsRotulo } from "@/components/admin/recepcion/rotulo/columnsRotulo";
 import { fields } from "@/components/admin/recepcion/rotulo/fieldsRotulo";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { convertirChequeos, detectarChequeo } from "@/utils/chequeosUtils";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
-  actualizarRotulo,
   confirmarRotulo,
-  crearRotulo,
-  eliminarRotulo,
-  obtenerRotulo,
-} from "@/services/rotuloServices";
-import { obtenerRegistroMP } from "@/services/registroMPService";
+  createRotulo,
+  deleteRotulo,
+  getRotulos,
+  updateRotulo,
+} from "@/api/rotuloApi";
 
 export function RotuloView() {
+  const queryCliente = useQueryClient();
+
+  //Obtener datos con React Query
+  const {
+    isLoading,
+    data: dataRotulo,
+    isError,
+    error,
+  } = useQuery({
+    queryKey: ["rotulos"],
+    queryFn: getRotulos,
+  });
+
+  //Mutaciones
+  const deleteRotuloMutation = useMutation({
+    mutationFn: deleteRotulo,
+    onSuccess: () => {
+      queryCliente.invalidateQueries(["rotulos"]);
+    },
+  });
+
+  const updateRotuloMutation = useMutation({
+    mutationFn: ({ id, datos }) => updateRotulo(id, datos),
+    onSuccess: () => {
+      queryCliente.invalidateQueries(["rotulos"]);
+    },
+  });
+
+  const addRotuloMutation = useMutation({
+    mutationFn: createRotulo,
+    onSuccess: () => {
+      queryCliente.invalidateQueries(["rotulos"]);
+    },
+  });
+
+  const confirmarRotuloMutation = useMutation({
+    mutationFn: confirmarRotulo,
+    onSuccess: () => {
+      queryCliente.invalidateQueries(["rotulos"]);
+    },
+  });
+
+  //Estados para el diálogo
+  const [dialogOpen, setDialogOpen] = useState(false);
   const [rotuloEditando, setRotuloEditando] = useState(null);
 
-  const [dialogOpen, setDialogOpen] = useState(false);
+  //Agregar chequeos de rotulo
+  const handleAdd = (nuevoRotulo) => {
+    const chequeoTransformado = convertirChequeos(nuevoRotulo.chequeos);
+    const datosFinales = { ...nuevoRotulo, ...chequeoTransformado };
+    delete datosFinales.chequeos;
 
-  const [dataRotulo, setDataRotulo] = useState([]);
-  useEffect(() => {
-    obtenerRotulo().then(setDataRotulo);
-  }, []);
-
-  const [registrosMP, setRegistrosMP] = useState([]);
-  useEffect(() => {
-    obtenerRegistroMP().then(setRegistrosMP);
-  }, []);
-
-  //Agregar rotulo
-  const handleAdd = async (nuevoRotulo) => {
-    try {
-      const chequeoTransformado = convertirChequeos(nuevoRotulo.chequeos);
-      const datosFinales = { ...nuevoRotulo, ...chequeoTransformado };
-      delete datosFinales.chequeos; //Evitar enviar string al backend
-
-      await crearRotulo(datosFinales);
-      const actualizados = await obtenerRotulo();
-      setDataRotulo(actualizados);
-      setDialogOpen(false);
-    } catch (error) {
-      console.error("Error al agregar", error);
-    }
+    addRotuloMutation.mutate(datosFinales);
+    setDialogOpen(false);
   };
 
-  //Agregar un rotulo existente
-  const handleUpdate = async (rotuloActualizado) => {
-    try {
-      const chequeoTransformado = convertirChequeos(rotuloActualizado.chequeos);
-      const datosFinales = { ...rotuloActualizado, ...chequeoTransformado };
-      delete datosFinales.chequeos; //Evitar enviar string al backend
+  //Actualizar rotulo
+  const handleUpdate = (rotuloActualizado) => {
+    const chequeoTransformado = convertirChequeos(rotuloActualizado.chequeos);
+    const datosFinales = { ...rotuloActualizado, ...chequeoTransformado };
+    delete datosFinales.chequeos;
 
-      await actualizarRotulo(rotuloEditando.id, datosFinales);
-      const actualizados = await obtenerRotulo();
-      setDataRotulo(actualizados);
-      setRotuloEditando(null);
-      setDialogOpen(false);
-    } catch (error) {
-      console.error("Error al actualizar", error);
-    }
+    updateRotuloMutation.mutate({
+      id: rotuloEditando.id,
+      datos: datosFinales,
+    });
+    setRotuloEditando(null);
+    setDialogOpen(false);
   };
 
-  //Eliminar Rotulo
-  const handleEliminar = async (id) => {
-    try {
-      await eliminarRotulo(id);
-      //Actualizar la tabla después de eliminar
-      const nuevosDatos = await obtenerRotulo();
-      setDataRotulo(nuevosDatos);
-    } catch (error) {
-      console.log("Error al eliminar rotulo: ", error);
-    }
+  //Eliminar rotulo
+  const handleEliminar = (id) => {
+    deleteRotuloMutation.mutate(id);
   };
 
-  const handleConfirmar = async (id) => {
-    try {
-      await confirmarRotulo(id);
-      const actualizados = await obtenerRotulo();
-      setDataRotulo(actualizados);
-    } catch (error) {
-      console.error("Error al confirmar: ", error);
-    }
+  // Confirmar rotulo
+  const handleConfirmar = (id) => {
+    confirmarRotuloMutation.mutate(id);
   };
+
+  //Renderizado
+  if (isLoading) return <div>Cargando...</div>;
+  if (isError) return <div>Error: {error.message}</div>;
 
   return (
     <>
@@ -104,14 +119,13 @@ export function RotuloView() {
         />
       </div>
       <DataTable
-        dynamicFields={{ registros: registrosMP }}
         columns={columnsRotulo(
           handleConfirmar,
           handleEliminar,
           setRotuloEditando,
           setDialogOpen
         )}
-        data={dataRotulo}
+        data={dataRotulo} //
         filterColumnKey="id"
         placeholder="Buscar por ID"
       />
