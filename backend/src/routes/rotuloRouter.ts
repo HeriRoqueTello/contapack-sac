@@ -6,9 +6,11 @@ import {
   eliminarRotulo,
   obtenerRotulo,
 } from "../controllers/rotuloController";
+import { authenticate } from "../middleware/auth";
 
 const router = Router();
 
+router.use(authenticate)
 router.get("/", obtenerRotulo);
 router.post("/", crearRotulo);
 router.put("/:id", actualizarRotulo);
