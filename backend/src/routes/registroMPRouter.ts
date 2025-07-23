@@ -5,9 +5,11 @@ import {
   actualizarRegistro,
   eliminarRegistro,
 } from "../controllers/RegistroMPController";
+import { authenticate } from "../middleware/auth";
 
 const router = Router();
 
+router.use(authenticate)
 router.get("/registro-materia-prima", obtenerRegistros);
 router.post("/registro-materia-prima", crearRegistro);
 router.put("/registro-materia-prima/:id", actualizarRegistro);
