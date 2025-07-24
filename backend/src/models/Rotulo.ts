@@ -9,6 +9,10 @@ import {
 } from "sequelize-typescript";
 import RegistroMateriaPrima from "./RegistroMateriaPrima";
 
+import Exportador from "./Exportador";
+import Producto from "./Producto";
+import Productor from "./Productor";
+
 @Table({
   tableName: "rotulo",
 })
@@ -112,9 +116,32 @@ class Rotulo extends Model {
 
   @BelongsTo(() => RegistroMateriaPrima)
   declare RegistroMateriaPrima: RegistroMateriaPrima;
-  // Productor
-  // Exportador
+
+
   // Producto
+  @ForeignKey(() => Producto)
+  declare productoId: number;
+  
+  @BelongsTo(() => Producto)
+  declare Producto: Producto;
+
+
+  // Exportador
+  @ForeignKey(() => Exportador)
+  declare exportadorId: number;
+
+  @BelongsTo(() => Exportador)
+  declare Exportador: Exportador;
+
+
+  // Productor
+  @ForeignKey(() => Productor)
+  declare productorId: number;
+
+  @BelongsTo(() => Productor)
+  declare Productor: Productor;
+
+
   // Lote
 }
 export default Rotulo;

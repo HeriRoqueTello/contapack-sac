@@ -1,10 +1,16 @@
+import { useState, useEffect } from "react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+
+// Componentes
 import { DialogDemo } from "@/components/admin/dialogDemo";
 import { DataTable } from "@/components/admin/DataTable";
 import { columnsRotulo } from "@/components/admin/recepcion/rotulo/columnsRotulo";
 import { fields } from "@/components/admin/recepcion/rotulo/fieldsRotulo";
-import { useState } from "react";
+
+// Utilidades
 import { convertirChequeos, detectarChequeo } from "@/utils/chequeosUtils";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+
+// API
 import {
   confirmarRotulo,
   createRotulo,
@@ -12,11 +18,28 @@ import {
   getRotulos,
   updateRotulo,
 } from "@/api/rotuloApi";
+import { fetchDynamicFields } from "@/api/dynamicFieldsApi"; // Importa los datos dinámicos
 
 export function RotuloView() {
   const queryCliente = useQueryClient();
 
-  //Obtener datos con React Query
+  // Estado para datos dinámicos (como productores)
+  const [dynamicFields, setDynamicFields] = useState({});
+
+  // Estado para controlar el diálogo
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [rotuloEditando, setRotuloEditando] = useState(null);
+
+  // Cargar datos dinámicos al montar el componente
+  useEffect(() => {
+    const cargarCampos = async () => {
+      const data = await fetchDynamicFields(); // trae productores desde el backend
+      setDynamicFields(data); // guarda en el estado
+    };
+    cargarCampos();
+  }, []);
+
+  // Obtener todos los rotulos
   const {
     isLoading,
     data: dataRotulo,
@@ -27,7 +50,7 @@ export function RotuloView() {
     queryFn: getRotulos,
   });
 
-  //Mutaciones
+  // Mutaciones
   const deleteRotuloMutation = useMutation({
     mutationFn: deleteRotulo,
     onSuccess: () => {
@@ -56,11 +79,7 @@ export function RotuloView() {
     },
   });
 
-  //Estados para el diálogo
-  const [dialogOpen, setDialogOpen] = useState(false);
-  const [rotuloEditando, setRotuloEditando] = useState(null);
-
-  //Agregar chequeos de rotulo
+  // Agregar nuevo rotulo
   const handleAdd = (nuevoRotulo) => {
     const chequeoTransformado = convertirChequeos(nuevoRotulo.chequeos);
     const datosFinales = { ...nuevoRotulo, ...chequeoTransformado };
@@ -70,7 +89,7 @@ export function RotuloView() {
     setDialogOpen(false);
   };
 
-  //Actualizar rotulo
+  // Actualizar rotulo existente
   const handleUpdate = (rotuloActualizado) => {
     const chequeoTransformado = convertirChequeos(rotuloActualizado.chequeos);
     const datosFinales = { ...rotuloActualizado, ...chequeoTransformado };
@@ -84,7 +103,7 @@ export function RotuloView() {
     setDialogOpen(false);
   };
 
-  //Eliminar rotulo
+  // Eliminar rotulo
   const handleEliminar = (id) => {
     deleteRotuloMutation.mutate(id);
   };
@@ -94,7 +113,7 @@ export function RotuloView() {
     confirmarRotuloMutation.mutate(id);
   };
 
-  //Renderizado
+  // Renderizado condicional
   if (isLoading) return <div>Cargando...</div>;
   if (isError) return <div>Error: {error.message}</div>;
 
@@ -102,7 +121,8 @@ export function RotuloView() {
     <>
       <div className="text-end">
         <DialogDemo
-          fields={fields}
+          fields={fields} // campos del formulario
+          dynamic={dynamicFields} // datos dinámicos como productores
           title="Rotulo"
           onSubmit={rotuloEditando ? handleUpdate : handleAdd}
           initialData={
@@ -118,6 +138,7 @@ export function RotuloView() {
           setOpen={setDialogOpen}
         />
       </div>
+
       <DataTable
         columns={columnsRotulo(
           handleConfirmar,
@@ -125,7 +146,7 @@ export function RotuloView() {
           setRotuloEditando,
           setDialogOpen
         )}
-        data={dataRotulo} //
+        data={dataRotulo}
         filterColumnKey="id"
         placeholder="Buscar por ID"
       />

@@ -5,8 +5,9 @@ import { RadioGroupInput } from "./RadioGroupInput";
 import { StandardInput } from "./StandardInput";
 import { PalletFieldsGroup } from "./PalletFieldsGroup";
 
-export const RegInputs = ({ fields }) => {
+export const RegInputs = ({ fields, dynamic }) => {
   const {
+    register,
     formState: { errors },
   } = useFormContext();
 
@@ -96,6 +97,47 @@ export const RegInputs = ({ fields }) => {
                     </button>
                   </div>
                 </div>
+              </div>
+            );
+          }
+          // Campo tipo select
+          if (field.type === "select") {
+            const options = field.options({ dynamic });
+
+            return (
+              <div key={field.name} className="flex flex-col gap-2 mb-4 w-full">
+                <label
+                  htmlFor={field.name}
+                  className="text-sm font-medium text-gray-700 mb-1"
+                >
+                  {field.label}
+                  {field.required && (
+                    <span className="text-red-500 ml-1">*</span>
+                  )}
+                </label>
+
+                <select
+                  {...register(field.name, {
+                    required: field.required
+                      ? "Este campo es obligatorio"
+                      : false,
+                  })}
+                  id={field.name}
+                  className="border border-green-700 p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-green-900"
+                >
+                  <option value="">Seleccione una opción</option>
+                  {options.map((opt) => (
+                    <option key={opt.value} value={opt.value}>
+                      {opt.label}
+                    </option>
+                  ))}
+                </select>
+
+                {errors[field.name] && (
+                  <span className="text-sm text-red-500 mt-1">
+                    {errors[field.name].message}
+                  </span>
+                )}
               </div>
             );
           }

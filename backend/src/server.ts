@@ -7,11 +7,18 @@ import authRouter from "./routes/authRouter";
 import { corsConfig } from "./config/cors";
 import registroMPRouter from "./routes/registroMPRouter";
 import rotuloRouter from "./routes/rotuloRouter";
+import productorRouter from "./routes/productorRouter";
+import exportadorRouter from "./routes/exportadorRouter";
+import variedadRouter from "./routes/variedadRouter";
+import categoriaRouter from "./routes/categoriaRouter";
+import calibreRouter from "./routes/calibreRouter";
+import productoRouter from "./routes/productoRouter";
 
 async function connectDB() {
   try {
     await db.authenticate();
-    db.sync({alter: true});
+    8;
+    db.sync({});
     console.log(colors.blue.bold("Conexion existosa a la BD"));
   } catch (error) {
     // console.log(error)
@@ -33,5 +40,11 @@ app.use("/api/auth", authRouter);
 
 app.use("/api/registroMP", registroMPRouter);
 app.use("/api/rotulos", rotuloRouter);
+app.use("/api/productores", productorRouter);
+app.use("/api/exportadores", exportadorRouter);
+app.use("/api/variedades", variedadRouter);
+app.use("/api/categorias", categoriaRouter);
+app.use("/api/calibres", calibreRouter);
+app.use("/api/productos", productoRouter);
 
 export default app;

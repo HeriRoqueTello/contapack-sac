@@ -1,10 +1,35 @@
 import { Request, Response } from "express";
 import Rotulo from "../models/Rotulo";
+import Productor from "../models/Productor";
+import Exportador from "../models/Exportador";
+import Variedad from "../models/Variedad";
+import Producto from "../models/Producto";
 
 //listar rotulos -- GET
 export const obtenerRotulo = async (req: Request, res: Response) => {
   try {
-    const rotulos = await Rotulo.findAll();
+    const rotulos = await Rotulo.findAll({
+      include: [
+        {
+          model: Productor,
+          attributes: ["nombre"],
+        },
+        {
+          model: Exportador,
+          attributes: ["nombreEmpresa"],
+        },
+        {
+          model: Producto,
+          attributes: ["nombre"],
+          include: [
+            {
+              model: Variedad,
+              attributes: ["nombre"],
+            },
+          ],
+        },
+      ],
+    });
     res.status(200).json(rotulos);
   } catch (error) {
     console.error("Error al obtener rotulos: ", error);
