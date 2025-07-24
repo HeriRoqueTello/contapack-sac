@@ -37,7 +37,8 @@ export const actualizarRegistro = async (req: Request, res: Response) => {
 
     // No encontró el registro
     if (!registroFinal) {
-      return res.status(404).json({ mensaje: "Registro no encontrado" });
+      res.status(404).json({ mensaje: "Registro no encontrado" });
+      return
     }
 
     // Encontro el registro
@@ -57,7 +58,8 @@ export const eliminarRegistro = async (req: Request, res: Response) => {
     // destroy solo usa 0 y 1
     // se usa 0 porque no encontró el registro
     if (eliminado === 0) {
-      return res.status(404).json({ mensaje: "Registro no encontrado" });
+      res.status(404).json({ mensaje: "Registro no encontrado" });
+      return
     }
 
     // y si no vale 0 es porque encontro y eliminó el registro
@@ -73,7 +75,10 @@ export const confirmarRegitro = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     const registro = await RegistroMateriaPrima.findByPk(id);
-    if (!registro) return res.status(404).json({ mensaje: "no encontrado" });
+    if (!registro) {
+      res.status(404).json({ mensaje: "no encontrado" });
+      return
+    }
 
     registro.estado =
       registro.estado === "Confirmado" ? "No confirmado" : "Confirmado";

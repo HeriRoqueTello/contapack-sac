@@ -37,7 +37,8 @@ export const actualizarRotulo = async (req: Request, res: Response) => {
 
     //No encontró el rotulo
     if (!rotuloFinal) {
-      return res.status(404).json({ mensaje: "Registro no encontrado" });
+      res.status(404).json({ mensaje: "Registro no encontrado" });
+      return
     }
 
     //Encontro el rotulo
@@ -57,7 +58,8 @@ export const eliminarRotulo = async (req: Request, res: Response) => {
     // destroy solo usa 0 y 1
     // se usa 0 porque no encontró el rotulo
     if (eliminado === 0) {
-      return res.status(404).json({ mensaje: "Registro no encontrado" });
+      res.status(404).json({ mensaje: "Registro no encontrado" });
+      return
     }
 
     // y si no vale 0 es porque encontro y eliminó el rotulo
@@ -73,7 +75,10 @@ export const confirmarRotulo = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     const rotulo = await Rotulo.findByPk(id);
-    if (!rotulo) return res.status(404).json({ mensaje: "no encontrado" });
+    if (!rotulo) {
+      res.status(404).json({ mensaje: "no encontrado" });
+      return
+    }
 
     rotulo.estado =
       rotulo.estado === "Confirmado" ? "No confirmado" : "Confirmado";
