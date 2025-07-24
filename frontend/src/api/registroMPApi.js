@@ -1,5 +1,6 @@
 import api from "@/config/axios";
 
+
 export const getRegistroMP = async () => {
   const res = await api.get("/registroMP");
   return res.data;
