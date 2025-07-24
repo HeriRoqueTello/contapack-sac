@@ -2,9 +2,6 @@ import { useFormContext } from "react-hook-form";
 
 export const StandardInput = ({ field }) => {
   const { register } = useFormContext();
-
-  const getToday = () => new Date().toISOString().split("T")[0];
-
   return (
     <div className="flex flex-col gap-2 mb-4 w-full">
       <label
@@ -20,13 +17,6 @@ export const StandardInput = ({ field }) => {
         })}
         type={field.type}
         id={field.name}
-        defaultValue={
-          field.name === "fecha"
-            ? getToday()
-            : field.type === "checkbox"
-            ? undefined
-            : ""
-        }
         className={`${
           field.type === "checkbox" ? "w-4 h-4 mt-2" : "border p-2"
         } ${

@@ -64,10 +64,12 @@ export const columnsRotulo = (
     ),
   },
   {
-    accessorKey: "productorProveedor",
+    accessorKey: "Productor.nombre", //accede al nombre dentro del objeto Productor
     header: "Productor/Proveedor",
     cell: ({ row }) => (
-      <div className="text-center">{row.getValue("productorProveedor")}</div>
+      <div className="text-center">
+        {row.original.Productor?.nombre || "Sin productor"}
+      </div>
     ),
   },
   {
@@ -78,17 +80,21 @@ export const columnsRotulo = (
     ),
   },
   {
-    accessorKey: "producto",
+    accessorKey: "Producto.name",
     header: "Producto",
     cell: ({ row }) => (
-      <div className="text-center">{row.getValue("producto")}</div>
+      <div className="text-center">
+        {row.original.Producto?.nombre || "Sin producto"}
+      </div>
     ),
   },
   {
-    accessorKey: "variedad",
+    accessorKey: "Producto.Variedad.nombre",
     header: "Variedad",
     cell: ({ row }) => (
-      <div className="text-center">{row.getValue("variedad")}</div>
+      <div className="text-center">
+        {row.original.Producto?.Variedad?.nombre || "Sin variedad"}
+      </div>
     ),
   },
   {
@@ -99,10 +105,12 @@ export const columnsRotulo = (
     ),
   },
   {
-    accessorKey: "exportador",
+    accessorKey: "Exportador.nombreEmpresa",
     header: "Exportador",
     cell: ({ row }) => (
-      <div className="text-center">{row.getValue("exportador")}</div>
+      <div className="text-center">
+        {row.original.Exportador?.nombreEmpresa || "Sin exportador"}
+      </div>
     ),
   },
   {

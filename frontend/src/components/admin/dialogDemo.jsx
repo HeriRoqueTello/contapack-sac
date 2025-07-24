@@ -9,31 +9,42 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { useEffect } from "react";
+// import { useEffect } from "react";
 import { DialogDescription } from "@radix-ui/react-dialog";
+import { useEffect } from "react";
 
 export function DialogDemo({
   title,
   fields,
+  dynamic,
   onSubmit,
   open,
   setOpen,
   initialData,
   onClose,
 }) {
-  const methods = useForm({
-    defaultValues: {
-      estado: "No Confirmado",
-    },
-  });
 
-  const { reset } = methods;
+  const formatDate = (isoString) => {
+    if (!isoString) return "";
+    return isoString.split("T")[0]; // "YYYY-MM-DD"
+  };
+
+  const methods = useForm();
+  const { reset} = methods;
 
   useEffect(() => {
     if (initialData) {
-      reset(initialData);
+      reset({
+        ...initialData,
+        fecha: formatDate(initialData.fecha),
+        fechaProceso: formatDate(initialData.fechaProceso),
+      });
     } else {
-      reset({ estado: "No Confirmado" });
+      reset({
+        estado: "No Confirmado",
+        fecha: formatDate(new Date().toISOString()),
+        fechaProceso: "",
+      });
     }
   }, [initialData, reset]);
 
@@ -87,7 +98,7 @@ export function DialogDemo({
                   </DialogDescription>
                 </DialogHeader>
 
-                <RegInputs fields={fields} />
+                <RegInputs fields={fields} dynamic={dynamic} />
 
                 <DialogFooter className="mt-8 flex justify-end gap-4">
                   <Button
