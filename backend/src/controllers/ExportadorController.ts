@@ -3,7 +3,7 @@ import Exportador from "../models/Exportador";
 export const obtenerExportadores = async (req, res) => {
   try {
     const exportadores = await Exportador.findAll({
-      attributes: ["id", "nombreEmpresa"],
+      attributes: ["id", "nombreEmpresa", "codigo"],
     });
     res.status(200).json(exportadores);
   } catch (error) {
