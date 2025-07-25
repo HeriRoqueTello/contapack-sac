@@ -89,13 +89,13 @@ export function DataTable({ data, columns, filterColumnKey = "id", placeholder =
         </DropdownMenu>
       </div>
 
-      <div className="rounded-md border">
+      <div className="rounded-md border ">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => (
-                  <TableHead key={header.id} className="text-center">
+                  <TableHead key={header.id} className="text-center bg-green-800 text-white">
                     {header.isPlaceholder
                       ? null
                       : flexRender(
