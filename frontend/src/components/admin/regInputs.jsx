@@ -102,8 +102,12 @@ export const RegInputs = ({ fields, dynamic }) => {
           }
           // Campo tipo select
           if (field.type === "select") {
-            const options = field.options({ dynamic });
-
+            const options =
+              typeof field.options === "function"
+                ? field.options({ dynamic })
+                : Array.isArray(field.options)
+                ? field.options
+                : [];
             return (
               <div key={field.name} className="flex flex-col gap-2 mb-4 w-full">
                 <label
