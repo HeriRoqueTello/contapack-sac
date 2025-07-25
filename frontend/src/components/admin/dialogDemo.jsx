@@ -24,10 +24,26 @@ export function DialogDemo({
   onClose,
 }) {
 
+  //Para los campos solo con fecha
   const formatDate = (isoString) => {
     if (!isoString) return "";
-    return isoString.split("T")[0]; // "YYYY-MM-DD"
-  };
+      return isoString.split("T")[0]; // "YYYY-MM-DD"
+  }; 
+
+  //para los campos de fecha con hora
+  const formatDateTimeLocal = (isoString) => {
+  if (!isoString) return "";
+  const date = new Date(isoString);
+  const pad = (n) => n.toString().padStart(2, "0");
+
+  const yyyy = date.getFullYear();
+  const mm = pad(date.getMonth() + 1);
+  const dd = pad(date.getDate());
+  const hh = pad(date.getHours());
+  const min = pad(date.getMinutes());
+
+  return `${yyyy}-${mm}-${dd}T${hh}:${min}`;
+};
 
   const methods = useForm();
   const { reset} = methods;
@@ -38,6 +54,8 @@ export function DialogDemo({
         ...initialData,
         fecha: formatDate(initialData.fecha),
         fechaProceso: formatDate(initialData.fechaProceso),
+        fechaGuia: formatDate(initialData.fechaGuia),
+        horaDescarga: formatDateTimeLocal(initialData.horaDescarga),
       });
     } else {
       reset({
@@ -98,7 +116,7 @@ export function DialogDemo({
                   </DialogDescription>
                 </DialogHeader>
 
-                <RegInputs fields={fields} dynamic={dynamic} />
+                <RegInputs fields={fields} dynamic={dynamic}/>
 
                 <DialogFooter className="mt-8 flex justify-end gap-4">
                   <Button

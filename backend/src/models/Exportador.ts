@@ -18,6 +18,12 @@ class Exportador extends Model {
   })
   declare nombreEmpresa: string;
 
+  @AllowNull(false)
+  @Column({
+    type: DataType.STRING(3),
+  })
+  declare codigo: string; 
+  
   @HasMany(() => Rotulo)
   declare rotulos: Rotulo[];
 }

@@ -26,6 +26,12 @@ class Productor extends Model {
 
   @AllowNull(false)
   @Column({
+    type: DataType.STRING(200),
+  })
+  declare lugReferencia: string;
+
+  @AllowNull(false)
+  @Column({
     type: DataType.STRING(4),
   })
   declare codigo: string;
