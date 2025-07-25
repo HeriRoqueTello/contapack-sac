@@ -13,6 +13,7 @@ import variedadRouter from "./routes/variedadRouter";
 import categoriaRouter from "./routes/categoriaRouter";
 import calibreRouter from "./routes/calibreRouter";
 import productoRouter from "./routes/productoRouter";
+import etiquetaRouter from "./routes/etiquetaRouter";
 
 async function connectDB() {
   try {
@@ -46,5 +47,6 @@ app.use("/api/variedades", variedadRouter);
 app.use("/api/categorias", categoriaRouter);
 app.use("/api/calibres", calibreRouter);
 app.use("/api/productos", productoRouter);
+app.use("/api/etiquetas", etiquetaRouter);
 
 export default app;

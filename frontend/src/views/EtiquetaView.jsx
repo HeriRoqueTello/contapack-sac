@@ -1,56 +1,126 @@
-import { useTableData } from "@/hooks/useTableData";
+import { useState, useEffect } from "react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+
+// Componentes
 import { DialogDemo } from "@/components/admin/dialogDemo";
-import { fields } from "@/components/admin/etiqueta/fieldsEtiqueta";
 import { DataTable } from "@/components/admin/DataTable";
 import { columnsEtiqueta } from "@/components/admin/etiqueta/columnsEtiqueta";
-import { useState } from "react";
+import { fields } from "@/components/admin/etiqueta/fieldsEtiqueta";
+
+// API
+import {
+  confirmarEtiqueta,
+  createEtiqueta,
+  deleteEtiqueta,
+  getEtiquetas,
+  updateEtiqueta,
+} from "@/api/etiquetaApi";
+import { fetchDynamicFields } from "@/api/dynamicFieldsApi";
 
 export function EtiquetaView() {
-  const {
-    data: dataEtiqueta,
-    addRegistro,
-    confirmRegistro,
-    deleteRegistro,
-    actualizarRegistro,
-  } = useTableData("dataEtiqueta", [
-    {
-      id: "1",
-      estado: "Confirmado",
-      exportador: "Heri Roque",
-      codLote: "0101",
-      categoria: "I",
-      calibre: "10",
-      pesoUni: "10 kg",
-      codEmp: "1111",
-      clp: "1234567890",
-      fecha: "03/07/25",
-      trazabilidad: "5121321321321",
-    },
-  ]);
-  const [registroEditando, setRegistroEditando] = useState(null);
+  const queryCliente = useQueryClient();
+
+  const [dynamicFields, setDynamicFields] = useState({});
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [etiquetaEditando, setEtiquetaEditando] = useState(null);
+
+  useEffect(() => {
+    const cargarCampos = async () => {
+      const data = await fetchDynamicFields(); // trae productos y exportadores
+      setDynamicFields(data);
+    };
+    cargarCampos();
+  }, []);
+
+  // Query para obtener todas las etiquetas
+  const {
+    isLoading,
+    data: dataEtiqueta,
+    isError,
+    error,
+  } = useQuery({
+    queryKey: ["etiquetas"],
+    queryFn: getEtiquetas,
+  });
+
+  // Mutaciones
+  const deleteEtiquetaMutation = useMutation({
+    mutationFn: deleteEtiqueta,
+    onSuccess: () => {
+      queryCliente.invalidateQueries(["etiquetas"]);
+    },
+  });
+
+  const updateEtiquetaMutation = useMutation({
+    mutationFn: ({ id, datos }) => updateEtiqueta(id, datos),
+    onSuccess: () => {
+      queryCliente.invalidateQueries(["etiquetas"]);
+    },
+  });
+
+  const addEtiquetaMutation = useMutation({
+    mutationFn: createEtiqueta,
+    onSuccess: () => {
+      queryCliente.invalidateQueries(["etiquetas"]);
+    },
+  });
+
+  const confirmarEtiquetaMutation = useMutation({
+    mutationFn: confirmarEtiqueta,
+    onSuccess: () => {
+      queryCliente.invalidateQueries(["etiquetas"]);
+    },
+  });
+
+  // Handlers
+  const handleAdd = (nuevaEtiqueta) => {
+    addEtiquetaMutation.mutate(nuevaEtiqueta);
+    setDialogOpen(false);
+  };
+
+  const handleUpdate = (etiquetaActualizada) => {
+    updateEtiquetaMutation.mutate({
+      id: etiquetaEditando.id,
+      datos: etiquetaActualizada,
+    });
+    setEtiquetaEditando(null);
+    setDialogOpen(false);
+  };
+
+  const handleEliminar = (id) => {
+    deleteEtiquetaMutation.mutate(id);
+  };
+
+  const handleConfirmar = (id) => {
+    confirmarEtiquetaMutation.mutate(id);
+  };
+
+  if (isLoading) return <div>Cargando...</div>;
+  if (isError) return <div>Error: {error.message}</div>;
 
   return (
     <>
       <div className="text-end">
         <DialogDemo
           fields={fields}
-          title="Registro de Etiqueta"
-          onSubmit={registroEditando ? actualizarRegistro : addRegistro}
-          initialData={registroEditando}
+          dynamic={dynamicFields}
+          title="Etiqueta"
+          onSubmit={etiquetaEditando ? handleUpdate : handleAdd}
+          initialData={etiquetaEditando}
           onClose={() => {
-            setRegistroEditando(null);
+            setEtiquetaEditando(null);
             setDialogOpen(false);
           }}
           open={dialogOpen}
           setOpen={setDialogOpen}
         />
       </div>
+
       <DataTable
         columns={columnsEtiqueta(
-          confirmRegistro,
-          deleteRegistro,
-          setRegistroEditando,
+          handleConfirmar,
+          handleEliminar,
+          setEtiquetaEditando,
           setDialogOpen
         )}
         data={dataEtiqueta}

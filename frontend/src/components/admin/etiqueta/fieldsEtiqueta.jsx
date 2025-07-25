@@ -1,12 +1,59 @@
 export const fields = [
-  { name: "exportador", label: "Exportador", type: "text", required: true },
-  { name: "codLote", label: "Lote", type: "text", required: true },
-  { name: "categoria", label: "Categoría", type: "text", required: true },
-  { name: "calibre", label: "Calibre", type: "text", required: true },
-  { name: "pesoUni", label: "Peso por unidad", type: "text", required: true },
-  { name: "codEmp", label: "Código de empaque", type: "text", required: true },
-  { name: "clp", label: "CLP", type: "text", required: true },
-  { name: "fecha", label: "Fecha", type: "text", required: true },
-  { name: "trazabilidad", label: "Trazabilidad", type: "text", required: true },
-]
+  {
+    name: "estado",
+    label: "Estado",
+    type: "select",
+    required: true,
+    options: [
+      { label: "No Confirmado", value: "No confirmado" },
+      { label: "Confirmado", value: "Confirmado" },
+    ],
+  },
+  {
+    name: "trazabilidad",
+    label: "Trazabilidad",
+    type: "text",
+    required: true,
+  },
+  {
+    name: "productorId",
+    label: "CLP",
+    type: "select",
+    required: true,
+    options: ({ dynamic }) =>
+      dynamic.productores?.map((prod) => ({
+        value: prod.id,    
+        label: prod.clp,   
+      })) || [],
+  },
+
+
+  {
+    name: "productoId",
+    label: "Producto",
+    type: "select",
+    required: true,
+    options: ({ dynamic }) =>
+      Array.isArray(dynamic?.productos)
+        ? dynamic.productos.map((p) => ({
+            label: `${p.nombre} - ${p.Variedad?.nombre || "Sin variedad"}`,
+            value: p.id,
+          }))
+        : [],
+  },
+  {
+    name: "exportadorId",
+    label: "Exportador",
+    type: "select",
+    required: true,
+    options: ({ dynamic }) =>
+      Array.isArray(dynamic?.exportadores)
+        ? dynamic.exportadores.map((e) => ({
+            label: e.nombreEmpresa,
+            value: e.id,
+          }))
+        : [],
+  },
+];
+
 

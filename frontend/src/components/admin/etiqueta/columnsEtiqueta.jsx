@@ -25,21 +25,25 @@ export const columnsEtiqueta = (
   {
     id: "select",
     header: ({ table }) => (
-      <Checkbox
-        checked={
-          table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && "indeterminate")
-        }
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
-      />
+      <div className="flex justify-center items-center">
+        <Checkbox
+          checked={
+            table.getIsAllPageRowsSelected() ||
+            (table.getIsSomePageRowsSelected() && "indeterminate")
+          }
+          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+          aria-label="Select all"
+        />
+      </div>
     ),
     cell: ({ row }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Select row"
-      />
+      <div className="flex justify-center items-center">
+        <Checkbox
+          checked={row.getIsSelected()}
+          onCheckedChange={(value) => row.toggleSelected(!!value)}
+          aria-label="Select row"
+        />
+      </div>
     ),
     enableSorting: false,
     enableHiding: false,
@@ -48,61 +52,7 @@ export const columnsEtiqueta = (
     accessorKey: "estado",
     header: "Estado",
     cell: ({ row }) => (
-      <div className="capitalize text-center">{row.getValue("estado")}</div>
-    ),
-  },
-  {
-    accessorKey: "exportador",
-    header: "Exportador",
-    cell: ({ row }) => (
-      <div className="text-center">{row.getValue("exportador")}</div>
-    ),
-  },
-  {
-    accessorKey: "codLote",
-    header: "Lote",
-    cell: ({ row }) => (
-      <div className="text-center">{row.getValue("codLote")}</div>
-    ),
-  },
-  {
-    accessorKey: "categoria",
-    header: "Categoría",
-    cell: ({ row }) => (
-      <div className="text-center">{row.getValue("categoria")}</div>
-    ),
-  },
-  {
-    accessorKey: "calibre",
-    header: "Calibre",
-    cell: ({ row }) => (
-      <div className="text-center">{row.getValue("calibre")}</div>
-    ),
-  },
-  {
-    accessorKey: "pesoUni",
-    header: "Peso por unidad",
-    cell: ({ row }) => (
-      <div className="text-center">{row.getValue("pesoUni")}</div>
-    ),
-  },
-  {
-    accessorKey: "codEmp",
-    header: "Código de Empaque",
-    cell: ({ row }) => (
-      <div className="text-center">{row.getValue("codEmp")}</div>
-    ),
-  },
-  {
-    accessorKey: "clp",
-    header: "CLP",
-    cell: ({ row }) => <div className="text-center">{row.getValue("clp")}</div>,
-  },
-  {
-    accessorKey: "fecha",
-    header: "Fecha",
-    cell: ({ row }) => (
-      <div className="text-center">{row.getValue("fecha")}</div>
+      <div className="text-center capitalize">{row.getValue("estado")}</div>
     ),
   },
   {
@@ -110,6 +60,36 @@ export const columnsEtiqueta = (
     header: "Trazabilidad",
     cell: ({ row }) => (
       <div className="text-center">{row.getValue("trazabilidad")}</div>
+    ),
+  },
+
+  {
+    accessorKey: "Productor.clp",
+    header: "CLP",
+    cell: ({ row }) => (
+      <div className="text-center">
+        {row.original.Productor?.clp || "Sin CLP"}
+      </div>
+    ),
+  },
+
+
+  {
+    accessorKey: "Producto.nombre",
+    header: "Producto",
+    cell: ({ row }) => (
+      <div className="text-center">
+        {row.original.Producto?.nombre || "Sin producto"}
+      </div>
+    ),
+  },
+  {
+    accessorKey: "Exportador.nombreEmpresa",
+    header: "Exportador",
+    cell: ({ row }) => (
+      <div className="text-center">
+        {row.original.Exportador?.nombreEmpresa || "Sin exportador"}
+      </div>
     ),
   },
   {
@@ -126,7 +106,6 @@ export const columnsEtiqueta = (
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Opciones</DropdownMenuLabel>
-            
             <DropdownMenuItem onClick={() => onConfirmar(etiqueta.id)}>
               {etiqueta.estado === "Confirmado" ? "No confirmar" : "Confirmar"}
             </DropdownMenuItem>
