@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useSignIn } from "@/api/auth/queryLogin";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -10,16 +10,12 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Eye, EyeOff, Lock, Mail } from "lucide-react";
-import { useNavigate } from "react-router";
-import { useMutation } from "@tanstack/react-query";
-import { login } from "@/api/api";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { toast } from "sonner";
-import { isAxiosError } from "axios";
 
 export function LoginView() {
   const [showPassword, setShowPassword] = useState(false);
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   const {
     register,
@@ -29,23 +25,10 @@ export function LoginView() {
     defaultValues: { email: "", password: "" },
   });
 
-  const mutation = useMutation({
-    mutationFn: login,
-    onSuccess: () => {
-      toast.success("Inicio de sesión exitoso");
-      navigate("/admin");
-    },
-    onError: (error) => {
-      if (isAxiosError(error) && error.response) {
-        toast.error(error.message || "Credenciales incorrectas");
-      } else {
-        toast.error(error.message);
-      }
-    },
-  });
+  const login = useSignIn();
 
   const onSubmit = (formData) => {
-    mutation.mutate({ ...formData });
+    login.mutate({ ...formData });
   };
 
   return (
@@ -145,11 +128,9 @@ export function LoginView() {
             <Button
               type="submit"
               className="w-full h-12 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-medium shadow-lg hover:shadow-xl transition-all duration-200"
-              disabled={mutation.isPending}
+              disabled={login.isPending}
             >
-              {mutation.isPending
-                ? "Iniciando sesión..."
-                : "Acceder al Sistema"}
+              {login.isPending ? "Iniciando sesión..." : "Acceder al Sistema"}
             </Button>
           </form>
           {/* Footer */}
