@@ -1,12 +1,16 @@
 import {
   AllowNull,
+  BelongsTo,
   Column,
   DataType,
+  ForeignKey,
   HasMany,
   Model,
   Table,
 } from "sequelize-typescript";
 import Rotulo from "./Rotulo";
+import Productor from "./Productor";
+import Exportador from "./Exportador";
 
 @Table({
   tableName: "registro_materia_prima",
@@ -51,9 +55,27 @@ class RegistroMateriaPrima extends Model {
 
   @AllowNull(false)
   @Column({
+    type: DataType.DATE,
+  })
+  declare fecha: string;
+
+  @AllowNull(false)
+  @Column({
     type: DataType.STRING(25),
   })
   declare glosa: string;
+
+  @AllowNull(false)
+  @Column({
+    type: DataType.STRING(10),
+  })
+  declare codigo: string;
+
+  @AllowNull(false)
+  @Column({
+    type: DataType.INTEGER,
+  })
+  declare numIngreso: number;
 
   @AllowNull(false)
   @Column({
@@ -96,6 +118,19 @@ class RegistroMateriaPrima extends Model {
     type: DataType.STRING(250),
   })
   declare detServicio: string;
+
+  //FOREIGNS KEYS
+  // Productor
+  @ForeignKey(() => Productor)
+  declare productorId: number;
+  @BelongsTo(() => Productor)
+  declare Productor: Productor;
+
+  //Exportador
+  @ForeignKey(() => Exportador)
+  declare exportadorId: number;
+  @BelongsTo(() => Exportador)
+  declare Exportador: Exportador;
 
   @HasMany(() => Rotulo)
   declare rotulos: Rotulo[];

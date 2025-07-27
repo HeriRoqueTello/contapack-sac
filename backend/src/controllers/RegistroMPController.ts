@@ -1,10 +1,17 @@
 import { Request, Response } from "express";
 import RegistroMateriaPrima from "../models/RegistroMateriaPrima";
+import Exportador from "../models/Exportador";
+import Productor from "../models/Productor";
 
 //listar registro -- GET
 export const obtenerRegistros = async (req: Request, res: Response) => {
   try {
-    const registros = await RegistroMateriaPrima.findAll();
+    const registros = await RegistroMateriaPrima.findAll({
+      include: [
+        { model: Productor, attributes: ["id", "nombre"] },
+        { model: Exportador, attributes: ["id", "nombreEmpresa"] },
+      ],
+    });
     res.status(200).json(registros);
   } catch (error) {
     console.log("Error al obtener registros: ", error);
@@ -15,7 +22,27 @@ export const obtenerRegistros = async (req: Request, res: Response) => {
 //crear registro -- POST
 export const crearRegistro = async (req: Request, res: Response) => {
   try {
-    const nuevo = await RegistroMateriaPrima.create(req.body);
+    const { exportadorId, productorId, ...resto } = req.body;
+
+    //Obtener códigos desde las tablas relacionadas
+    const exportador = await Exportador.findByPk(exportadorId);
+    const productor = await Productor.findByPk(productorId);
+
+    if (!exportador || !productor) {
+      return res
+        .status(404)
+        .json({ mensaje: "Exportador o Productor no encontrado" });
+    }
+
+    const codigoGenerado = `${exportador.codigo}${productor.codigo}`;
+
+    //Crear el registro con el código generado
+    const nuevo = await RegistroMateriaPrima.create({
+      ...resto,
+      exportadorId,
+      productorId,
+      codigo: codigoGenerado,
+    });
     res.status(201).json(nuevo);
   } catch (error) {
     console.error("Error al crear registro: ", error);
@@ -38,7 +65,7 @@ export const actualizarRegistro = async (req: Request, res: Response) => {
     // No encontró el registro
     if (!registroFinal) {
       res.status(404).json({ mensaje: "Registro no encontrado" });
-      return
+      return;
     }
 
     // Encontro el registro
@@ -59,7 +86,7 @@ export const eliminarRegistro = async (req: Request, res: Response) => {
     // se usa 0 porque no encontró el registro
     if (eliminado === 0) {
       res.status(404).json({ mensaje: "Registro no encontrado" });
-      return
+      return;
     }
 
     // y si no vale 0 es porque encontro y eliminó el registro
@@ -77,7 +104,7 @@ export const confirmarRegitro = async (req: Request, res: Response) => {
     const registro = await RegistroMateriaPrima.findByPk(id);
     if (!registro) {
       res.status(404).json({ mensaje: "no encontrado" });
-      return
+      return;
     }
 
     registro.estado =

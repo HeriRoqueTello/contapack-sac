@@ -98,10 +98,12 @@ export const columnsLote = (
     ),
   },
   {
-    accessorKey: "exportador",
+    accessorKey: "exportadorId",
     header: "Exportador",
     cell: ({ row }) => (
-      <div className="text-center">{row.getValue("exportador")}</div>
+      <div className="text-center">
+        {row.original.Exportador?.nombreEmpresa || "Sin exportador"}
+      </div>
     ),
   },
   {
@@ -119,10 +121,10 @@ export const columnsLote = (
     ),
   },
   {
-    accessorKey: "fechaRecepcion",
+    accessorKey: "fecha",
     header: "Fecha de recepción",
     cell: ({ row }) => (
-      <div className="text-center">{row.getValue("fechaRecepcion")}</div>
+      <div className="text-center">{row.getValue("fecha")}</div>
     ),
   },
   {
@@ -161,10 +163,12 @@ export const columnsLote = (
     ),
   },
   {
-    accessorKey: "productorProveedor",
+    accessorKey: "Productor.name",
     header: "Productor/Proveedor",
     cell: ({ row }) => (
-      <div className="text-center">{row.getValue("productorProveedor")}</div>
+      <div className="text-center">
+        {row.original.Productor?.nombre || "Sin productor"}
+      </div>
     ),
   },
   {
