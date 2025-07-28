@@ -149,6 +149,7 @@ export function RotuloView() {
         data={dataRotulo}
         filterColumnKey="id"
         placeholder="Buscar por ID"
+        meta={{ rotulos: dataRotulo }} // <-- aquí pasas los rótulos
       />
     </>
   );

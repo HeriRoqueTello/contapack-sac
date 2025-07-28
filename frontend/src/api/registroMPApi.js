@@ -12,7 +12,7 @@ export const createRegistroMP = async (registro) => {
 }
 
 export const updateRegistroMP = async (id, registro) => {
-  const res = await api.put(`/registroMP/${id}`, registro);
+  const res = await api.patch(`/registroMP/${id}`, registro);
   return res.data;
 } 
 

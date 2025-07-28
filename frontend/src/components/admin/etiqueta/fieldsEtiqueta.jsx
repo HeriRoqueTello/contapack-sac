@@ -1,15 +1,5 @@
 export const fields = [
   {
-    name: "estado",
-    label: "Estado",
-    type: "select",
-    required: true,
-    options: [
-      { label: "No Confirmado", value: "No confirmado" },
-      { label: "Confirmado", value: "Confirmado" },
-    ],
-  },
-  {
     name: "trazabilidad",
     label: "Trazabilidad",
     type: "text",
