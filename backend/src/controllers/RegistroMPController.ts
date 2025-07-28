@@ -8,7 +8,7 @@ export const obtenerRegistros = async (req: Request, res: Response) => {
   try {
     const registros = await RegistroMateriaPrima.findAll({
       include: [
-        { model: Productor, attributes: ["id", "nombre"] },
+        { model: Productor, attributes: ["id", "nombre", "clp"] },
         { model: Exportador, attributes: ["id", "nombreEmpresa"] },
       ],
     });

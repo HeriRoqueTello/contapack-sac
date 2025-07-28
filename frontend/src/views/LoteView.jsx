@@ -12,35 +12,43 @@ import {
   updateRegistroMP,
 } from "@/api/registroMPApi";
 import { fetchDynamicFields } from "@/api/dynamicFieldsApi";
+import { getRotulos } from "@/api/rotuloApi";
 
 export function LoteView() {
   const queryCliente = useQueryClient();
-
-  // Estado para datos dinámicos
   const [dynamicFields, setDynamicFields] = useState({});
-
-  // Estado para controlar el diálogo
   const [dialogOpen, setDialogOpen] = useState(false);
   const [registroEditando, setRegistroEditando] = useState(null);
 
-  // Cargar datos dinámicos al montar el componente
+  // Cargar datos dinámicos
   useEffect(() => {
     const cargarCampos = async () => {
-      const data = await fetchDynamicFields(); // Trae datos dinámicos desde el backend
-      setDynamicFields(data); // Guarda en el estado
+      const data = await fetchDynamicFields();
+      setDynamicFields(data);
     };
     cargarCampos();
   }, []);
 
-  // Obtener todos los registros de MP
+  // Query para lotes
   const {
-    isLoading,
+    isLoading: isLoadingLote,
     data: dataLote,
-    isError,
-    error,
+    isError: isErrorLote,
+    error: errorLote,
   } = useQuery({
     queryKey: ["lotes"],
     queryFn: getRegistroMP,
+  });
+
+  // Query para rótulos
+  const {
+    isLoading: isLoadingRotulo,
+    data: dataRotulo,
+    isError: isErrorRotulo,
+    error: errorRotulo,
+  } = useQuery({
+    queryKey: ["rotulos"],
+    queryFn: getRotulos,
   });
 
   // Mutaciones
@@ -72,83 +80,121 @@ export function LoteView() {
     },
   });
 
+  // Calcular semana ISO
+  function getISOWeekNumber(dateString) {
+    const date = new Date(dateString);
+    const dayNr = (date.getDay() + 6) % 7;
+    date.setDate(date.getDate() - dayNr + 3);
+    const firstThursday = new Date(date.getFullYear(), 0, 4);
+    const diff = date - firstThursday;
+    return 1 + Math.round(diff / (7 * 24 * 60 * 60 * 1000));
+  }
+
   // Agregar registro
   const handleAdd = (nuevoRegistro) => {
-    const productor = dynamicFields.productores.find(
-      (p) => p.id === nuevoRegistro.productorId
+    const productor = dynamicFields.productores?.find(
+      (p) => p.id === Number(nuevoRegistro.productorId)
     );
-    const exportador = dynamicFields.exportadores.find(
-      (e) => e.id === nuevoRegistro.exportadorId
+    const exportador = dynamicFields.exportadores?.find(
+      (e) => e.id === Number(nuevoRegistro.exportadorId)
     );
-    if (productor && exportador) {
-      nuevoRegistro.codigo = `${productor.codigo}${exportador.codigo}`;
+    const codigoProductor = productor?.codigo ?? "";
+    const codigoExportador = exportador?.codigo ?? "";
+
+    if (!codigoProductor || !codigoExportador) {
+      alert("Debes seleccionar un productor y un exportador válidos.");
+      return;
     }
+
+    nuevoRegistro.codigo = `${codigoProductor}${codigoExportador}`;
+    nuevoRegistro.codNumero = `${nuevoRegistro.codigo}-${nuevoRegistro.numIngreso}`;
+    nuevoRegistro.clp = productor?.clp ?? "";
+    nuevoRegistro.numSemana = getISOWeekNumber(nuevoRegistro.fecha);
+    nuevoRegistro.campaña = new Date(nuevoRegistro.fecha).getFullYear();
 
     addRegistroMPMutation.mutate(nuevoRegistro);
     setDialogOpen(false);
   };
 
-  // Actualizar un registro existente
+  // Actualizar registro
   const handleUpdate = async (registroActualizado) => {
-    const productor = dynamicFields.productores.find(
-      (p) => p.id === registroActualizado.productorId
+    const productor = dynamicFields.productores?.find(
+      (p) => p.id === Number(registroActualizado.productorId)
     );
-    const exportador = dynamicFields.exportadores.find(
-      (e) => e.id === registroActualizado.exportadorId
+    const exportador = dynamicFields.exportadores?.find(
+      (e) => e.id === Number(registroActualizado.exportadorId)
     );
-    if (productor && exportador) {
-      registroActualizado.codigo = `${productor.codigo}${exportador.codigo}`;
+    const codigoProductor = productor?.codigo ?? "";
+    const codigoExportador = exportador?.codigo ?? "";
+    registroActualizado.clp = productor?.clp ?? "";
+
+    if (!codigoProductor || !codigoExportador) {
+      alert("Debes seleccionar un productor y un exportador válidos.");
+      return;
     }
+
+    registroActualizado.codigo = `${codigoProductor}${codigoExportador}`;
+    registroActualizado.codNumero = `${registroActualizado.codigo}-${registroActualizado.numIngreso}`;
+    registroActualizado.numSemana = getISOWeekNumber(registroActualizado.fecha);
+    registroActualizado.campaña = new Date(
+      registroActualizado.fecha
+    ).getFullYear();
+
+    const registroSinRotulos = { ...registroActualizado };
+    delete registroSinRotulos.rotulos;
 
     updateRegistroMPMutation.mutate({
       id: registroEditando.id,
-      datos: registroActualizado,
+      datos: registroSinRotulos,
     });
     setRegistroEditando(null);
     setDialogOpen(false);
   };
 
-  // Eliminar Registro
+  // Eliminar registro
   const handleEliminar = async (id) => {
     deleteRegistroMPMutation.mutate(id);
   };
 
-  // Confirmar Registro
+  // Confirmar registro
   const handleConfirmar = async (id) => {
     confirmarRegistroMPMutation.mutate(id);
   };
 
-  // Renderizado
-  if (isLoading) return <div>Cargando...</div>;
-  if (isError) return <div>Error: {error.message}</div>;
+  // Mensajes de carga y error
+  if (isLoadingLote || isLoadingRotulo) return <div>Cargando datos...</div>;
+  if (isErrorLote) return <div>Error al cargar lotes: {errorLote.message}</div>;
+  if (isErrorRotulo)
+    return <div>Error al cargar rótulos: {errorRotulo.message}</div>;
 
+  // Render principal
   return (
     <>
-      <div className="text-end">
-        <DialogDemo
-          fields={fields}
-          dynamic={dynamicFields}
-          title="Registro de Lote"
-          onSubmit={registroEditando ? handleUpdate : handleAdd}
-          initialData={registroEditando}
-          onClose={() => {
-            setRegistroEditando(null);
-            setDialogOpen(false);
-          }}
-          open={dialogOpen}
-          setOpen={setDialogOpen}
-        />
-      </div>
+      <DialogDemo
+        fields={fields}
+        dynamic={dynamicFields}
+        title="Registro de Lote"
+        onSubmit={registroEditando ? handleUpdate : handleAdd}
+        initialData={registroEditando}
+        onClose={() => {
+          setRegistroEditando(null);
+          setDialogOpen(false);
+        }}
+        open={dialogOpen}
+        setOpen={setDialogOpen}
+      />
       <DataTable
         columns={columnsLote(
           handleConfirmar,
           handleEliminar,
           setRegistroEditando,
-          setDialogOpen
+          setDialogOpen,
+          dataRotulo
         )}
         data={dataLote}
         filterColumnKey="id"
         placeholder="Buscar por ID"
+        meta={{ rotulos: dataRotulo }}
       />
     </>
   );
