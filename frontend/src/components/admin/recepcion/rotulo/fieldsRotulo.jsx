@@ -82,12 +82,6 @@ export const fields = [
     type: "date",
     required: true,
   },
-  {
-    name: "pesoJabaBandeja",
-    label: "Peso Jaba/Bandeja",
-    type: "text",
-    required: true,
-  },
   { name: "firma", label: "Firma", type: "text", required: false },
   {
     name: "obs",

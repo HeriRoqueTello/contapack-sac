@@ -14,8 +14,7 @@ export const columnsLote = (
   onConfirmar,
   onEliminar,
   setRegistroEditando,
-  setDialogOpen,
-  rotulos
+  setDialogOpen
 ) => [
   // --- Selección y acciones ---
   {
@@ -62,9 +61,7 @@ export const columnsLote = (
     accessorKey: "lote",
     header: "Lote",
     cell: ({ row }) => (
-      <div className="text-center capitalize">
-        {`Lote ${row.original.id}`}
-        </div>
+      <div className="text-center capitalize">{`Lote ${row.original.id}`}</div>
     ),
   },
   {
@@ -157,9 +154,11 @@ export const columnsLote = (
   {
     accessorKey: "guiaProductor",
     header: "Guía productor",
-    cell: ({ row }) => (
-      <div className="text-center">{row.getValue("guiaProductor")}</div>
-    ),
+    cell: ({ row }) => {
+      const guia =
+        row.original?.Productor?.guias?.[0]?.guiaProductor ?? "Sin Guía";
+      return <div className="text-center">{guia}</div>;
+    },
   },
   {
     accessorKey: "guiaSenasa",
@@ -222,9 +221,10 @@ export const columnsLote = (
   {
     accessorKey: "pesoGuia",
     header: "Peso según Guía",
-    cell: ({ row }) => (
-      <div className="text-center">{row.getValue("pesoGuia")}</div>
-    ),
+    cell: ({ row }) => {
+      const valor = row.original.Productor?.guias?.[0]?.pesoGuia ?? "-";
+      return <div className="text-center">{valor}</div>;
+    },
   },
   {
     accessorKey: "difPeso",
@@ -236,19 +236,10 @@ export const columnsLote = (
   {
     accessorKey: "cantJabas",
     header: "Cantidad de jabas",
-    cell: ({ row }) => {
-      const loteId = row.original.id;
-      const asociados = rotulos.filter(
-        (r) => Number(r.registroMateriaPrimaId) === Number(loteId)
-      );
-      const totalJabas = asociados.reduce(
-        (sum, r) => sum + Number(r.bandJabas || 0),
-        0
-      );
-      return <div className="text-center">{totalJabas}</div>;
-    },
+    cell: ({ row }) => (
+      <div className="text-center">{row.getValue("cantJabas")}</div>
+    ),
   },
-
   {
     accessorKey: "pesoDescuento",
     header: "Peso descuento",

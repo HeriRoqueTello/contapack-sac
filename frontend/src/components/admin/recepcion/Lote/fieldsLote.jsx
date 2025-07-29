@@ -53,12 +53,6 @@ export const fields = [
   },
   // --- Guías asociadas ---
   {
-    name: "guiaProductor",
-    label: "Guía Productor",
-    type: "text",
-    required: true,
-  },
-  {
     name: "guiaSenasa",
     label: "Guía SENASA",
     type: "text",
@@ -87,16 +81,9 @@ export const fields = [
     required: true,
   },
   // --- Pesos y cantidades ---
-  { name: "pesoNeto", label: "Peso neto", type: "text", required: true },
   {
     name: "pesoGuia",
     label: "Peso según Guía",
-    type: "text",
-    required: true,
-  },
-  {
-    name: "difPeso",
-    label: "Diferencia de peso",
     type: "text",
     required: true,
   },

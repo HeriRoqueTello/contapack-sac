@@ -7,6 +7,8 @@ import {
   Table,
 } from "sequelize-typescript";
 import Rotulo from "./Rotulo";
+import Guia from "./GuiaProductor";
+import Responsable from "./Responsable";
 
 @Table({
   tableName: "productor",
@@ -38,6 +40,10 @@ class Productor extends Model {
 
   @HasMany(() => Rotulo)
   declare rotulos: Rotulo[];
+  @HasMany(() => Guia)
+  declare guias: Guia[];
+  @HasMany(() => Responsable)
+  declare responsables: Responsable[];
 }
 
 export default Productor;

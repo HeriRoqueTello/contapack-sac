@@ -29,7 +29,7 @@ export const crearEtiqueta = async (req: Request, res: Response) => {
     const nuevaEtiqueta = await Etiqueta.create({
       trazabilidad: req.body.trazabilidad,
       estado: req.body.estado,
-      productorId: req.body.productorId, 
+      productorId: req.body.productorId,
       productoId: req.body.productoId,
       exportadorId: req.body.exportadorId,
     });
@@ -44,7 +44,6 @@ export const crearEtiqueta = async (req: Request, res: Response) => {
     res.status(500).json({ error: "Error al crear la etiqueta" });
   }
 };
-
 
 // Actualizar etiqueta
 export const actualizarEtiqueta = async (req: Request, res: Response) => {
@@ -85,7 +84,8 @@ export const confirmarEtiqueta = async (req: Request, res: Response) => {
     const { id } = req.params;
     const etiqueta = await Etiqueta.findByPk(id);
     if (!etiqueta) {
-      return res.status(404).json({ error: "Etiqueta no encontrada" });
+      res.status(404).json({ error: "Etiqueta no encontrada" });
+      return;
     }
 
     etiqueta.estado =
