@@ -135,11 +135,8 @@ export function DataTable({ data, columns, filterColumnKey = "id", placeholder =
         </Table>
       </div>
 
-      <div className="flex w-full items-center justify-between px-2 pt-1 text-sm text-muted-foreground">
-        <div>
-          {table.getFilteredSelectedRowModel().rows.length} de{" "}
-          {table.getFilteredRowModel().rows.length} fila(s) seleccionadas.
-        </div>
+      <div className="flex w-full items-center justify-end px-2 pt-2 text-sm text-muted-foreground">
+        
         <div className="flex items-center space-x-2">
           <Button
             variant="outline"

@@ -18,30 +18,31 @@ export const columnsAnexo = (onConfirmar, onEliminar) => [
     enableHiding: false,
   },
   {
-    id: "select",
-    header: ({ table }) => (
-      <div className="flex justify-center items-center">
-        <Checkbox
-          checked={
-            table.getIsAllPageRowsSelected() ||
-            (table.getIsSomePageRowsSelected() && "indeterminate")
-          }
-          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-          aria-label="Select all"
-        />
-      </div>
-    ),
-    cell: ({ row }) => (
-      <div className="flex justify-center items-center">
-        <Checkbox
-          checked={row.getIsSelected()}
-          onCheckedChange={(value) => row.toggleSelected(!!value)}
-          aria-label="Select row"
-        />
-      </div>
-    ),
-    enableSorting: false,
+    id: "actions",
     enableHiding: false,
+    cell: ({ row }) => {
+      const lote = row.original;
+      return (
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" className="h-8 w-8 p-0">
+              <MoreHorizontal className="h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuLabel>Opciones</DropdownMenuLabel>
+            
+            <DropdownMenuItem onClick={() => onConfirmar(lote.id)}>
+              Confirmar
+            </DropdownMenuItem>
+            <DropdownMenuItem>Editar</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => onEliminar(lote.id)}>
+              Eliminar
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      );
+    },
   },
   {
     accessorKey: "estado",
@@ -160,31 +161,5 @@ export const columnsAnexo = (onConfirmar, onEliminar) => [
       <div className="text-center">{row.getValue("Present")}</div>
     ),
   },
-  {
-    id: "actions",
-    enableHiding: false,
-    cell: ({ row }) => {
-      const lote = row.original;
-      return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Opciones</DropdownMenuLabel>
-            
-            <DropdownMenuItem onClick={() => onConfirmar(lote.id)}>
-              Confirmar
-            </DropdownMenuItem>
-            <DropdownMenuItem>Editar</DropdownMenuItem>
-            <DropdownMenuItem onClick={() => onEliminar(lote.id)}>
-              Eliminar
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      );
-    },
-  },
+ 
 ];

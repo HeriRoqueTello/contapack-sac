@@ -23,30 +23,37 @@ export const columnsEtiqueta = (
     enableHiding: false,
   },
   {
-    id: "select",
-    header: ({ table }) => (
-      <div className="flex justify-center items-center">
-        <Checkbox
-          checked={
-            table.getIsAllPageRowsSelected() ||
-            (table.getIsSomePageRowsSelected() && "indeterminate")
-          }
-          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-          aria-label="Select all"
-        />
-      </div>
-    ),
-    cell: ({ row }) => (
-      <div className="flex justify-center items-center">
-        <Checkbox
-          checked={row.getIsSelected()}
-          onCheckedChange={(value) => row.toggleSelected(!!value)}
-          aria-label="Select row"
-        />
-      </div>
-    ),
-    enableSorting: false,
+    id: "actions",
     enableHiding: false,
+    cell: ({ row }) => {
+      const etiqueta = row.original;
+      return (
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" className="h-8 w-8 p-0">
+              <MoreHorizontal className="h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuLabel>Opciones</DropdownMenuLabel>
+            <DropdownMenuItem onClick={() => onConfirmar(etiqueta.id)}>
+              {etiqueta.estado === "Confirmado" ? "No confirmar" : "Confirmar"}
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => {
+                setRegistroEditando(etiqueta);
+                setDialogOpen(true);
+              }}
+            >
+              Editar
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => onEliminar(etiqueta.id)}>
+              Eliminar
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      );
+    },
   },
   {
     accessorKey: "estado",
@@ -92,37 +99,5 @@ export const columnsEtiqueta = (
       </div>
     ),
   },
-  {
-    id: "actions",
-    enableHiding: false,
-    cell: ({ row }) => {
-      const etiqueta = row.original;
-      return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Opciones</DropdownMenuLabel>
-            <DropdownMenuItem onClick={() => onConfirmar(etiqueta.id)}>
-              {etiqueta.estado === "Confirmado" ? "No confirmar" : "Confirmar"}
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              onClick={() => {
-                setRegistroEditando(etiqueta);
-                setDialogOpen(true);
-              }}
-            >
-              Editar
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => onEliminar(etiqueta.id)}>
-              Eliminar
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      );
-    },
-  },
+  
 ];

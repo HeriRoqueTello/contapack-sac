@@ -11,6 +11,7 @@ import Productor from "./Productor";
 import Producto from "./Producto";
 import Exportador from "./Exportador";
 
+//jd
 @Table({
   tableName: "etiqueta",
 })
