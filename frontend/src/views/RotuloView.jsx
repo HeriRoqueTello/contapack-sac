@@ -82,6 +82,11 @@ export function RotuloView() {
   // Agregar nuevo rotulo
   const handleAdd = (nuevoRotulo) => {
     const chequeoTransformado = convertirChequeos(nuevoRotulo.chequeos);
+
+    nuevoRotulo.pesoJabaBandeja = (
+      nuevoRotulo.kgIngresados / nuevoRotulo.bandJabas
+    ).toFixed(2); // Calcula el peso por jaba/bandeja
+
     const datosFinales = { ...nuevoRotulo, ...chequeoTransformado };
     delete datosFinales.chequeos;
 
@@ -92,6 +97,11 @@ export function RotuloView() {
   // Actualizar rotulo existente
   const handleUpdate = (rotuloActualizado) => {
     const chequeoTransformado = convertirChequeos(rotuloActualizado.chequeos);
+
+    rotuloActualizado.pesoJabaBandeja = (
+      rotuloActualizado.kgIngresados / rotuloActualizado.bandJabas
+    ).toFixed(2); // Calcula el peso por jaba/bandeja
+
     const datosFinales = { ...rotuloActualizado, ...chequeoTransformado };
     delete datosFinales.chequeos;
 

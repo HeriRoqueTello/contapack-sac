@@ -5,6 +5,11 @@ export const getRotulos = async () => {
   return res.data;
 };
 
+export const getRotulosPorLote = async (registroID) => {
+  const res = await api.get(`/registroMP/${registroID}/rotulos`);
+  return res.data;
+};
+
 export const createRotulo = async (rotulo) => {
   const res = await api.post("/rotulos", rotulo);
   return res.data;

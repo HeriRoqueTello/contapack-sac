@@ -14,6 +14,8 @@ import categoriaRouter from "./routes/categoriaRouter";
 import calibreRouter from "./routes/calibreRouter";
 import productoRouter from "./routes/productoRouter";
 import etiquetaRouter from "./routes/etiquetaRouter";
+import responsableRouter from "./routes/responsableRouter";
+import guiaProductorRouter from "./routes/guiaProductorRouter";
 
 async function connectDB() {
   try {
@@ -48,5 +50,7 @@ app.use("/api/categorias", categoriaRouter);
 app.use("/api/calibres", calibreRouter);
 app.use("/api/productos", productoRouter);
 app.use("/api/etiquetas", etiquetaRouter);
+app.use("/api/responsables", responsableRouter);
+app.use("/api/guiaProducto", guiaProductorRouter);
 
 export default app;

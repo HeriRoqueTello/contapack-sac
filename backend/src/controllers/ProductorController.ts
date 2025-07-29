@@ -1,9 +1,21 @@
-import Producto from "../models/Productor";
+import Guia from "../models/GuiaProductor";
+import Productor from "../models/Productor";
+import Responsable from "../models/Responsable";
 
 export const obtenerProductor = async (req, res) => {
   try {
-    const productor = await Producto.findAll({
+    const productor = await Productor.findAll({
       attributes: ["id", "nombre", "clp", "codigo"],
+      include: [
+        {
+          model: Guia,
+          attributes: ["guiaProductor", "pesoGuia"],
+        },
+        {
+          model: Responsable,
+          attributes: ["nombre"],
+        },
+      ],
     });
     res.status(200).json(productor);
   } catch (error) {

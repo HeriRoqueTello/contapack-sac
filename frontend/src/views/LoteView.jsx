@@ -20,7 +20,6 @@ export function LoteView() {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [registroEditando, setRegistroEditando] = useState(null);
 
-  // Cargar datos dinámicos
   useEffect(() => {
     const cargarCampos = async () => {
       const data = await fetchDynamicFields();
@@ -29,7 +28,6 @@ export function LoteView() {
     cargarCampos();
   }, []);
 
-  // Query para lotes
   const {
     isLoading: isLoadingLote,
     data: dataLote,
@@ -40,7 +38,6 @@ export function LoteView() {
     queryFn: getRegistroMP,
   });
 
-  // Query para rótulos
   const {
     isLoading: isLoadingRotulo,
     data: dataRotulo,
@@ -51,7 +48,6 @@ export function LoteView() {
     queryFn: getRotulos,
   });
 
-  // Mutaciones
   const deleteRegistroMPMutation = useMutation({
     mutationFn: deleteRegistroMP,
     onSuccess: () => {
@@ -80,7 +76,6 @@ export function LoteView() {
     },
   });
 
-  // Calcular semana ISO
   function getISOWeekNumber(dateString) {
     const date = new Date(dateString);
     const dayNr = (date.getDay() + 6) % 7;
@@ -90,7 +85,6 @@ export function LoteView() {
     return 1 + Math.round(diff / (7 * 24 * 60 * 60 * 1000));
   }
 
-  // Agregar registro
   const handleAdd = (nuevoRegistro) => {
     const productor = dynamicFields.productores?.find(
       (p) => p.id === Number(nuevoRegistro.productorId)
@@ -112,11 +106,25 @@ export function LoteView() {
     nuevoRegistro.numSemana = getISOWeekNumber(nuevoRegistro.fecha);
     nuevoRegistro.campaña = new Date(nuevoRegistro.fecha).getFullYear();
 
+    const guia = dynamicFields.guiaProductor?.find(
+      (g) => g.productorId === Number(nuevoRegistro.productorId)
+    );
+    const guiaProductor = guia?.guiaProductor ?? "Sin Guía";
+    const pesoGuia = guia?.pesoGuia ?? 0.0;
+
+    nuevoRegistro.pesoNeto = "0.00";
+    nuevoRegistro.cantJabas = 0;
+    nuevoRegistro.guiaProductor = guiaProductor;
+    nuevoRegistro.pesoGuia = pesoGuia;
+    nuevoRegistro.difPeso = (
+      Number(nuevoRegistro.pesoGuia) - Number(nuevoRegistro.pesoNeto)
+    ).toFixed(2);
+
     addRegistroMPMutation.mutate(nuevoRegistro);
+
     setDialogOpen(false);
   };
 
-  // Actualizar registro
   const handleUpdate = async (registroActualizado) => {
     const productor = dynamicFields.productores?.find(
       (p) => p.id === Number(registroActualizado.productorId)
@@ -139,6 +147,10 @@ export function LoteView() {
     registroActualizado.campaña = new Date(
       registroActualizado.fecha
     ).getFullYear();
+    registroActualizado.difPeso = (
+      Number(registroActualizado.pesoGuia) -
+      Number(registroActualizado.pesoNeto)
+    ).toFixed(2);
 
     const registroSinRotulos = { ...registroActualizado };
     delete registroSinRotulos.rotulos;
@@ -147,27 +159,24 @@ export function LoteView() {
       id: registroEditando.id,
       datos: registroSinRotulos,
     });
+
     setRegistroEditando(null);
     setDialogOpen(false);
   };
 
-  // Eliminar registro
   const handleEliminar = async (id) => {
     deleteRegistroMPMutation.mutate(id);
   };
 
-  // Confirmar registro
   const handleConfirmar = async (id) => {
     confirmarRegistroMPMutation.mutate(id);
   };
 
-  // Mensajes de carga y error
   if (isLoadingLote || isLoadingRotulo) return <div>Cargando datos...</div>;
   if (isErrorLote) return <div>Error al cargar lotes: {errorLote.message}</div>;
   if (isErrorRotulo)
     return <div>Error al cargar rótulos: {errorRotulo.message}</div>;
 
-  // Render principal
   return (
     <>
       <DialogDemo

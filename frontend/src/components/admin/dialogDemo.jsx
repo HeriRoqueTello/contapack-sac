@@ -57,7 +57,6 @@ export function DialogDemo({
    */
   useEffect(() => {
     if (open) {
-      console.log("initialData:", initialData);
       if (initialData) {
         reset({
           ...initialData,
@@ -150,7 +149,7 @@ export function DialogDemo({
 
                   {/* Inputs dinámicos del formulario */}
                   <RegInputs fields={fields} dynamic={dynamic} />
-                  
+
                   <DialogFooter className="mt-8 flex justify-end gap-4">
                     <Button
                       variant="ghost"

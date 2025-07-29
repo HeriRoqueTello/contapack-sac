@@ -2,13 +2,24 @@ import { Request, Response } from "express";
 import RegistroMateriaPrima from "../models/RegistroMateriaPrima";
 import Exportador from "../models/Exportador";
 import Productor from "../models/Productor";
+import Rotulo from "../models/Rotulo";
+import Guia from "../models/GuiaProductor";
 
 //listar registro -- GET
 export const obtenerRegistros = async (req: Request, res: Response) => {
   try {
     const registros = await RegistroMateriaPrima.findAll({
       include: [
-        { model: Productor, attributes: ["id", "nombre", "clp"] },
+        {
+          model: Productor,
+          attributes: ["id", "nombre", "clp"],
+          include: [
+            {
+              model: Guia,
+              attributes: ["guiaProductor", "pesoGuia"],
+            },
+          ],
+        },
         { model: Exportador, attributes: ["id", "nombreEmpresa"] },
       ],
     });
@@ -29,9 +40,8 @@ export const crearRegistro = async (req: Request, res: Response) => {
     const productor = await Productor.findByPk(productorId);
 
     if (!exportador || !productor) {
-      return res
-        .status(404)
-        .json({ mensaje: "Exportador o Productor no encontrado" });
+      res.status(404).json({ mensaje: "Exportador o Productor no encontrado" });
+      return;
     }
 
     const codigoGenerado = `${exportador.codigo}${productor.codigo}`;
@@ -43,6 +53,7 @@ export const crearRegistro = async (req: Request, res: Response) => {
       productorId,
       codigo: codigoGenerado,
     });
+    
     res.status(201).json(nuevo);
   } catch (error) {
     console.error("Error al crear registro: ", error);
@@ -122,5 +133,20 @@ export const confirmarRegitro = async (req: Request, res: Response) => {
   } catch (error) {
     console.error("Error al confirmar rotulo: ", error);
     res.status(500).json({ mensaje: "Error interno al confirmar" });
+  }
+};
+
+//Obtener rótulos de un lote específico
+export const obtenerRotulosPorLote = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const rotulos = await Rotulo.findAll({
+      where: { registroMateriaPrimaId: id },
+    });
+
+    res.status(200).json(rotulos);
+  } catch (error) {
+    console.log("Error al obtener rótulos del registro: ", error);
+    res.status(500).json({ mensaje: "No se pudieron obtener los rótulos" });
   }
 };

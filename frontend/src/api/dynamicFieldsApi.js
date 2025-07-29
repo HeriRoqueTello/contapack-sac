@@ -7,12 +7,17 @@ export const fetchDynamicFields = async () => {
     exportadoresRes,
     productosRes,
     variedadesRes,
+    guiaProductorRes,
+    responsablesRes,
+    Re,
   ] = await Promise.all([
     api.get("/productores"),
     api.get("/registroMP"),
     api.get("/exportadores"),
     api.get("/productos"),
     api.get("/variedades"),
+    api.get("/guiaProducto"),
+    api.get("/responsables"),
   ]);
 
   return {
@@ -21,5 +26,7 @@ export const fetchDynamicFields = async () => {
     exportadores: exportadoresRes.data,
     productos: productosRes.data,
     variedades: variedadesRes.data,
+    guiaProductor: guiaProductorRes.data,
+    responsables: responsablesRes.data,
   };
 };
