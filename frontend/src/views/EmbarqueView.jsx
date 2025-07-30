@@ -4,6 +4,7 @@ import { DataTable } from "@/components/admin/DataTable";
 import { columnsEmbarque } from "@/components/admin/embarque/columnsEmbarque";
 import { useTableData } from "@/hooks/useTableData";
 import { useState } from "react";
+import { Button } from "@/components/ui/button";
 
 export function EmbarqueView() {
   const {
@@ -12,34 +13,28 @@ export function EmbarqueView() {
     confirmRegistro,
     deleteRegistro,
     actualizarRegistro,
-  } = useTableData("dataEmbarque", [
-    {
-      id: "1",
-      estado: "No Confirmado",
-      cliente: "Cliente A",
-      fecha: "18/07/2025",
-      nrContenedor: "CONT-001",
-      puntosCheck: ["1", "2"],
-      inspector: "Inspector X",
-      contenedorLimp: "SI",
-      roturasContenedor: "NO",
-      obs: "",
-      precintos: "SI",
-      cortinAire: "SI",
-      termoRegistro: "NO",
-      trazabilidadComp: "SI",
-      palletsComp: "SI",
-      documentacionComp: "SI",
-      hInicial: "08:00",
-      hFinal: "09:30",
-      precintOPlanta: "P-123",
-      precintoAduana: "A-456",
-      precintoLinea: "L-789",
-    },
-  ]);
+  } = useTableData("dataEmbarque", []);
 
   const [registroEditando, setRegistroEditando] = useState(null);
   const [dialogOpen, setDialogOpen] = useState(false);
+
+  // Estado para ver pallets
+  const [palletsModal, setPalletsModal] = useState({
+    open: false,
+    data: [],
+    title: "",
+  });
+
+  // Función para abrir modal
+  const handleVerPallets = (data, title) => {
+    setPalletsModal({ open: true, data, title });
+  };
+
+  // Agregar la función `onVerPallets` a cada registro
+  const dataConFuncion = dataEmbarque.map((item) => ({
+    ...item,
+    onVerPallets: handleVerPallets,
+  }));
 
   return (
     <div className="text-end">
@@ -55,19 +50,64 @@ export function EmbarqueView() {
         open={dialogOpen}
         setOpen={setDialogOpen}
       />
+
       <DataTable
         columns={columnsEmbarque(
           confirmRegistro,
           deleteRegistro,
           setRegistroEditando,
-          setDialogOpen
+          setDialogOpen,
+          handleVerPallets
         )}
-        data={dataEmbarque}
+        data={dataConFuncion}
         filterColumnKey="id"
         placeholder="Buscar por ID"
       />
+
+      {/* Modal para ver pallets */}
+        {palletsModal.open && (
+          <div className="fixed inset-0 bg-black/50  flex items-center justify-center z-50">
+            <div className="bg-white p-6 rounded-lg w-2/3 max-h-[80vh] overflow-auto">
+              <h2 className="text-xl font-bold mb-4 text-center ">{palletsModal.title}</h2>
+              {palletsModal.data.length > 0 ? (
+                <div className="overflow-hidden rounded-lg border border-gray-300">
+                  <table className="min-w-full border-collapse">
+                    <thead className="bg-green-800 text-white text-center">
+                      <tr>
+                        <th className="px-4 py-2 border-b border-gray-300">#</th>
+                        <th className="px-4 py-2 border-b border-gray-300">N° Pallet</th>
+                        <th className="px-4 py-2 border-b border-gray-300">CAT</th>
+                        <th className="px-4 py-2 border-b border-gray-300">Temperatura</th>
+                        <th className="px-4 py-2 border-b border-gray-300">Cantidad</th>
+                        <th className="px-4 py-2 border-b border-gray-300">Observaciones</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {palletsModal.data.map((pallet, index) => (
+                        <tr key={index} className="text-center">
+                          <td className="px-4 py-2 border-b border-gray-300">{index + 1}</td>
+                          <td className="px-4 py-2 border-b border-gray-300">{pallet.numero}</td>
+                          <td className="px-4 py-2 border-b border-gray-300">{pallet.cat}</td>
+                          <td className="px-4 py-2 border-b border-gray-300">{pallet.temperatura}</td>
+                          <td className="px-4 py-2 border-b border-gray-300">{pallet.cantidad}</td>
+                          <td className="px-4 py-2 border-b border-gray-300">{pallet.obs}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              ) : (
+                <p>No hay datos disponibles.</p>
+              )}
+              <div className="text-right mt-4">
+                <Button onClick={() => setPalletsModal({ ...palletsModal, open: false })}>
+                  Cerrar
+                </Button>
+              </div>
+            </div>
+          </div>
+        )}
+
     </div>
   );
 }
-
-
