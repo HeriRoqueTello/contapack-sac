@@ -1,13 +1,12 @@
 import { useFormContext } from "react-hook-form";
 import { Trash } from "lucide-react";
 
-export const PalletFieldsGroup = ({ index, onRemove }) => {
+export const PalletFieldsGroup = ({ palletId, onRemove }) => {
   const { register } = useFormContext();
-  const baseName = `pallets.${index}`;
+  const baseName = `pallets.${palletId}`;
 
   return (
     <div className="relative grid grid-cols-2 gap-4 border p-4 rounded-md shadow-sm mt-2">
-      {/* Icono de eliminar */}
       {onRemove && (
         <button
           type="button"

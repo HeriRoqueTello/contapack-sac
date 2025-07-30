@@ -11,10 +11,6 @@ import {
 import { DialogDescription } from "@radix-ui/react-dialog";
 import { useEffect } from "react";
 
-/**
- * Componente DialogDemo
- * Muestra un formulario en un diálogo modal para crear o editar registros.
- */
 export function DialogDemo({
   title,
   fields,
@@ -26,14 +22,12 @@ export function DialogDemo({
   onClose,
   setRegistroEditando,
 }) {
-  // --- Utilidades para formatear fechas ---
-  // Formatea fecha tipo ISO a "YYYY-MM-DD"
+  // --- Formateo de fechas, conservado ---
   const formatDate = (isoString) => {
     if (!isoString) return "";
     return isoString.split("T")[0];
   };
 
-  // Formatea fecha tipo ISO a "YYYY-MM-DDTHH:mm" para inputs datetime-local
   const formatDateTimeLocal = (isoString) => {
     if (!isoString) return "";
     const date = new Date(isoString);
@@ -46,20 +40,27 @@ export function DialogDemo({
     return `${yyyy}-${mm}-${dd}T${hh}:${min}`;
   };
 
-  // --- Instancia de react-hook-form ---
   const methods = useForm();
   const { reset } = methods;
 
-  /**
-   * Efecto para resetear el formulario cada vez que cambia initialData.
-   * Si hay datos para editar, los carga y formatea las fechas.
-   * Si no, inicializa el formulario con valores vacíos o por defecto.
-   */
   useEffect(() => {
     if (open) {
       if (initialData) {
+        // --- Cambio principal: reconstruir la estructura "pallets" para edición ---
+        const pallets = {};
+        // si existen columnas izquierda y derecha, reconstruir objetos para react-hook-form
+        if (initialData.palletBlock) {
+          (initialData.palletBlock.izquierda || []).forEach((p, idx) => {
+            pallets[`izq_${idx}`] = p;
+          });
+          (initialData.palletBlock.derecha || []).forEach((p, idx) => {
+            pallets[`der_${idx}`] = p;
+          });
+        }
+
         reset({
           ...initialData,
+          pallets, // inyectar los pallets reconstruidos
           fecha: formatDate(initialData.fecha),
           fechaProceso: formatDate(initialData.fechaProceso),
           fechaGuia: formatDate(initialData.fechaGuia),
@@ -80,52 +81,42 @@ export function DialogDemo({
     }
   }, [open, initialData, fields, reset]);
 
-  /**
-   * Agrupa los datos de pallets por lado (izquierda/derecha).
-   */
-  const agruparPallets = (pallets) => {
-    const izquierda = [],
-      derecha = [];
-    Object.entries(pallets || {}).forEach(([key, value]) => {
-      key.startsWith("izq") && izquierda.push(value);
-      key.startsWith("der") && derecha.push(value);
-    });
-    return { izquierda, derecha };
-  };
-
-  /**
-   * Maneja el envío del formulario.
-   * Agrupa los pallets y envía los datos finales al callback onSubmit.
-   */
   const handleFormSubmit = (data) => {
-    const { pallets, ...resto } = data;
-    const palletsAgrupados = agruparPallets(pallets);
-    const datosFinales = {
-      ...resto,
-      pallets: palletsAgrupados,
-    };
-    onSubmit?.(datosFinales);
+    // --- Agrupar pallets en bloques izquierda y derecha ---
+    if (data.pallets && typeof data.pallets === "object") {
+      const izquierda = [];
+      const derecha = [];
+
+      Object.keys(data.pallets).forEach((key) => {
+        const pallet = data.pallets[key];
+        if (key.startsWith("izq_")) izquierda.push(pallet);
+        if (key.startsWith("der_")) derecha.push(pallet);
+      });
+
+      // guardar como "palletBlock" para usar en la tabla
+      data.palletBlock = { izquierda, derecha };
+      delete data.pallets;
+    }
+
+    onSubmit?.(data);
     setOpen(false);
     onClose?.();
   };
 
-  // --- Renderizado ---
   return (
     <>
-      {/* Botón SIEMPRE visible, fuera del Dialog */}
       <div className="mb-4 text-end">
         <Button
           variant="outline"
           onClick={() => {
-            setRegistroEditando?.(null); // Limpia el registro editando
-            setOpen(true); // Abre el diálogo
+            setRegistroEditando?.(null);
+            setOpen(true);
           }}
         >
           Crear Formulario
         </Button>
       </div>
 
-      {/* Diálogo modal */}
       {open && (
         <Dialog
           open={open}
@@ -147,7 +138,6 @@ export function DialogDemo({
                     </DialogDescription>
                   </DialogHeader>
 
-                  {/* Inputs dinámicos del formulario */}
                   <RegInputs fields={fields} dynamic={dynamic} />
 
                   <DialogFooter className="mt-8 flex justify-end gap-4">
@@ -174,3 +164,4 @@ export function DialogDemo({
     </>
   );
 }
+

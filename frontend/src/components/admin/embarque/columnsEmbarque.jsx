@@ -14,7 +14,10 @@ export const columnsEmbarque = (
   onConfirmar,
   onEliminar,
   setRegistroEditando,
-  setDialogOpen
+  setDialogOpen,
+  handleVerPallets
+  
+  
 ) => [
   {
     accessorKey: "id",
@@ -140,6 +143,45 @@ export const columnsEmbarque = (
   { accessorKey: "precintoLinea", header: "Precinto Línea", 
     cell: ({ row }) => 
     <div className="text-center">{row.getValue("precintoLinea")}</div> },
+
+
+  {
+    header: "Columna Izquierda",
+    cell: ({ row }) => (
+      <Button
+        variant="outline"
+        size="sm"
+        onClick={() =>
+          handleVerPallets(
+            row.original.palletBlock?.izquierda || [],
+            "Columna Izquierda"
+          )
+        }
+        className={"justify-center text-center"}
+      >
+        Ver más…
+      </Button>
+    ),
+  },
+  {
+    header: "Columna Derecha",
+    cell: ({ row }) => (
+      <Button
+        variant="outline"
+        size="sm"
+        onClick={() =>
+          handleVerPallets(
+            row.original.palletBlock?.derecha || [],
+            "Columna Derecha"
+          )
+      }
+        
+      >
+        Ver más…
+      </Button>
+    ),
+  },
+
   
 ]
 

@@ -3,35 +3,41 @@ import { useEffect } from "react";
 
 export const CheckboxGroupInput = ({ field }) => {
   const {
-    register,
+ 
+    setValue,
+    getValues,
     setError,
     clearErrors,
     watch,
     formState: { isSubmitted },
   } = useFormContext();
 
-  const watchedValues = watch(field.name); 
+  const selectedValues = watch(field.name) || [];
 
   useEffect(() => {
-    if (field.required) {
-      const isValid = Object.values(watchedValues || {}).some(
-        (v) => v === true
-      );
-
-      if (isSubmitted) {
-        if (!isValid) {
-          setError(field.name, {
-            type: "manual",
-            message: "Este campo es obligatorio",
-          });
-        } else {
-          clearErrors(field.name);
-        }
+    if (field.required && isSubmitted) {
+      if (!selectedValues.length) {
+        setError(field.name, {
+          type: "manual",
+          message: "Este campo es obligatorio",
+        });
       } else {
         clearErrors(field.name);
       }
     }
-  }, [watchedValues, isSubmitted]);
+  }, [selectedValues, isSubmitted]);
+
+  const handleChange = (option) => {
+    const current = getValues(field.name) || [];
+    if (current.includes(option)) {
+      setValue(
+        field.name,
+        current.filter((v) => v !== option)
+      );
+    } else {
+      setValue(field.name, [...current, option]);
+    }
+  };
 
   return (
     <div className="flex flex-col gap-2 mb-4 w-full">
@@ -44,7 +50,9 @@ export const CheckboxGroupInput = ({ field }) => {
           <label key={option} className="flex items-center space-x-2">
             <input
               type="checkbox"
-              {...register(`${field.name}.${option}`)}
+              value={option}
+              checked={selectedValues.includes(option)}
+              onChange={() => handleChange(option)}
               className="w-4 h-4"
             />
             <span className="text-sm">{option}</span>

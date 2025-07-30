@@ -1,5 +1,5 @@
 import { useFormContext } from "react-hook-form";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { CheckboxGroupInput } from "./CheckboxGroupInput";
 import { RadioGroupInput } from "./RadioGroupInput";
 import { StandardInput } from "./StandardInput";
@@ -8,11 +8,24 @@ import { PalletFieldsGroup } from "./PalletFieldsGroup";
 export const RegInputs = ({ fields, dynamic }) => {
   const {
     register,
+    setValue,
+    watch,
     formState: { errors },
   } = useFormContext();
 
   const [palletLeft, setPalletLeft] = useState(["izq_0"]);
   const [palletRight, setPalletRight] = useState(["der_0"]);
+
+  // Observa todos los pallets
+  const allPallets = watch("pallets") || {};
+
+  // Actualiza palletBlock en el form state cada vez que cambian los pallets
+  useEffect(() => {
+    const izquierda = palletLeft.map((id) => ({ id, ...(allPallets[id] || {}) }));
+    const derecha = palletRight.map((id) => ({ id, ...(allPallets[id] || {}) }));
+
+    setValue("palletBlock", { izquierda, derecha });
+  }, [allPallets, palletLeft, palletRight, setValue]);
 
   const addPallet = (side) => {
     const id = `${side}_${Date.now()}`;
@@ -63,7 +76,7 @@ export const RegInputs = ({ fields, dynamic }) => {
                     {palletLeft.map((id) => (
                       <PalletFieldsGroup
                         key={id}
-                        index={id}
+                        palletId={id}
                         onRemove={() => removePallet("izq", id)}
                       />
                     ))}
@@ -84,7 +97,7 @@ export const RegInputs = ({ fields, dynamic }) => {
                     {palletRight.map((id) => (
                       <PalletFieldsGroup
                         key={id}
-                        index={id}
+                        palletId={id}
                         onRemove={() => removePallet("der", id)}
                       />
                     ))}
@@ -100,6 +113,7 @@ export const RegInputs = ({ fields, dynamic }) => {
               </div>
             );
           }
+
           // Campo tipo select
           if (field.type === "select") {
             const options =
@@ -115,9 +129,7 @@ export const RegInputs = ({ fields, dynamic }) => {
                   className="text-sm font-medium text-gray-700 mb-1"
                 >
                   {field.label}
-                  {field.required && (
-                    <span className="text-red-500 ml-1">*</span>
-                  )}
+                  {field.required && <span className="text-red-500 ml-1">*</span>}
                 </label>
 
                 <select
@@ -146,24 +158,19 @@ export const RegInputs = ({ fields, dynamic }) => {
             );
           }
 
-          // Inputs normales con control de ancho
+          // Inputs normales
           return (
             <div
               key={field.name}
-              className={`flex flex-col w-full
-              ${field.fullRow ? "col-span-full rounded-lg" : ""}
-              `}
+              className={`flex flex-col w-full ${field.fullRow ? "col-span-full rounded-lg" : ""}`}
             >
               {field.type === "checkboxGroup" && (
                 <CheckboxGroupInput field={field} />
               )}
               {field.type === "radioGroup" && <RadioGroupInput field={field} />}
-              {![
-                "checkboxGroup",
-                "radioGroup",
-                "sectionTitle",
-                "palletBlock",
-              ].includes(field.type) && <StandardInput field={field} />}
+              {!["checkboxGroup", "radioGroup", "sectionTitle", "palletBlock"].includes(field.type) && (
+                <StandardInput field={field} />
+              )}
 
               {errors[field.name] && (
                 <span className="text-sm text-red-500 mt-1">
