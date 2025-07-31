@@ -11,6 +11,7 @@ import {
 import Rotulo from "./Rotulo";
 import Productor from "./Productor";
 import Exportador from "./Exportador";
+import TransporteDescarga from "./TransporteDescarga";
 
 @Table({
   tableName: "registro_materia_prima",
@@ -134,5 +135,8 @@ class RegistroMateriaPrima extends Model {
 
   @HasMany(() => Rotulo)
   declare rotulos: Rotulo[];
+
+  @HasMany(() => TransporteDescarga)
+  declare transporteDescargas: TransporteDescarga[];
 }
 export default RegistroMateriaPrima;

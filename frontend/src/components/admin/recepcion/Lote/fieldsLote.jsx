@@ -63,15 +63,42 @@ export const fields = [
     label: "Guía Transportista",
     type: "text",
     required: true,
+    readOnly: true,
   },
   // --- Vehículo y transporte ---
-  { name: "placa", label: "Placa", type: "text", required: true },
+  {
+    name: "placa",
+    label: "Placa",
+    type: "select",
+    required: true,
+    options: ({ dynamic }) =>
+      Array.isArray(dynamic?.transporteDescarga)
+        ? dynamic.transporteDescarga.map((t) => ({
+            label: `${t.placa} - ${t.empresaTransporte} - ${
+              t.chofer?.nombre ?? "Sin chofer"
+            }`,
+            value: t.placa,
+          }))
+        : [],
+    onChange: ({ value, dynamic, setValue }) => {
+      const transporte = dynamic.transporteDescarga?.find(
+        (t) => t.placa === value
+      );
+      if (!transporte) return;
+
+      setValue("empTransportes", transporte.empresaTransporte);
+      setValue("chofer", transporte.chofer?.nombre ?? "");
+      setValue("licConducir", transporte.chofer?.licencia ?? "");
+      setValue("guiaTransportista", transporte.guiaTransportista ?? "");
+    },
+  },
   { name: "placa2", label: "Placa2", type: "text", required: false },
   {
     name: "empTransportes",
     label: "Empresa de Transporte",
     type: "text",
     required: true,
+    readOnly: true,
   },
   { name: "chofer", label: "Chofer", type: "text", required: true },
   {
@@ -79,14 +106,15 @@ export const fields = [
     label: "Licencia de conducir",
     type: "text",
     required: true,
+    readOnly: true,
   },
   // --- Pesos y cantidades ---
-  {
-    name: "pesoGuia",
-    label: "Peso según Guía",
-    type: "text",
-    required: true,
-  },
+  // {
+  //   name: "pesoGuia",
+  //   label: "Peso según Guía",
+  //   type: "text",
+  //   required: true,
+  // },
   {
     name: "pesoDescuento",
     label: "Peso descuento",
@@ -101,8 +129,8 @@ export const fields = [
     required: false,
   },
   {
-    name: "dirReferencia",
-    label: "Dirección de referencia",
+    name: "lugReferencia",
+    label: "Lugar de referencia",
     type: "text",
     required: true,
   },
