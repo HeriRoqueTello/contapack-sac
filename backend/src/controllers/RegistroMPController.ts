@@ -4,6 +4,9 @@ import Exportador from "../models/Exportador";
 import Productor from "../models/Productor";
 import Rotulo from "../models/Rotulo";
 import Guia from "../models/GuiaProductor";
+import Responsable from "../models/Responsable";
+import TransporteDescarga from "../models/TransporteDescarga";
+import Chofer from "../models/chofer";
 
 //listar registro -- GET
 export const obtenerRegistros = async (req: Request, res: Response) => {
@@ -12,15 +15,35 @@ export const obtenerRegistros = async (req: Request, res: Response) => {
       include: [
         {
           model: Productor,
-          attributes: ["id", "nombre", "clp"],
+          attributes: ["id", "nombre", "clp", "lugReferencia"],
           include: [
             {
               model: Guia,
               attributes: ["guiaProductor", "pesoGuia"],
             },
+            {
+              model: Responsable,
+              attributes: ["id", "nombre"],
+            },
           ],
         },
         { model: Exportador, attributes: ["id", "nombreEmpresa"] },
+        {
+          model: TransporteDescarga,
+          attributes: [
+            "id",
+            "placa",
+            "placa2",
+            "empresaTransporte",
+            "guiaTransportista",
+          ],
+          include: [
+            {
+              model: Chofer,
+              attributes: ["id", "licencia", "nombre"],
+            },
+          ],
+        },
       ],
     });
     res.status(200).json(registros);
@@ -53,7 +76,7 @@ export const crearRegistro = async (req: Request, res: Response) => {
       productorId,
       codigo: codigoGenerado,
     });
-    
+
     res.status(201).json(nuevo);
   } catch (error) {
     console.error("Error al crear registro: ", error);

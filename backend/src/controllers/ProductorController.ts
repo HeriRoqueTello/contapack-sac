@@ -13,7 +13,7 @@ export const obtenerProductor = async (req, res) => {
         },
         {
           model: Responsable,
-          attributes: ["nombre"],
+          attributes: ["id", "nombre"],
         },
       ],
     });

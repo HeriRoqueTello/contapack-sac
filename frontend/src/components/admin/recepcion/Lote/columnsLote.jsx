@@ -58,7 +58,7 @@ export const columnsLote = (
       );
     },
   },
-  
+
   // --- Estado y identificación principal ---
   {
     accessorKey: "estado",
@@ -180,31 +180,39 @@ export const columnsLote = (
   {
     accessorKey: "guiaTransportista",
     header: "Guía transportista",
-    cell: ({ row }) => (
-      <div className="text-center">{row.getValue("guiaTransportista")}</div>
-    ),
+    cell: ({ row }) => {
+      const transporte = row.original.transporteDescargas?.[0];
+      const guiaTransportista = transporte?.guiaTransportista || "Sin Placa";
+      return <div className="text-center">{guiaTransportista}</div>;
+    },
   },
   // --- Vehículo y transporte ---
   {
     accessorKey: "placa",
     header: "Placa",
-    cell: ({ row }) => (
-      <div className="text-center">{row.getValue("placa")}</div>
-    ),
+    cell: ({ row }) => {
+      const transporte = row.original.transporteDescargas?.[0];
+      const placa = transporte?.placa || "Sin Placa";
+      return <div className="text-center">{placa}</div>;
+    },
   },
   {
     accessorKey: "placa2",
     header: "Placa2",
-    cell: ({ row }) => (
-      <div className="text-center">{row.getValue("placa2")}</div>
-    ),
+    cell: ({ row }) => {
+      const transporte = row.original.transporteDescargas?.[0];
+      const placa2 = transporte?.placa2 || "Sin Placa";
+      return <div className="text-center">{placa2}</div>;
+    },
   },
   {
     accessorKey: "empTransportes",
     header: "Empresa de transportes",
-    cell: ({ row }) => (
-      <div className="text-center">{row.getValue("empTransportes")}</div>
-    ),
+    cell: ({ row }) => {
+      const transporte = row.original.transporteDescargas?.[0];
+      const empTransporte = transporte?.empresaTransporte || "Sin Empresa";
+      return <div className="text-center">{empTransporte}</div>;
+    },
   },
   {
     accessorKey: "chofer",
@@ -266,11 +274,12 @@ export const columnsLote = (
     ),
   },
   {
-    accessorKey: "dirReferencia",
-    header: "Dirección de Referencia",
-    cell: ({ row }) => (
-      <div className="text-center">{row.getValue("dirReferencia")}</div>
-    ),
+    accessorKey: "lugReferencia",
+    header: "Lugar de Referencia",
+    cell: ({ row }) => {
+      const lugar = row.original.Productor?.lugReferencia ?? "Sin Referencia";
+      return <div className="text-center">{lugar}</div>;
+    },
   },
   {
     accessorKey: "glosa",
@@ -279,12 +288,15 @@ export const columnsLote = (
       <div className="text-center">{row.getValue("glosa")}</div>
     ),
   },
+
   {
     accessorKey: "responsable",
     header: "Responsable",
-    cell: ({ row }) => (
-      <div className="text-center">{row.getValue("responsable")}</div>
-    ),
+    cell: ({ row }) => {
+      const responsable =
+        row.original.Productor?.responsables?.[0]?.nombre || "Sin Responsable";
+      return <div className="text-center">{responsable}</div>;
+    },
   },
   {
     accessorKey: "obs",
@@ -305,5 +317,4 @@ export const columnsLote = (
       <div className="text-center">{row.getValue("detServicio")}</div>
     ),
   },
-  
 ];
