@@ -58,14 +58,46 @@ export function DialogDemo({
           });
         }
 
-        reset({
+        // Inicializar campos con valores existentes
+        const formData = {
           ...initialData,
           pallets, // inyectar los pallets reconstruidos
           fecha: formatDate(initialData.fecha),
           fechaProceso: formatDate(initialData.fechaProceso),
           fechaGuia: formatDate(initialData.fechaGuia),
           horaDescarga: formatDateTimeLocal(initialData.horaDescarga),
-        });
+        };
+
+        // Buscar transporte asociado al registro
+        const transporte = dynamic?.transporteDescarga?.find(
+          (t) => t.registroMateriaPrimaId === initialData.id
+        );
+
+        if (transporte) {
+          formData.empTransportes = transporte.id; // si el combo usa ID
+          formData.guiaTransportista = transporte.guiaTransportista ?? "";
+          formData.chofer = transporte.chofer?.id ?? null;
+          formData.licConducir = transporte.chofer?.licencia ?? "";
+          formData.placa = transporte.placa ?? "";
+          formData.placa2 = transporte.placa2 ?? "";
+        }
+
+        // Asegurar que los campos clp y codigo se inicialicen correctamente
+        if (initialData.clp) {
+          formData.clp = initialData.clp;
+        }
+        if (initialData.codigo) {
+          formData.codigo = initialData.codigo;
+        }
+        if (initialData.lugReferencia) {
+          formData.lugReferencia = initialData.lugReferencia;
+        }
+
+        console.log("🧩 Datos iniciales del lote:", initialData);
+        console.log("🚚 Transporte encontrado:", transporte);
+        console.log("📋 FormData final:", formData);
+
+        reset(formData);
       } else {
         const emptyValues = {};
         fields.forEach((field) => {
@@ -164,4 +196,3 @@ export function DialogDemo({
     </>
   );
 }
-

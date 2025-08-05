@@ -15,11 +15,9 @@ export const obtenerRegistros = async (req: Request, res: Response) => {
       include: [
         {
           model: Productor,
-          attributes: ["id", "nombre", "clp", "lugReferencia"],
           include: [
             {
               model: Guia,
-              attributes: ["guiaProductor", "pesoGuia"],
             },
             {
               model: Responsable,
@@ -77,6 +75,33 @@ export const crearRegistro = async (req: Request, res: Response) => {
       codigo: codigoGenerado,
     });
 
+    //-- PRODUCTOR
+    //Buscar el objeto completo del productor por su ID
+    const productorSeleccionado = await Productor.findByPk(productorId);
+    await Productor.create({
+      nombre: productorSeleccionado?.nombre ?? "Productor desconocido",
+      clp: req.body.clp,
+      codigo: req.body.codigo,
+      lugReferencia: req.body.lugReferencia,
+      responsableId: req.body.responsable,
+      guiaProductorId: req.body.guia,
+    });
+
+    //-- TRANSPORTE
+    // Buscar el objeto completo de la empresa por su ID
+    const empresaSeleccionada = await TransporteDescarga.findByPk(
+      req.body.empTransportes
+    );
+    await TransporteDescarga.create({
+      empresaTransporte:
+        empresaSeleccionada?.empresaTransporte ?? "Empresa desconocida",
+      placa: req.body.placa,
+      placa2: req.body.placa2,
+      guiaTransportista: req.body.guiaTransportista,
+      choferId: req.body.chofer,
+      registroMateriaPrimaId: nuevo.id,
+    });
+
     res.status(201).json(nuevo);
   } catch (error) {
     console.error("Error al crear registro: ", error);
@@ -102,6 +127,38 @@ export const actualizarRegistro = async (req: Request, res: Response) => {
       return;
     }
 
+    // Buscar el nombre de la empresa de transporte por su ID
+    const empresaSeleccionada = await TransporteDescarga.findByPk(
+      req.body.empTransportes
+    );
+    const nombreEmpresa =
+      empresaSeleccionada?.empresaTransporte ?? "Empresa desconocida";
+
+    // Buscar si ya existe transporte asociado al registro
+    const transporteExistente = await TransporteDescarga.findOne({
+      where: { registroMateriaPrimaId: id },
+    });
+
+    if (transporteExistente) {
+      // Actualizar transporte existente
+      await transporteExistente.update({
+        empresaTransporte: nombreEmpresa,
+        placa: req.body.placa,
+        placa2: req.body.placa2,
+        guiaTransportista: req.body.guiaTransportista,
+        choferId: req.body.chofer,
+      });
+    } else {
+      // Crear nuevo transporte asociado
+      await TransporteDescarga.create({
+        empresaTransporte: nombreEmpresa,
+        placa: req.body.placa,
+        placa2: req.body.placa2,
+        guiaTransportista: req.body.guiaTransportista,
+        choferId: req.body.chofer,
+        registroMateriaPrimaId: id,
+      });
+    }
     // Encontro el registro
     res.status(200).json(registroFinal);
   } catch (error) {

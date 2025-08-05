@@ -25,6 +25,12 @@ class Guia extends Model {
   })
   declare pesoGuia: number;
 
+  @AllowNull(false)
+  @Column({
+    type: DataType.DATE,
+  })
+  declare fechaGuia: string;
+
   @ForeignKey(() => Productor)
   declare productorId: number;
   @BelongsTo(() => Productor)
