@@ -28,7 +28,19 @@ class RegistroMateriaPrima extends Model {
   @Column({
     type: DataType.DATE,
   })
-  declare horaDescarga: Date;
+  declare fecha: string;
+
+  @AllowNull(false)
+  @Column({
+    type: DataType.DATE,
+  })
+  declare horaDescarga: string;
+
+  @AllowNull(false)
+  @Column({
+    type: DataType.DATE,
+  })
+  declare guiaSENASA: string;
 
   @AllowNull(false)
   @Column({
@@ -53,12 +65,6 @@ class RegistroMateriaPrima extends Model {
     type: DataType.STRING(20),
   })
   declare ordenVolcado: string;
-
-  @AllowNull(false)
-  @Column({
-    type: DataType.DATE,
-  })
-  declare fecha: string;
 
   @AllowNull(false)
   @Column({

@@ -156,9 +156,11 @@ export const columnsLote = (
   {
     accessorKey: "fechaGuia",
     header: "Fecha de guía",
-    cell: ({ row }) => (
-      <div className="text-center">{row.getValue("fechaGuia")}</div>
-    ),
+    cell: ({ row }) => {
+      const fecha =
+        row.original.Productor?.guias?.[0]?.fechaGuia ?? "Sin Fecha de Guia";
+      return <div className="text-center">{fecha}</div>;
+    },
   },
   // --- Guías asociadas ---
   {
@@ -171,10 +173,10 @@ export const columnsLote = (
     },
   },
   {
-    accessorKey: "guiaSenasa",
+    accessorKey: "guiaSENASA",
     header: "Guía SENASA",
     cell: ({ row }) => (
-      <div className="text-center">{row.getValue("guiaSenasa")}</div>
+      <div className="text-center">{row.getValue("guiaSENASA")}</div>
     ),
   },
   {
@@ -217,16 +219,20 @@ export const columnsLote = (
   {
     accessorKey: "chofer",
     header: "Chofer",
-    cell: ({ row }) => (
-      <div className="text-center">{row.getValue("chofer")}</div>
-    ),
+    cell: ({ row }) => {
+      const chofer = row.original.transporteDescargas?.[0]?.chofer;
+      const nombreChofer = chofer?.nombre || "Sin Chofer";
+      return <div className="text-center">{nombreChofer}</div>;
+    },
   },
   {
     accessorKey: "licConducir",
     header: "Licencia de conducir",
-    cell: ({ row }) => (
-      <div className="text-center">{row.getValue("licConducir")}</div>
-    ),
+    cell: ({ row }) => {
+      const chofer = row.original.transporteDescargas?.[0]?.chofer;
+      const licencia = chofer?.licencia || "Sin Licencia";
+      return <div className="text-center">{licencia}</div>;
+    },
   },
   // --- Pesos y cantidades ---
   {

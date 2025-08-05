@@ -4,6 +4,7 @@ import { CheckboxGroupInput } from "./CheckboxGroupInput";
 import { RadioGroupInput } from "./RadioGroupInput";
 import { StandardInput } from "./StandardInput";
 import { PalletFieldsGroup } from "./PalletFieldsGroup";
+import { ComboSelectInput } from "./ComboSelectInput";
 
 export const RegInputs = ({ fields, dynamic }) => {
   const {
@@ -21,8 +22,14 @@ export const RegInputs = ({ fields, dynamic }) => {
 
   // Actualiza palletBlock en el form state cada vez que cambian los pallets
   useEffect(() => {
-    const izquierda = palletLeft.map((id) => ({ id, ...(allPallets[id] || {}) }));
-    const derecha = palletRight.map((id) => ({ id, ...(allPallets[id] || {}) }));
+    const izquierda = palletLeft.map((id) => ({
+      id,
+      ...(allPallets[id] || {}),
+    }));
+    const derecha = palletRight.map((id) => ({
+      id,
+      ...(allPallets[id] || {}),
+    }));
 
     setValue("palletBlock", { izquierda, derecha });
   }, [allPallets, palletLeft, palletRight, setValue]);
@@ -114,6 +121,17 @@ export const RegInputs = ({ fields, dynamic }) => {
             );
           }
 
+          // Campo tipo combo
+          if (field.type === "combo") {
+            return (
+              <ComboSelectInput
+                key={field.name}
+                field={field}
+                dynamic={dynamic}
+              />
+            );
+          }
+
           // Campo tipo select
           if (field.type === "select") {
             const options =
@@ -129,7 +147,9 @@ export const RegInputs = ({ fields, dynamic }) => {
                   className="text-sm font-medium text-gray-700 mb-1"
                 >
                   {field.label}
-                  {field.required && <span className="text-red-500 ml-1">*</span>}
+                  {field.required && (
+                    <span className="text-red-500 ml-1">*</span>
+                  )}
                 </label>
 
                 <select
@@ -162,15 +182,21 @@ export const RegInputs = ({ fields, dynamic }) => {
           return (
             <div
               key={field.name}
-              className={`flex flex-col w-full ${field.fullRow ? "col-span-full rounded-lg" : ""}`}
+              className={`flex flex-col w-full ${
+                field.fullRow ? "col-span-full rounded-lg" : ""
+              }`}
             >
               {field.type === "checkboxGroup" && (
                 <CheckboxGroupInput field={field} />
               )}
               {field.type === "radioGroup" && <RadioGroupInput field={field} />}
-              {!["checkboxGroup", "radioGroup", "sectionTitle", "palletBlock"].includes(field.type) && (
-                <StandardInput field={field} />
-              )}
+              {![
+                "checkboxGroup",
+                "radioGroup",
+                "sectionTitle",
+                "palletBlock",
+                "combo",
+              ].includes(field.type) && <StandardInput field={field} />}
 
               {errors[field.name] && (
                 <span className="text-sm text-red-500 mt-1">

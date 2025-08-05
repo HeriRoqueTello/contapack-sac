@@ -5,11 +5,9 @@ import Responsable from "../models/Responsable";
 export const obtenerProductor = async (req, res) => {
   try {
     const productor = await Productor.findAll({
-      attributes: ["id", "nombre", "clp", "codigo"],
       include: [
         {
           model: Guia,
-          attributes: ["guiaProductor", "pesoGuia"],
         },
         {
           model: Responsable,
