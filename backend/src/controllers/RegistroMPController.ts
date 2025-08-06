@@ -18,13 +18,13 @@ export const obtenerRegistros = async (req: Request, res: Response) => {
           model: Productor,
           include: [
             {
-              model: Guia,
-            },
-            {
               model: Responsable,
               attributes: ["id", "nombre"],
             },
           ],
+        },
+        {
+          model: Guia,
         },
         { model: Exportador, attributes: ["id", "nombreEmpresa"] },
         {
