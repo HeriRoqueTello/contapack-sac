@@ -2,8 +2,9 @@ import { getUser } from "@/api/api";
 import { Navbar } from "@/components/admin/dashboard/navbar";
 import { Sidebar } from "@/components/admin/dashboard/sidebar";
 import Loader from "@/components/ui/Loader";
+import { useAuthStore } from "@/store/user-store";
 import { useQuery } from "@tanstack/react-query";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Navigate, Outlet } from "react-router";
 
 export function AdminLayout() {
@@ -13,7 +14,12 @@ export function AdminLayout() {
     refetchOnWindowFocus: false,
   });
   const [sidebarOpen, setSidebarOpen] = useState(false);
-
+  const { setProfile } = useAuthStore();
+  useEffect(() => {
+    if (data) {
+      setProfile(data);
+    }
+  }, [data, setProfile]);
   if (isLoading) return <Loader />;
   if (isError) return <Navigate to={"/auth/login"} />;
 
@@ -27,7 +33,7 @@ export function AdminLayout() {
       />
 
       {/* Main Content Area */}
-      <div className="flex-1 flex flex-col overflow-hidden px-4 overflow-y-auto">
+      <div className="flex-1 flex flex-col overflow-hidden px-4">
         <Navbar data={data} onMenuClick={() => setSidebarOpen(true)} />
         <Outlet />
       </div>
