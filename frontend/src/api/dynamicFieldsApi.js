@@ -23,18 +23,18 @@ export const fetchDynamicFields = async () => {
     api.get("/choferes"),
   ]);
 
-  console.log("Datos dinámicos recibidos:");
-  console.log({
-    productores: productoresRes.data,
-    registrosMP: registrosMPRes.data,
-    exportadores: exportadoresRes.data,
-    productos: productosRes.data,
-    variedades: variedadesRes.data,
-    guiaProductor: guiaProductorRes.data,
-    responsables: responsablesRes.data,
-    transporteDescarga: transporteDescargaRes.data,
-    choferes: choferesRes.data,
-  });
+  // console.log("Datos dinámicos recibidos:");
+  // console.log({
+  //   productores: productoresRes.data,
+  //   registrosMP: registrosMPRes.data,
+  //   exportadores: exportadoresRes.data,
+  //   productos: productosRes.data,
+  //   variedades: variedadesRes.data,
+  //   guiaProductor: guiaProductorRes.data,
+  //   responsables: responsablesRes.data,
+  //   transporteDescarga: transporteDescargaRes.data,
+  //   choferes: choferesRes.data,
+  // });
 
   return {
     productores: productoresRes.data,

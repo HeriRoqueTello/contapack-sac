@@ -71,7 +71,7 @@ export const fields = [
     required: true,
   },
   {
-    name: "guiaProductor",
+    name: "guiaProductorId",
     label: "Guia de Productor",
     type: "combo",
     required: true,

@@ -92,13 +92,13 @@ export function useLoteMutations() {
     nuevoRegistro.campaña = new Date(nuevoRegistro.fecha).getFullYear();
 
     // Usar la guía del formulario si está disponible, sino buscar en las guías existentes
-    if (!nuevoRegistro.guiaProductor) {
-      const guia = dynamicFields.guiaProductor?.find(
-        (g) => g.productorId === Number(nuevoRegistro.productorId)
-      );
-      nuevoRegistro.guiaProductorId = guia?.id || null;
-      nuevoRegistro.pesoGuia = nuevoRegistro.pesoGuia || guia?.pesoGuia || 0.0;
-    }
+    nuevoRegistro.guiaProductorId =
+      Number(nuevoRegistro.guiaProductorId) || null;
+
+    const guia = dynamicFields.guiaProductor?.find(
+      (g) => g.id === nuevoRegistro.guiaProductor
+    );
+    nuevoRegistro.pesoGuia = guia?.pesoGuia || 0.0;
 
     // Usar el responsable del formulario si está disponible, sino buscar en los responsables existentes
     if (!nuevoRegistro.responsable) {
@@ -127,6 +127,8 @@ export function useLoteMutations() {
     );
 
     nuevoRegistro.difPeso = isNaN(difPesoCalculado) ? 0.0 : difPesoCalculado;
+
+    console.log(nuevoRegistro);
 
     // Enviar el registro completo al backend para su persistencia
     addRegistroMPMutation.mutate(nuevoRegistro);

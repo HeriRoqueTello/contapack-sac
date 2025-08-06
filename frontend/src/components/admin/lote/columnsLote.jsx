@@ -158,7 +158,7 @@ export const columnsLote = (
     header: "Fecha de guía",
     cell: ({ row }) => {
       const fecha =
-        row.original.Productor?.guias?.[0]?.fechaGuia ?? "Sin Fecha de Guia";
+        row.original.Guia?.fechaGuia ?? "Sin Fecha de Guia";
       return <div className="text-center">{fecha}</div>;
     },
   },
@@ -167,8 +167,7 @@ export const columnsLote = (
     accessorKey: "guiaProductor",
     header: "Guía productor",
     cell: ({ row }) => {
-      const guia =
-        row.original?.Productor?.guias?.[0]?.guiaProductor ?? "Sin Guía";
+      const guia = row.original.Guia?.guiaProductor ?? "Sin Guía";
       return <div className="text-center">{guia}</div>;
     },
   },
@@ -246,7 +245,7 @@ export const columnsLote = (
     accessorKey: "pesoGuia",
     header: "Peso según Guía",
     cell: ({ row }) => {
-      const valor = row.original.Productor?.guias?.[0]?.pesoGuia ?? "-";
+      const valor = row.original.Guia?.pesoGuia ?? "-";
       return <div className="text-center">{valor}</div>;
     },
   },
