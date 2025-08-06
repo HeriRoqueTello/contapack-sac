@@ -1,5 +1,5 @@
 // DataTable.jsx
-import React from "react"
+import React from "react";
 import {
   flexRender,
   getCoreRowModel,
@@ -7,11 +7,11 @@ import {
   getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
-} from "@tanstack/react-table"
-import { ChevronDown } from "lucide-react"
+} from "@tanstack/react-table";
+import { ChevronDown } from "lucide-react";
 
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   Table,
   TableBody,
@@ -19,19 +19,24 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table"
+} from "@/components/ui/table";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+} from "@/components/ui/dropdown-menu";
 
-export function DataTable({ data, columns, filterColumnKey = "id", placeholder = "Buscar..." }) {
-  const [sorting, setSorting] = React.useState([])
-  const [columnFilters, setColumnFilters] = React.useState([])
-  const [columnVisibility, setColumnVisibility] = React.useState({})
-  const [rowSelection, setRowSelection] = React.useState({})
+export function DataTable({
+  data,
+  columns,
+  filterColumnKey = "id",
+  placeholder = "Buscar...",
+}) {
+  const [sorting, setSorting] = React.useState([]);
+  const [columnFilters, setColumnFilters] = React.useState([]);
+  const [columnVisibility, setColumnVisibility] = React.useState({});
+  const [rowSelection, setRowSelection] = React.useState({});
 
   const table = useReactTable({
     data,
@@ -50,7 +55,7 @@ export function DataTable({ data, columns, filterColumnKey = "id", placeholder =
       columnVisibility,
       rowSelection,
     },
-  })
+  });
 
   return (
     <div className="w-full">
@@ -78,9 +83,7 @@ export function DataTable({ data, columns, filterColumnKey = "id", placeholder =
                   key={column.id}
                   className="capitalize"
                   checked={column.getIsVisible()}
-                  onCheckedChange={(value) =>
-                    column.toggleVisibility(!!value)
-                  }
+                  onCheckedChange={(value) => column.toggleVisibility(!!value)}
                 >
                   {column.id}
                 </DropdownMenuCheckboxItem>
@@ -95,7 +98,10 @@ export function DataTable({ data, columns, filterColumnKey = "id", placeholder =
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => (
-                  <TableHead key={header.id} className="text-center bg-green-800 text-white">
+                  <TableHead
+                    key={header.id}
+                    className="text-center bg-green-800 text-white"
+                  >
                     {header.isPlaceholder
                       ? null
                       : flexRender(
@@ -126,7 +132,10 @@ export function DataTable({ data, columns, filterColumnKey = "id", placeholder =
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={columns.length} className="h-24 text-center">
+                <TableCell
+                  colSpan={columns.length}
+                  className="h-24 text-center"
+                >
                   No hay resultados.
                 </TableCell>
               </TableRow>
@@ -136,7 +145,6 @@ export function DataTable({ data, columns, filterColumnKey = "id", placeholder =
       </div>
 
       <div className="flex w-full items-center justify-end px-2 pt-2 text-sm text-muted-foreground">
-        
         <div className="flex items-center space-x-2">
           <Button
             variant="outline"
@@ -157,5 +165,5 @@ export function DataTable({ data, columns, filterColumnKey = "id", placeholder =
         </div>
       </div>
     </div>
-  )
+  );
 }
