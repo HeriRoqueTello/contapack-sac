@@ -8,6 +8,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useAuthStore } from "@/store/user-store";
 import { LogOut, Menu, Star, UserCog } from "lucide-react";
 import { useNavigate } from "react-router";
 
@@ -31,16 +32,11 @@ export const Navbar = ({ data, onMenuClick }) => {
 
   function removeAuthTokenFromLocalStorage() {
     try {
-      localStorage.removeItem("AUTH_TOKEN");
-      console.log("AUTH_TOKEN eliminado del localStorage.");
+      useAuthStore.getState().logout();
+      console.log("Sesión cerrada y store limpiado.");
       navigate("/");
     } catch (error) {
-      // Captura cualquier error que pueda ocurrir al acceder a localStorage
-      // (ej. si localStorage no está disponible en el entorno, o problemas de seguridad)
-      console.error(
-        "Error al intentar eliminar AUTH_TOKEN del localStorage:",
-        error
-      );
+      console.error("Error al intentar cerrar sesión:", error);
     }
   }
 
