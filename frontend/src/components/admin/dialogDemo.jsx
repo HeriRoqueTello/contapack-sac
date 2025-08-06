@@ -93,10 +93,6 @@ export function DialogDemo({
           formData.lugReferencia = initialData.lugReferencia;
         }
 
-        console.log("🧩 Datos iniciales del lote:", initialData);
-        console.log("🚚 Transporte encontrado:", transporte);
-        console.log("📋 FormData final:", formData);
-
         reset(formData);
       } else {
         const emptyValues = {};
@@ -170,7 +166,7 @@ export function DialogDemo({
                     </DialogDescription>
                   </DialogHeader>
 
-                  <RegInputs fields={fields} dynamic={dynamic} />
+                  <RegInputs fields={fields} dynamic={dynamic} watch={methods.watch}/>
 
                   <DialogFooter className="mt-8 flex justify-end gap-4">
                     <Button

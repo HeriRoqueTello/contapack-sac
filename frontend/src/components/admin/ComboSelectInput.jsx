@@ -1,4 +1,4 @@
-import { useFormContext } from "react-hook-form";
+import { useFormContext, useWatch } from "react-hook-form";
 import { useState, useEffect, useRef } from "react";
 import { ChevronDown, X } from "lucide-react";
 
@@ -13,18 +13,25 @@ export const ComboSelectInput = ({ field, dynamic }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [inputValue, setInputValue] = useState("");
   const [selectedItems, setSelectedItems] = useState([]);
+  const [options, setOptions] = useState([]);
   const inputRef = useRef(null);
 
   const currentValue = watch(field.name);
 
-  const baseOptions =
-    typeof field.options === "function"
-      ? field.options({ dynamic, watch })
-      : Array.isArray(field.options)
-      ? field.options
-      : [];
+  //Escuchar el productorId, por posibles cambios
+  //---Aqui se añaden mas si es necesario
+  const productorId = useWatch({ name: "productorId" });
+  //Cada vez que el productorId o dynamic cambien, se actualiza las opciones
+  useEffect(() => {
+    const updatedOptions =
+      typeof field.options === "function"
+        ? field.options({ dynamic, watch })
+        : Array.isArray(field.options)
+        ? field.options
+        : [];
 
-  const [options, setOptions] = useState(baseOptions);
+    setOptions(updatedOptions);
+  }, [productorId, dynamic]);
 
   useEffect(() => {
     if (field.multiple && Array.isArray(currentValue)) {
@@ -36,7 +43,7 @@ export const ComboSelectInput = ({ field, dynamic }) => {
       const selectedOpt = options.find((opt) => opt.value === currentValue);
       setSelectedItems(selectedOpt ? [selectedOpt] : []);
       setInputValue(selectedOpt?.label || "");
-      
+
       // Forzar la ejecución del onChange cuando se carga un valor inicial (para edición)
       if (selectedOpt && field.onChange) {
         field.onChange({ value: selectedOpt.value, dynamic, setValue, watch });

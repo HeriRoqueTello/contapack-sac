@@ -5,22 +5,32 @@ export const fields = [
     label: "Productor/Proveedor",
     type: "combo",
     required: true,
-    options: ({ dynamic }) =>
-      Array.isArray(dynamic?.productores)
-        ? dynamic.productores.map((p) => ({
-            label: p.nombre,
-            value: p.id,
-            clp: p.clp,
-            codigo: p.codigo,
-            guia: p.guiaProductor,
-            responsable: p.responsable,
-            lugar: p.lugReferencia,
-            fechaGuia: p.fechaGuia,
-          }))
-        : [],
+    options: ({ dynamic }) => {
+      //Si productores no es un array retorna vacío
+      if (!Array.isArray(dynamic?.productores)) return [];
+      //Guarda nombres unicos de los productores
+      const nombresUnicos = new Set();
+      //Filtrar los nombres para obtener solo los que no se repiten
+      const productoresFiltrados = dynamic.productores.filter((p) => {
+        if (nombresUnicos.has(p.nombre)) return false;
+        nombresUnicos.add(p.nombre);
+        return true;
+      });
+      //Retorna los productores filtrados
+      return productoresFiltrados.map((p) => ({
+        label: p.nombre,
+        value: p.id,
+        clp: p.clp,
+        codigo: p.codigo,
+        guia: p.guiaProductor,
+        responsable: p.responsable,
+        lugar: p.lugReferencia,
+        fechaGuia: p.fechaGuia,
+      }));
+    },
+
     onChange: ({ value, dynamic, setValue }) => {
       const productor = dynamic.productores?.find((p) => p.id === value);
-      console.log(productor);
 
       //Si el productor existe en la BD
       if (productor) {
@@ -63,8 +73,25 @@ export const fields = [
   {
     name: "guiaProductor",
     label: "Guia de Productor",
-    type: "text",
+    type: "combo",
     required: true,
+    options: ({ dynamic, watch }) => {
+      //Verifica que dynamic.productores sea un array
+      if (!Array.isArray(dynamic?.productores)) return [];
+      //Busca el id del productor Seleccionado
+      const selectedProductorId = watch("productorId");
+      //Busca el objeto productopr con ese Id
+      const productor = dynamic.productores.find(
+        (p) => p.id === selectedProductorId
+      );
+      //Busca las guias relacionadas en ese objeto productor encontrado
+      const guiasDelProductor = productor?.guias ?? [];
+      //Retorna la lista de guias por productor seleccionado
+      return guiasDelProductor.map((g) => ({
+        label: g.guiaProductor,
+        value: g.id,
+      }));
+    },
   },
   {
     name: "fechaGuia",

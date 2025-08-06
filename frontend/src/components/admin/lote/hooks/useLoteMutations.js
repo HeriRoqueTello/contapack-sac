@@ -76,9 +76,7 @@ export function useLoteMutations() {
       exportador,
       nuevoRegistro.numIngreso
     );
-    console.log("codigo: ", codigo);
-    console.log("codNumero: ", codNumero);
-    
+
     nuevoRegistro.codigo = codigo;
     nuevoRegistro.codNumero = codNumero;
 
@@ -98,7 +96,7 @@ export function useLoteMutations() {
       const guia = dynamicFields.guiaProductor?.find(
         (g) => g.productorId === Number(nuevoRegistro.productorId)
       );
-      nuevoRegistro.guiaProductor = guia?.guiaProductor || "Sin Guía";
+      nuevoRegistro.guiaProductorId = guia?.id || null;
       nuevoRegistro.pesoGuia = nuevoRegistro.pesoGuia || guia?.pesoGuia || 0.0;
     }
 

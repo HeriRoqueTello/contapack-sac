@@ -12,6 +12,7 @@ import Rotulo from "./Rotulo";
 import Productor from "./Productor";
 import Exportador from "./Exportador";
 import TransporteDescarga from "./TransporteDescarga";
+import Guia from "./GuiaProductor";
 
 @Table({
   tableName: "registro_materia_prima",
@@ -126,7 +127,7 @@ class RegistroMateriaPrima extends Model {
   })
   declare detServicio: string;
 
-  //FOREIGNS KEYS
+  //---FOREIGNS KEYS
   // Productor
   @ForeignKey(() => Productor)
   declare productorId: number;
@@ -139,9 +140,17 @@ class RegistroMateriaPrima extends Model {
   @BelongsTo(() => Exportador)
   declare Exportador: Exportador;
 
+  //Guia de Productor
+  @ForeignKey(() => Guia)
+  declare guiaProductorId: number;
+  @BelongsTo(() => Guia)
+  declare Guia: Guia;
+
+  //---CONTENEDOR DE ARRAYS
+  //Rotulo
   @HasMany(() => Rotulo)
   declare rotulos: Rotulo[];
-
+  //Rotulo
   @HasMany(() => TransporteDescarga)
   declare transporteDescargas: TransporteDescarga[];
 }
