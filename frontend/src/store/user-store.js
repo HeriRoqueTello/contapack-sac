@@ -16,17 +16,21 @@ export const useAuthStore = create(
       login: (userToken) => {
         try {
           set(() => ({
-            token: userToken,
+            token: { ...userToken },
             isAuth: true,
           }));
         } catch (error) {
           set(() => ({ errors: error.response.data }));
         }
       },
-      getProfile: (data) => {
-        set(() => ({
-          profile: data,
-        }));
+      setProfile: (profile) => {
+        try {
+          set(() => ({
+            profile: profile,
+          }));
+        } catch (error) {
+          set(() => ({ errors: error.response.data }));
+        }
       },
       logout: () => set(() => ({ token: null, profile: null, isAuth: false })),
       cleanErrors: () => set(() => ({ errors: null })),
