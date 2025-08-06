@@ -11,6 +11,7 @@ import Chofer from "../models/chofer";
 //listar registro -- GET
 export const obtenerRegistros = async (req: Request, res: Response) => {
   try {
+    console.log("cuerpo: ", req.body);
     const registros = await RegistroMateriaPrima.findAll({
       include: [
         {
@@ -55,7 +56,6 @@ export const obtenerRegistros = async (req: Request, res: Response) => {
 export const crearRegistro = async (req: Request, res: Response) => {
   try {
     const { exportadorId, productorId, ...resto } = req.body;
-
     //Obtener códigos desde las tablas relacionadas
     const exportador = await Exportador.findByPk(exportadorId);
     const productor = await Productor.findByPk(productorId);
@@ -65,14 +65,11 @@ export const crearRegistro = async (req: Request, res: Response) => {
       return;
     }
 
-    const codigoGenerado = `${exportador.codigo}${productor.codigo}`;
-
     //Crear el registro con el código generado
     const nuevo = await RegistroMateriaPrima.create({
       ...resto,
       exportadorId,
       productorId,
-      codigo: codigoGenerado,
     });
 
     //-- PRODUCTOR
@@ -81,7 +78,7 @@ export const crearRegistro = async (req: Request, res: Response) => {
     await Productor.create({
       nombre: productorSeleccionado?.nombre ?? "Productor desconocido",
       clp: req.body.clp,
-      codigo: req.body.codigo,
+      codigo: productorSeleccionado.codigo ?? "Sin Codigo",
       lugReferencia: req.body.lugReferencia,
       responsableId: req.body.responsable,
       guiaProductorId: req.body.guia,

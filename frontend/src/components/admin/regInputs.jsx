@@ -6,11 +6,10 @@ import { StandardInput } from "./StandardInput";
 import { PalletFieldsGroup } from "./PalletFieldsGroup";
 import { ComboSelectInput } from "./ComboSelectInput";
 
-export const RegInputs = ({ fields, dynamic }) => {
+export const RegInputs = ({ fields, dynamic, watch }) => {
   const {
     register,
     setValue,
-    watch,
     formState: { errors },
   } = useFormContext();
 
@@ -128,6 +127,7 @@ export const RegInputs = ({ fields, dynamic }) => {
                 key={field.name}
                 field={field}
                 dynamic={dynamic}
+                watch={watch}
               />
             );
           }
@@ -136,7 +136,7 @@ export const RegInputs = ({ fields, dynamic }) => {
           if (field.type === "select") {
             const options =
               typeof field.options === "function"
-                ? field.options({ dynamic })
+                ? field.options({ dynamic, watch })
                 : Array.isArray(field.options)
                 ? field.options
                 : [];
