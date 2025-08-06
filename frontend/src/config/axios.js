@@ -1,3 +1,4 @@
+import { useAuthStore } from "@/store/user-store";
 import axios from "axios";
 
 const baseConfig = {
@@ -8,7 +9,9 @@ const baseConfig = {
 const api = axios.create(baseConfig);
 
 api.interceptors.request.use((config) => {
-  const token = localStorage.getItem("AUTH_TOKEN");
+  // const token = localStorage.getItem("AUTH_TOKEN");
+  const { token } = useAuthStore.getState();
+  console.log(token);
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }

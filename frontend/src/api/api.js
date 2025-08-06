@@ -4,7 +4,7 @@ import api from "../config/axios";
 export async function login({ email, password }) {
   try {
     const { data } = await api.post(`/auth/login`, { email, password });
-    localStorage.setItem("AUTH_TOKEN", data);
+    // localStorage.setItem("AUTH_TOKEN", data);
     return data;
   } catch (error) {
     if (isAxiosError(error) && error.response) {

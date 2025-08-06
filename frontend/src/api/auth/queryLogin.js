@@ -12,11 +12,7 @@ export function useSignIn() {
   return useMutation({
     mutationFn: (user) => login(user),
     onSuccess: (data) => {
-      console.log(data);
-
-      setToken({
-        token: data,
-      });
+      setToken(data);
 
       toast.success("Acceso concedido");
       navigate("/admin");
