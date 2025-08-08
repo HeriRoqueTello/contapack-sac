@@ -62,7 +62,7 @@ const menuItems = [
     title: "Anexo",
     url: "anexo",
     icon: DonutIcon,
-    allowedRoles: ["Administrador", "Encargado"],
+    allowedRoles: ["Administrador", "Encargado", "Personal"],
     allowedAreas: ["Sistemas", "Produccion", "Recepcion", "Calidad"],
   },
   {
