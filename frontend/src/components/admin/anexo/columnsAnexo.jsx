@@ -9,6 +9,7 @@ import {
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import { MoreHorizontal } from "lucide-react";
+import { useAuthStore } from "@/store/user-store";
 
 export const columnsAnexo = (onConfirmar, onEliminar) => [
   {
@@ -22,6 +23,11 @@ export const columnsAnexo = (onConfirmar, onEliminar) => [
     enableHiding: false,
     cell: ({ row }) => {
       const lote = row.original;
+      // eslint-disable-next-line react-hooks/rules-of-hooks
+      const { profile } = useAuthStore();
+      const userRole = profile.Rol.descripcion;
+
+      const isEncargado = userRole === "Encargado";
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -31,14 +37,18 @@ export const columnsAnexo = (onConfirmar, onEliminar) => [
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Opciones</DropdownMenuLabel>
-            
-            <DropdownMenuItem onClick={() => onConfirmar(lote.id)}>
-              Confirmar
-            </DropdownMenuItem>
+            {isEncargado && (
+              <DropdownMenuItem onClick={() => onConfirmar(lote.id)}>
+                Confirmar
+              </DropdownMenuItem>
+            )}
+
             <DropdownMenuItem>Editar</DropdownMenuItem>
-            <DropdownMenuItem onClick={() => onEliminar(lote.id)}>
-              Eliminar
-            </DropdownMenuItem>
+            {isEncargado && (
+              <DropdownMenuItem onClick={() => onEliminar(lote.id)}>
+                Eliminar
+              </DropdownMenuItem>
+            )}
           </DropdownMenuContent>
         </DropdownMenu>
       );
@@ -161,5 +171,4 @@ export const columnsAnexo = (onConfirmar, onEliminar) => [
       <div className="text-center">{row.getValue("Present")}</div>
     ),
   },
- 
 ];

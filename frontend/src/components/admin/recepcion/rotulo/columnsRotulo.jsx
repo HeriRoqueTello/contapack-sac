@@ -10,6 +10,7 @@ import {
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import { MoreHorizontal } from "lucide-react";
+import { useAuthStore } from "@/store/user-store";
 
 export const columnsRotulo = (
   onConfirmar,
@@ -28,6 +29,11 @@ export const columnsRotulo = (
     enableHiding: false,
     cell: ({ row }) => {
       const rotulo = row.original;
+      // eslint-disable-next-line react-hooks/rules-of-hooks
+      const { profile } = useAuthStore();
+      const userRole = profile.Rol.descripcion;
+
+      const isEncargado = userRole === "Encargado";
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -37,10 +43,12 @@ export const columnsRotulo = (
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Opciones</DropdownMenuLabel>
+            {isEncargado && (
+              <DropdownMenuItem onClick={() => onConfirmar(rotulo.id)}>
+                {rotulo.estado === "Confirmado" ? "No confirmar" : "Confirmar"}
+              </DropdownMenuItem>
+            )}
 
-            <DropdownMenuItem onClick={() => onConfirmar(rotulo.id)}>
-              {rotulo.estado === "Confirmado" ? "No confirmar" : "Confirmar"}
-            </DropdownMenuItem>
             <DropdownMenuItem
               onClick={() => {
                 setRegistroEditando(rotulo);
@@ -49,15 +57,17 @@ export const columnsRotulo = (
             >
               Editar
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => onEliminar(rotulo.id)}>
-              Eliminar
-            </DropdownMenuItem>
+            {isEncargado && (
+              <DropdownMenuItem onClick={() => onEliminar(rotulo.id)}>
+                Eliminar
+              </DropdownMenuItem>
+            )}
           </DropdownMenuContent>
         </DropdownMenu>
       );
     },
   },
-    
+
   {
     accessorKey: "estado",
     header: "Estado",
@@ -194,7 +204,4 @@ export const columnsRotulo = (
       </div>
     ),
   },
-  
 ];
-
-

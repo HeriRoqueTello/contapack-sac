@@ -9,6 +9,7 @@ import {
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import { MoreHorizontal } from "lucide-react";
+import { useAuthStore } from "@/store/user-store";
 
 export const columnsLote = (
   onConfirmar,
@@ -30,6 +31,11 @@ export const columnsLote = (
     enableHiding: false,
     cell: ({ row }) => {
       const lote = row.original;
+      // eslint-disable-next-line react-hooks/rules-of-hooks
+      const { profile } = useAuthStore();
+      const userRole = profile.Rol.descripcion;
+
+      const isEncargado = userRole === "Encargado";
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -39,9 +45,11 @@ export const columnsLote = (
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Opciones</DropdownMenuLabel>
-            <DropdownMenuItem onClick={() => onConfirmar(lote.id)}>
-              {lote.estado === "Confirmado" ? "No confirmar" : "Confirmar"}
-            </DropdownMenuItem>
+            {isEncargado && (
+              <DropdownMenuItem onClick={() => onConfirmar(lote.id)}>
+                {lote.estado === "Confirmado" ? "No confirmar" : "Confirmar"}
+              </DropdownMenuItem>
+            )}
             <DropdownMenuItem
               onClick={() => {
                 setRegistroEditando(lote);
@@ -50,9 +58,11 @@ export const columnsLote = (
             >
               Editar
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => onEliminar(lote.id)}>
-              Eliminar
-            </DropdownMenuItem>
+            {isEncargado && (
+              <DropdownMenuItem onClick={() => onEliminar(lote.id)}>
+                Eliminar
+              </DropdownMenuItem>
+            )}
           </DropdownMenuContent>
         </DropdownMenu>
       );
@@ -157,8 +167,7 @@ export const columnsLote = (
     accessorKey: "fechaGuia",
     header: "Fecha de guía",
     cell: ({ row }) => {
-      const fecha =
-        row.original.Guia?.fechaGuia ?? "Sin Fecha de Guia";
+      const fecha = row.original.Guia?.fechaGuia ?? "Sin Fecha de Guia";
       return <div className="text-center">{fecha}</div>;
     },
   },

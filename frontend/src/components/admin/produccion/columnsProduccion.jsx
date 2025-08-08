@@ -9,6 +9,7 @@ import {
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import { MoreHorizontal } from "lucide-react";
+import { useAuthStore } from "@/store/user-store";
 
 export const columnsProduccion = (
   onConfirmar,
@@ -27,6 +28,11 @@ export const columnsProduccion = (
     enableHiding: false,
     cell: ({ row }) => {
       const produccion = row.original;
+      // eslint-disable-next-line react-hooks/rules-of-hooks
+      const { profile } = useAuthStore();
+      const userRole = profile.Rol.descripcion;
+
+      const isEncargado = userRole === "Encargado";
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -36,10 +42,14 @@ export const columnsProduccion = (
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Opciones</DropdownMenuLabel>
-            
-            <DropdownMenuItem onClick={() => onConfirmar(produccion.id)}>
-              {produccion.estado === "Confirmado" ? "No confirmar" : "Confirmar"}
-            </DropdownMenuItem>
+            {isEncargado && (
+              <DropdownMenuItem onClick={() => onConfirmar(produccion.id)}>
+                {produccion.estado === "Confirmado"
+                  ? "No confirmar"
+                  : "Confirmar"}
+              </DropdownMenuItem>
+            )}
+
             <DropdownMenuItem
               onClick={() => {
                 setRegistroEditando(produccion);
@@ -48,9 +58,11 @@ export const columnsProduccion = (
             >
               Editar
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => eliminarRegistro(produccion.id)}>
-              Eliminar
-            </DropdownMenuItem>
+            {isEncargado && (
+              <DropdownMenuItem onClick={() => eliminarRegistro(produccion.id)}>
+                Eliminar
+              </DropdownMenuItem>
+            )}
           </DropdownMenuContent>
         </DropdownMenu>
       );
@@ -105,5 +117,4 @@ export const columnsProduccion = (
       <div className="text-center">{row.getValue("cantEmp")}</div>
     ),
   },
-  
 ];

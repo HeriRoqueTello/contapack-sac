@@ -9,6 +9,7 @@ import {
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import { MoreHorizontal } from "lucide-react";
+import { useAuthStore } from "@/store/user-store";
 
 export const columnsEtiqueta = (
   onConfirmar,
@@ -27,6 +28,11 @@ export const columnsEtiqueta = (
     enableHiding: false,
     cell: ({ row }) => {
       const etiqueta = row.original;
+      // eslint-disable-next-line react-hooks/rules-of-hooks
+      const { profile } = useAuthStore();
+      const userRole = profile.Rol.descripcion;
+
+      const isEncargado = userRole === "Encargado";
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -36,9 +42,14 @@ export const columnsEtiqueta = (
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Opciones</DropdownMenuLabel>
-            <DropdownMenuItem onClick={() => onConfirmar(etiqueta.id)}>
-              {etiqueta.estado === "Confirmado" ? "No confirmar" : "Confirmar"}
-            </DropdownMenuItem>
+            {isEncargado && (
+              <DropdownMenuItem onClick={() => onConfirmar(etiqueta.id)}>
+                {etiqueta.estado === "Confirmado"
+                  ? "No confirmar"
+                  : "Confirmar"}
+              </DropdownMenuItem>
+            )}
+
             <DropdownMenuItem
               onClick={() => {
                 setRegistroEditando(etiqueta);
@@ -47,9 +58,11 @@ export const columnsEtiqueta = (
             >
               Editar
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => onEliminar(etiqueta.id)}>
-              Eliminar
-            </DropdownMenuItem>
+            {isEncargado && (
+              <DropdownMenuItem onClick={() => onEliminar(etiqueta.id)}>
+                Eliminar
+              </DropdownMenuItem>
+            )}
           </DropdownMenuContent>
         </DropdownMenu>
       );
@@ -80,7 +93,6 @@ export const columnsEtiqueta = (
     ),
   },
 
-
   {
     accessorKey: "Producto.nombre",
     header: "Producto",
@@ -99,5 +111,4 @@ export const columnsEtiqueta = (
       </div>
     ),
   },
-  
 ];
