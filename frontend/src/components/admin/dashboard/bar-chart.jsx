@@ -10,7 +10,6 @@ import {
 } from "recharts";
 
 const BarChart = ({ data, selectedProduct }) => {
-  // Nota: La lógica de filtrado se mantiene aquí para que el gráfico sea interactivo
   const filteredData =
     selectedProduct === "all"
       ? data

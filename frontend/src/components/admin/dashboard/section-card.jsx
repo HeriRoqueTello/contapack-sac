@@ -62,7 +62,7 @@ export function SectionCards({ dataRotulo, isLoading, isError }) {
       materiaPrimaKg: calculateValue(rotulosPreviousWeek, "materiaPrimaKg"),
     };
 
-    // Función para calcular el cambio porcentual de forma segura
+    // Calcular el cambio porcentual de forma segura
     const calculateChange = (currentVal, previousVal) => {
       if (previousVal === 0) {
         return currentVal > 0 ? 100 : 0;
