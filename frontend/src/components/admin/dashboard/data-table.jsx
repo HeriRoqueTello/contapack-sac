@@ -13,87 +13,39 @@ import { ChevronLeft, ChevronRight, ArrowUpDown } from "lucide-react";
 import LoadingState from "./LoadingState";
 import EmptyState from "./EmptyState";
 
-export const DataTable = ({ searchTerm, selectedProduct, selectedDate }) => {
+export const DataTable = ({
+  dataRotulo,
+  isLoading,
+  isError,
+  searchTerm,
+  selectedProduct,
+  selectedDate,
+}) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [sortField, setSortField] = useState("fecha");
   const [sortDirection, setSortDirection] = useState("desc");
-  const [isLoading, setIsLoading] = useState(false);
   const itemsPerPage = 5;
 
-  // Mock data
-  const allData = [
-    {
-      codigo: "RE-2025-021",
-      fecha: "2025-07-18",
-      producto: "Frutas",
-      lugar: "Planta Norte",
-      cantidad: "450 Kg",
-      estado: "Completado",
-    },
-    {
-      codigo: "RE-2025-022",
-      fecha: "2025-07-17",
-      producto: "Verduras",
-      lugar: "Planta Sur",
-      cantidad: "800 Kg",
-      estado: "En Proceso",
-    },
-    {
-      codigo: "RE-2025-023",
-      fecha: "2025-07-16",
-      producto: "Otros",
-      lugar: "Planta Este",
-      cantidad: "1,200 Kg",
-      estado: "Completado",
-    },
-    {
-      codigo: "RE-2025-024",
-      fecha: "2025-07-15",
-      producto: "Frutas",
-      lugar: "Planta Norte",
-      cantidad: "620 Kg",
-      estado: "En Proceso",
-    },
-    {
-      codigo: "RE-2025-025",
-      fecha: "2025-07-14",
-      producto: "Verduras",
-      lugar: "Planta Sur",
-      cantidad: "980 Kg",
-      estado: "Completado",
-    },
-    {
-      codigo: "RE-2025-026",
-      fecha: "2025-07-13",
-      producto: "Otros",
-      lugar: "Planta Este",
-      cantidad: "1,500 Kg",
-      estado: "Completado",
-    },
-    {
-      codigo: "RE-2025-027",
-      fecha: "2025-07-12",
-      producto: "Frutas",
-      lugar: "Planta Norte",
-      cantidad: "550 Kg",
-      estado: "En Proceso",
-    },
-    {
-      codigo: "RE-2025-028",
-      fecha: "2025-07-11",
-      producto: "Verduras",
-      lugar: "Planta Sur",
-      cantidad: "1,100 Kg",
-      estado: "Completado",
-    },
-  ];
+  // 2. Mapear, filtrar, ordenar y paginar los datos
+  const mappedAndFilteredData = useMemo(() => {
+    if (!dataRotulo) return [];
 
-  // Filter and sort data
-  const filteredAndSortedData = useMemo(() => {
-    setIsLoading(true);
-    let filtered = allData;
+    // Mapear los datos de rotulo a un formato más simple para la tabla
+    const mapped = dataRotulo.map((item) => ({
+      codigo: `RE-${item.numIngreso.toString().padStart(3, "0")}`, // Generar un código con el ID
+      id: item.id,
+      fecha: new Date(item.createdAt).toLocaleDateString(), // Formatear la fecha
+      createdAt: item.createdAt, // Campo para ordenar
+      producto: item.Producto?.nombre,
+      lugar: item.Productor?.nombre, // Usar el nombre del productor como lugar
+      cantidad: `${item.kgIngresados} Kg`,
+      kgIngresados: item.kgIngresados, // Campo para ordenar
+      estado: item.estado,
+    }));
 
-    // Filter by search term
+    let filtered = mapped;
+
+    // Filtrar por término de búsqueda
     if (searchTerm) {
       filtered = filtered.filter(
         (item) =>
@@ -103,25 +55,44 @@ export const DataTable = ({ searchTerm, selectedProduct, selectedDate }) => {
       );
     }
 
-    // Filter by product type
+    // Filtrar por tipo de producto (usando la lógica del BarChart)
+    const categorizeProduct = (productName) => {
+      const lowerCaseName = productName?.toLowerCase();
+      if (lowerCaseName?.includes("uva") || lowerCaseName?.includes("fruta")) {
+        return "frutas";
+      }
+      if (
+        lowerCaseName?.includes("tomate") ||
+        lowerCaseName?.includes("verdura")
+      ) {
+        return "verduras";
+      }
+      return "otros";
+    };
+
     if (selectedProduct && selectedProduct !== "all") {
-      filtered = filtered.filter((item) =>
-        item.producto.toLowerCase().includes(selectedProduct.toLowerCase())
+      filtered = filtered.filter(
+        (item) =>
+          categorizeProduct(item.producto) === selectedProduct.toLowerCase()
       );
     }
 
-    // Filter by selected date
+    // Filtrar por fecha seleccionada
     if (selectedDate) {
-      const selectedDateString = selectedDate.toISOString().split("T")[0]; // Format YYYY-MM-DD
-      filtered = filtered.filter((item) => item.fecha === selectedDateString);
+      const selectedDateString = selectedDate.toISOString().split("T")[0];
+      filtered = filtered.filter(
+        (item) =>
+          new Date(item.createdAt).toISOString().split("T")[0] ===
+          selectedDateString
+      );
     }
 
-    // Sort data
+    // Ordenar los datos
     filtered.sort((a, b) => {
       let aValue = a[sortField];
       let bValue = b[sortField];
 
-      if (sortField === "fecha") {
+      if (sortField === "createdAt") {
         aValue = new Date(aValue);
         bValue = new Date(bValue);
       }
@@ -133,19 +104,26 @@ export const DataTable = ({ searchTerm, selectedProduct, selectedDate }) => {
       }
     });
 
-    setIsLoading(false);
     return filtered;
-  }, [searchTerm, selectedProduct, selectedDate, sortField, sortDirection]);
+  }, [
+    dataRotulo,
+    searchTerm,
+    selectedProduct,
+    selectedDate,
+    sortField,
+    sortDirection,
+  ]);
 
-  // Pagination
-  const totalPages = Math.ceil(filteredAndSortedData.length / itemsPerPage);
+  // Paginación
+  const totalPages = Math.ceil(mappedAndFilteredData.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
-  const paginatedData = filteredAndSortedData.slice(
+  const paginatedData = mappedAndFilteredData.slice(
     startIndex,
     startIndex + itemsPerPage
   );
 
   const handleSort = (field) => {
+    setCurrentPage(1); // Resetear la página al cambiar el orden
     if (sortField === field) {
       setSortDirection(sortDirection === "asc" ? "desc" : "asc");
     } else {
@@ -156,6 +134,16 @@ export const DataTable = ({ searchTerm, selectedProduct, selectedDate }) => {
 
   if (isLoading) {
     return <LoadingState />;
+  }
+
+  if (isError) {
+    return <div>Error al cargar los datos.</div>;
+  }
+
+  if (paginatedData.length === 0) {
+    return (
+      <EmptyState message="No se encontraron lotes con los filtros aplicados" />
+    );
   }
 
   return (
@@ -236,9 +224,9 @@ export const DataTable = ({ searchTerm, selectedProduct, selectedDate }) => {
                   Mostrando {startIndex + 1} a{" "}
                   {Math.min(
                     startIndex + itemsPerPage,
-                    filteredAndSortedData.length
+                    mappedAndFilteredData.length
                   )}{" "}
-                  de {filteredAndSortedData.length} resultados
+                  de {mappedAndFilteredData.length} resultados
                 </div>
                 <div className="flex items-center space-x-2">
                   <Button
