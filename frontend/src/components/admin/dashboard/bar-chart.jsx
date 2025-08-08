@@ -9,21 +9,16 @@ import {
   ResponsiveContainer,
 } from "recharts";
 
-const BarChart = ({ selectedProduct }) => {
-  const allData = [
-    { name: "Verduras", value: 450, color: "#16a34a" },
-    { name: "Frutas", value: 320, color: "#22c55e" },
-    { name: "Otros", value: 150, color: "#bbf7d0" },
-  ];
-
+const BarChart = ({ data, selectedProduct }) => {
+  // Nota: La lógica de filtrado se mantiene aquí para que el gráfico sea interactivo
   const filteredData =
     selectedProduct === "all"
-      ? allData
-      : allData.filter((item) =>
+      ? data
+      : data.filter((item) =>
           item.name.toLowerCase().includes(selectedProduct)
         );
 
-  const data = filteredData.length > 0 ? filteredData : allData;
+  const chartData = filteredData.length > 0 ? filteredData : [];
 
   return (
     <Card className="bg-white border border-gray-200">
@@ -36,7 +31,7 @@ const BarChart = ({ selectedProduct }) => {
         <div className="h-80">
           <ResponsiveContainer width="100%" height="100%">
             <RechartsBarChart
-              data={data}
+              data={chartData}
               margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
             >
               <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
