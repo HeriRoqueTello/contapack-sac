@@ -37,7 +37,7 @@ export const DataTable = ({
       fecha: new Date(item.createdAt).toLocaleDateString(), // Formatear la fecha
       createdAt: item.createdAt, // Campo para ordenar
       producto: item.Producto?.nombre,
-      lugar: item.Productor?.nombre, // Usar el nombre del productor como lugar
+      productor: item.Productor?.nombre, // Usar el nombre del productor como lugar
       cantidad: `${item.kgIngresados} Kg`,
       kgIngresados: item.kgIngresados, // Campo para ordenar
       estado: item.estado,
@@ -185,7 +185,7 @@ export const DataTable = ({
                       </Button>
                     </TableHead>
                     <TableHead>Producto</TableHead>
-                    <TableHead>Lugar de Producción</TableHead>
+                    <TableHead>Productor/Proveedor</TableHead>
                     <TableHead>Cantidad</TableHead>
                     <TableHead>Estado</TableHead>
                   </TableRow>
@@ -198,7 +198,7 @@ export const DataTable = ({
                       </TableCell>
                       <TableCell>{item.fecha}</TableCell>
                       <TableCell>{item.producto}</TableCell>
-                      <TableCell>{item.lugar}</TableCell>
+                      <TableCell>{item.productor}</TableCell>
                       <TableCell>{item.cantidad}</TableCell>
                       <TableCell>
                         <span
