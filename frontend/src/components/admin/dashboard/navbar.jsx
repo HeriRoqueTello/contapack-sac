@@ -94,15 +94,26 @@ export const Navbar = ({ data, onMenuClick }) => {
                 </div>
               </DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <DropdownMenuLabel>Información</DropdownMenuLabel>
-              <DropdownMenuItem>
-                <UserCog className="mr-2 h-4 w-4" />
-                <span>{data.Rol.descripcion}</span>
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <Star className="mr-2 h-4 w-4" />
-                <span>{data.Area.descripcion}</span>
-              </DropdownMenuItem>
+              <div className="grid grid-cols-2">
+                <div>
+                  <DropdownMenuLabel className={`flex flex-row items-center`}>
+                    <Star className="mr-2 h-4 w-4" />
+                    Area
+                  </DropdownMenuLabel>
+                  <DropdownMenuItem>
+                    <span>{data.Area.descripcion}</span>
+                  </DropdownMenuItem>
+                </div>
+                <div>
+                  <DropdownMenuLabel className={`flex flex-row items-center`}>
+                    <UserCog className="mr-2 h-4 w-4" />
+                    Rol
+                  </DropdownMenuLabel>
+                  <DropdownMenuItem>
+                    <span>{data.Rol.descripcion}</span>
+                  </DropdownMenuItem>
+                </div>
+              </div>
               <DropdownMenuSeparator />
               <DropdownMenuItem
                 onClick={removeAuthTokenFromLocalStorage}
