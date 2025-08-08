@@ -26,7 +26,6 @@ export const DataTable = ({
   const [sortDirection, setSortDirection] = useState("desc");
   const itemsPerPage = 5;
 
-  // 2. Mapear, filtrar, ordenar y paginar los datos
   const mappedAndFilteredData = useMemo(() => {
     if (!dataRotulo) return [];
 
@@ -47,11 +46,12 @@ export const DataTable = ({
 
     // Filtrar por término de búsqueda
     if (searchTerm) {
+      const lowerCaseSearchTerm = searchTerm.toLowerCase();
       filtered = filtered.filter(
         (item) =>
-          item.codigo.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          item.producto.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          item.lugar.toLowerCase().includes(searchTerm.toLowerCase())
+          item.codigo?.toLowerCase().includes(lowerCaseSearchTerm) ||
+          item.producto?.toLowerCase().includes(lowerCaseSearchTerm) ||
+          item.lugar?.toLowerCase().includes(lowerCaseSearchTerm)
       );
     }
 
