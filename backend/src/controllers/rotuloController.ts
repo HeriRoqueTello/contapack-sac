@@ -104,7 +104,8 @@ export const actualizarRotulo = async (req: Request, res: Response) => {
 
     const rotuloOriginal = await Rotulo.findByPk(id);
     if (!rotuloOriginal) {
-      return res.status(404).json({ mensaje: "Registro no encontrado" });
+      res.status(404).json({ mensaje: "Registro no encontrado" });
+      return
     }
 
     const loteAnteriorId = rotuloOriginal.registroMateriaPrimaId;
