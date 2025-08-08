@@ -32,7 +32,8 @@ export const columnsProduccion = (
       const { profile } = useAuthStore();
       const userRole = profile.Rol.descripcion;
 
-      const isEncargado = userRole === "Encargado";
+      const isEncargado =
+        userRole === "Encargado" || userRole === "Administrador";
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
