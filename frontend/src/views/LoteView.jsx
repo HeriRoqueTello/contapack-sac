@@ -8,10 +8,17 @@ import {
   LoteTable,
   fields,
 } from "@/components/admin/lote";
+import { useNavigate } from "react-router";
+import { useAuthStore } from "@/store/user-store";
 
 export function LoteView() {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [registroEditando, setRegistroEditando] = useState(null);
+
+  const { profile } = useAuthStore();
+  const userArea = profile.Area.descripcion;
+  const areasAllow = ["Sistemas", "Recepcion"];
+  const navigate = useNavigate();
 
   // Hooks personalizados
   const {
@@ -56,27 +63,29 @@ export function LoteView() {
     return <LoteError error={errorLote} message="Error al cargar lotes" />;
   if (isErrorRotulo)
     return <LoteError error={errorRotulo} message="Error al cargar rótulos" />;
-
-  return (
-    <>
-      <LoteDialog
-        fields={fields}
-        dynamicFields={dynamicFields}
-        onSubmit={handleSubmit}
-        initialData={registroEditando}
-        onClose={handleCloseDialog}
-        open={dialogOpen}
-        setOpen={setDialogOpen}
-      />
-      <LoteTable
-        dataLote={dataLote}
-        dataRotulo={dataRotulo}
-        dynamicFields={dynamicFields}
-        onConfirmar={handleConfirmar}
-        onEliminar={handleEliminar}
-        onEditar={handleEditar}
-        onOpenDialog={setDialogOpen}
-      />
-    </>
-  );
+  if (areasAllow.includes(userArea)) {
+    return (
+      <>
+        <LoteDialog
+          fields={fields}
+          dynamicFields={dynamicFields}
+          onSubmit={handleSubmit}
+          initialData={registroEditando}
+          onClose={handleCloseDialog}
+          open={dialogOpen}
+          setOpen={setDialogOpen}
+        />
+        <LoteTable
+          dataLote={dataLote}
+          dataRotulo={dataRotulo}
+          dynamicFields={dynamicFields}
+          onConfirmar={handleConfirmar}
+          onEliminar={handleEliminar}
+          onEditar={handleEditar}
+          onOpenDialog={setDialogOpen}
+        />
+      </>
+    );
+  }
+  return navigate(`/admin`);
 }

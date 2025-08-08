@@ -19,9 +19,16 @@ import {
   updateRotulo,
 } from "@/api/rotuloApi";
 import { fetchDynamicFields } from "@/api/dynamicFieldsApi"; // Importa los datos dinámicos
+import { useAuthStore } from "@/store/user-store";
+import { useNavigate } from "react-router";
 
 export function RotuloView() {
   const queryCliente = useQueryClient();
+
+  const { profile } = useAuthStore();
+  const userArea = profile.Area.descripcion;
+  const areasAllow = ["Sistemas", "Recepcion"];
+  const navigate = useNavigate();
 
   // Estado para datos dinámicos (como productores)
   const [dynamicFields, setDynamicFields] = useState({});
@@ -126,41 +133,46 @@ export function RotuloView() {
   // Renderizado condicional
   if (isLoading) return <div>Cargando...</div>;
   if (isError) return <div>Error: {error.message}</div>;
+  if (areasAllow.includes(userArea)) {
+    return (
+      <>
+        <div className="text-end">
+          <DialogDemo
+            fields={fields} // campos del formulario
+            dynamic={dynamicFields} // datos dinámicos como productores
+            title="Rotulo"
+            onSubmit={rotuloEditando ? handleUpdate : handleAdd}
+            initialData={
+              rotuloEditando
+                ? {
+                    ...rotuloEditando,
+                    chequeos: detectarChequeo(rotuloEditando),
+                  }
+                : null
+            }
+            onClose={() => {
+              setRotuloEditando(null);
+              setDialogOpen(false);
+            }}
+            open={dialogOpen}
+            setOpen={setDialogOpen}
+          />
+        </div>
 
-  return (
-    <>
-      <div className="text-end">
-        <DialogDemo
-          fields={fields} // campos del formulario
-          dynamic={dynamicFields} // datos dinámicos como productores
-          title="Rotulo"
-          onSubmit={rotuloEditando ? handleUpdate : handleAdd}
-          initialData={
-            rotuloEditando
-              ? { ...rotuloEditando, chequeos: detectarChequeo(rotuloEditando) }
-              : null
-          }
-          onClose={() => {
-            setRotuloEditando(null);
-            setDialogOpen(false);
-          }}
-          open={dialogOpen}
-          setOpen={setDialogOpen}
+        <DataTable
+          columns={columnsRotulo(
+            handleConfirmar,
+            handleEliminar,
+            setRotuloEditando,
+            setDialogOpen
+          )}
+          data={dataRotulo}
+          filterColumnKey="id"
+          placeholder="Buscar por ID"
+          meta={{ rotulos: dataRotulo }} // <-- aquí pasas los rótulos
         />
-      </div>
-
-      <DataTable
-        columns={columnsRotulo(
-          handleConfirmar,
-          handleEliminar,
-          setRotuloEditando,
-          setDialogOpen
-        )}
-        data={dataRotulo}
-        filterColumnKey="id"
-        placeholder="Buscar por ID"
-        meta={{ rotulos: dataRotulo }} // <-- aquí pasas los rótulos
-      />
-    </>
-  );
+      </>
+    );
+  }
+  return navigate(`/admin`);
 }
