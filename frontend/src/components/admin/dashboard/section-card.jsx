@@ -1,28 +1,7 @@
-import { Badge } from "@/components/ui/badge";
-import {
-  Card,
-  CardAction,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { TrendingDown, TrendingUp } from "lucide-react";
-import MetricCard from "./metric-card";
-import { getRotulos } from "@/api/rotuloApi";
-import { useQuery } from "@tanstack/react-query";
 import { useMemo } from "react";
+import MetricCard from "./metric-card";
 
-export function SectionCards() {
-  const {
-    isLoading,
-    data: dataRotulo,
-    isError,
-  } = useQuery({
-    queryKey: ["rotulos"],
-    queryFn: getRotulos,
-  });
-
+export function SectionCards({ dataRotulo, isLoading, isError }) {
   const metricsData = useMemo(() => {
     if (!dataRotulo) {
       return {
