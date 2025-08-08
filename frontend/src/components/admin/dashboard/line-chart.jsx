@@ -10,22 +10,26 @@ import {
   XAxis,
 } from "recharts";
 
-const data = [
-  { month: "Ene", embarques: 45 },
-  { month: "Feb", embarques: 52 },
-  { month: "Mar", embarques: 48 },
-  { month: "Abr", embarques: 61 },
-  { month: "May", embarques: 55 },
-  { month: "Jun", embarques: 67 },
-  { month: "Jul", embarques: 73 },
-  { month: "Ago", embarques: 69 },
-  { month: "Sep", embarques: 78 },
-  { month: "Oct", embarques: 82 },
-  { month: "Nov", embarques: 89 },
-  { month: "Dic", embarques: 94 },
-];
+export function LineChart({ data }) {
+  const months = [
+    "Ene",
+    "Feb",
+    "Mar",
+    "Abr",
+    "May",
+    "Jun",
+    "Jul",
+    "Ago",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dic",
+  ];
 
-export function LineChart({ selectedProduct }) {
+  const chartData = months.map((month) => {
+    const dataPoint = data.find((d) => d.month === month);
+    return dataPoint || { month: month, embarques: 0 };
+  });
   return (
     <Card className="bg-white border border-gray-200">
       <CardHeader>
@@ -37,7 +41,7 @@ export function LineChart({ selectedProduct }) {
         <div className="h-80">
           <ResponsiveContainer width="100%" height="100%">
             <RechartsLineChart
-              data={data}
+              data={chartData}
               margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
             >
               <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
