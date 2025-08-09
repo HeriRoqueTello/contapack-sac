@@ -19,7 +19,7 @@ export function EmbarqueView() {
 
   const { profile } = useAuthStore();
   const userArea = profile.Area.descripcion;
-  const areasAllow = ["Sistemas", "Produccion", "Recepcion"];
+  const areasAllow = ["Sistemas", "Produccion"];
   const navigate = useNavigate();
 
   const [registroEditando, setRegistroEditando] = useState(null);

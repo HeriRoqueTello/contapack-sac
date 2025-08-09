@@ -14,7 +14,7 @@ export function AnexoView() {
 
   const { profile } = useAuthStore();
   const userArea = profile.Area.descripcion;
-  const areasAllow = ["Sistemas", "Produccion", "Recepcion", "Calidad"];
+  const areasAllow = ["Sistemas", "Produccion", "Calidad"];
   const navigate = useNavigate();
 
   if (areasAllow.includes(userArea)) {

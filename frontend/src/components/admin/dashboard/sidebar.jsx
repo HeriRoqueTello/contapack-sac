@@ -49,7 +49,7 @@ const menuItems = [
     url: "taetiqueta",
     icon: Tag,
     allowedRoles: ["Administrador", "Encargado", "Personal"],
-    allowedAreas: ["Sistemas", "Produccion", "Recepcion"],
+    allowedAreas: ["Sistemas", "Produccion"],
   },
   {
     title: "Produccion",
@@ -63,14 +63,14 @@ const menuItems = [
     url: "anexo",
     icon: DonutIcon,
     allowedRoles: ["Administrador", "Encargado", "Personal"],
-    allowedAreas: ["Sistemas", "Produccion", "Recepcion", "Calidad"],
+    allowedAreas: ["Sistemas", "Produccion", "Calidad"],
   },
   {
     title: "Embarque",
     url: "embarque",
     icon: Package,
     allowedRoles: ["Administrador", "Encargado", "Personal"],
-    allowedAreas: ["Sistemas", "Produccion", "Recepcion"],
+    allowedAreas: ["Sistemas", "Produccion"],
   },
 ];
 

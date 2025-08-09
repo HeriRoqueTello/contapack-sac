@@ -28,7 +28,7 @@ export function EtiquetaView() {
 
   const { profile } = useAuthStore();
   const userArea = profile.Area.descripcion;
-  const areasAllow = ["Sistemas", "Produccion", "Recepcion"];
+  const areasAllow = ["Sistemas", "Produccion"];
   const navigate = useNavigate();
 
   useEffect(() => {
