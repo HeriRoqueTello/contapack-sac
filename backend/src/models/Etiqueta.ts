@@ -10,6 +10,8 @@ import {
 import Productor from "./Productor";
 import Producto from "./Producto";
 import Exportador from "./Exportador";
+import Calibre from "./Calibre";
+import Categoria from "./Categoria";
 
 //jd
 @Table({
@@ -21,8 +23,28 @@ class Etiqueta extends Model {
   declare trazabilidad: string;
 
   @AllowNull(false)
-  @Column(DataType.STRING)
-  declare estado: string;
+  @Column({
+    type: DataType.STRING(25),
+    defaultValue: "No confirmado",
+  })
+  declare estado: string
+
+  @AllowNull(false)
+  @Column({
+    type: DataType.STRING,
+    defaultValue: "China",
+  })
+  declare destino: string;
+
+
+  @AllowNull(false)
+  @Column({
+    type: DataType.DATE,
+    defaultValue: DataType.NOW,
+  })
+  declare fechaEmp: string;
+
+ 
 
   // Productor
   @ForeignKey(() => Productor)
@@ -47,6 +69,20 @@ class Etiqueta extends Model {
 
   @BelongsTo(() => Exportador)
   declare Exportador: Exportador;
+
+  // Calibre
+  @ForeignKey(() => Calibre)
+  @Column
+  declare calibreId: number;
+  @BelongsTo(() => Calibre)
+  declare Calibre: Calibre;
+
+  // Categoria
+  @ForeignKey(() => Categoria)
+  @Column
+  declare categoriaId: number;
+  @BelongsTo(() => Categoria)
+  declare Categoria: Categoria;
 }
 
 export default Etiqueta;

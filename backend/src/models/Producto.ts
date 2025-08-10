@@ -9,9 +9,14 @@ import {
   Table,
 } from "sequelize-typescript";
 import Variedad from "./Variedad";
-import Calibre from "./Calibre";
-import Categoria from "./Categoria";
-import RegistroProduccion from "./RegistroProduccion";
+//<<<<<<< juan16
+//import Calibre from "./Calibre";
+//import Categoria from "./Categoria";
+//=======
+//import Calibre from "./Calibre";
+//import Categoria from "./Categoria";
+//import RegistroProduccion from "./RegistroProduccion";
+//>>>>>>> main
 
 @Table({
   tableName: "producto",
@@ -30,16 +35,16 @@ class Producto extends Model {
   declare Variedad: Variedad;
 
   // Calibre
-  @ForeignKey(() => Calibre)
-  declare calibreId: number;
-  @BelongsTo(() => Calibre)
-  declare Calibre: Calibre;
+  //@ForeignKey(() => Calibre)
+  //declare calibreId: number;
+  //@BelongsTo(() => Calibre)
+  //declare Calibre: Calibre;
 
   // Categoria
-  @ForeignKey(() => Categoria)
-  declare categoriaId: number;
-  @BelongsTo(() => Categoria)
-  declare Categoria: Categoria;
+  //@ForeignKey(() => Categoria)
+  //declare categoriaId: number;
+  //@BelongsTo(() => Categoria)
+  //declare Categoria: Categoria;
 
   @HasOne(() => RegistroProduccion)
   declare RegistroProduccion: RegistroProduccion;

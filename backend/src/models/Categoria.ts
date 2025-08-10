@@ -1,5 +1,5 @@
 import { AllowNull, Column, DataType, HasMany, Model, Table } from "sequelize-typescript";
-import Producto from "./Producto";
+//import Producto from "./Producto";
 
 @Table({
   tableName: "categoria",
@@ -7,12 +7,16 @@ import Producto from "./Producto";
 class Categoria extends Model {
   @AllowNull(false)
   @Column({
-    type: DataType.STRING(90),
+//<<<<<<< juan16
+    type: DataType.STRING(5),
+//=======
+//    type: DataType.STRING(90),
+//>>>>>>> main
   })
   declare nombre: string;
 
-  @HasMany(() => Producto) 
-  declare productos: Producto[];
+  //@HasMany(() => Producto) 
+  //declare productos: Producto[];
 }
 
 export default Categoria;
