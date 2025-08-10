@@ -7,7 +7,11 @@ import { AllowNull, Column, DataType, HasMany, Model, Table } from "sequelize-ty
 class Categoria extends Model {
   @AllowNull(false)
   @Column({
+//<<<<<<< juan16
     type: DataType.STRING(5),
+//=======
+//    type: DataType.STRING(90),
+//>>>>>>> main
   })
   declare nombre: string;
 

@@ -1,68 +1,118 @@
-import { DialogDemo } from "@/components/admin/dialogDemo";
-import { fields } from "@/components/admin/produccion/fieldsProduccion";
-import { DataTable } from "@/components/admin/DataTable";
-import { columnsProduccion } from "@/components/admin/produccion/columnsProduccion";
-import { useTableData } from "@/hooks/useTableData";
-import { useState } from "react";
+import {
+  fields,
+  ProduccionDialog,
+  ProduccionError,
+  ProduccionLoading,
+  ProduccionTable,
+  useProduccionData,
+  useProduccionMutations,
+} from "@/components/admin/produccion";
 import { useAuthStore } from "@/store/user-store";
+import { useMemo, useState } from "react";
 import { useNavigate } from "react-router";
 
 export function ProduccionView() {
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [produccionEditando, setProduccionEditando] = useState(null);
+
   const { profile } = useAuthStore();
   const userArea = profile.Area.descripcion;
   const areasAllow = ["Sistemas", "Produccion"];
   const navigate = useNavigate();
 
+  //Hooks personalizados
   const {
-    data: dataProduccion,
-    addRegistro,
-    confirmRegistro,
-    deleteRegistro,
-    actualizarRegistro,
-  } = useTableData("dataProduccion", [
-    {
-      id: "1",
-      estado: "No Confirmado",
-      nrPallet: "101",
-      categoria: "I",
-      calibre: "10",
-      tipEmp: "Cajas",
-      pesoEmp: "10 kg",
-      cantEmp: "30",
-    },
-  ]);
-  const [registroEditando, setRegistroEditando] = useState(null);
-  const [dialogOpen, setDialogOpen] = useState(false);
+    dataProduccion,
+    dynamicFields,
+    isLoading,
+    isErrorProduccion,
+    errorProduccion,
+  } = useProduccionData();
 
+  //Aplanando la data de producción
+  const transformedData = useMemo(() => {
+    if (!dataProduccion) return [];
+    return dataProduccion.map((produccion) => {
+      const Producto = produccion.Producto;
+      const pallet = produccion.pallets?.[0];
+      const empaque = pallet?.empaque?.[0];
+      const tipoEmpaque = empaque?.tipoEmpaques?.[0]?.tipo || "N/A";
+
+      return {
+        ...produccion,
+        productoNombre: Producto?.nombre,
+        productoVariedad: Producto?.Variedad?.nombre,
+        productoCalibre: Producto?.Calibre?.nombre,
+        productoCategoria: Producto?.Categoria?.nombre,
+        palletNumero: pallet?.numeropallet,
+        palletCantidad: pallet?.cantidad,
+        palletPeso: pallet?.peso,
+        empaqueFecha: empaque
+          ? new Date(empaque.fecha).toLocaleDateString("es-PE", {
+              timeZone: "UTC",
+            })
+          : "N/A",
+        empaquePeso: empaque?.peso,
+        empaqueTipo: tipoEmpaque,
+      };
+    });
+  }, [dataProduccion]);
+
+  const { handleAdd, handleUpdate, handleEliminar, handleConfirmar } =
+    useProduccionMutations();
+
+  //Handlers
+  const handleSubmit = (produccion) => {
+    if (produccionEditando) {
+      handleUpdate(produccionEditando.id, produccion, dynamicFields);
+      setProduccionEditando(null);
+      setDialogOpen(false);
+    } else {
+      handleAdd(produccion, dynamicFields);
+      setDialogOpen(false);
+    }
+  };
+
+  const handleCloseDialog = () => {
+    setProduccionEditando(null);
+    setDialogOpen(false);
+  };
+
+  const handleEditar = (produccion) => {
+    setProduccionEditando(produccion);
+  };
+
+  //Estados de carga y error
+  if (isLoading) return <ProduccionLoading />;
+  if (isErrorProduccion)
+    return (
+      <ProduccionError
+        error={errorProduccion}
+        message="Error al cargar producción"
+      />
+    );
   if (areasAllow.includes(userArea)) {
     return (
-      <div className="text-end">
-        <DialogDemo
+      <>
+        <ProduccionDialog
           fields={fields}
-          title="Registro de Producción Diaria"
-          onSubmit={registroEditando ? actualizarRegistro : addRegistro}
-          initialData={registroEditando}
-          onClose={() => {
-            setRegistroEditando(null);
-            setDialogOpen(false);
-          }}
+          dynamicFields={dynamicFields}
+          onSubmit={handleSubmit}
+          initialData={produccionEditando}
+          onClose={handleCloseDialog}
           open={dialogOpen}
           setOpen={setDialogOpen}
         />
-        <DataTable
-          columns={columnsProduccion(
-            confirmRegistro,
-            deleteRegistro,
-            setRegistroEditando,
-            setDialogOpen
-          )}
-          data={dataProduccion}
-          filterColumnKey="id"
-          placeholder="Buscar por ID"
+        <ProduccionTable
+          dataProduccion={transformedData}
+          dynamicFields={dynamicFields}
+          onConfirmar={handleConfirmar}
+          onEliminar={handleEliminar}
+          onEditar={handleEditar}
+          onOpenDialog={setDialogOpen}
         />
-      </div>
+      </>
     );
   }
-
   return navigate(`/admin`);
 }
