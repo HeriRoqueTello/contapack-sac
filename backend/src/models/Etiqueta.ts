@@ -19,7 +19,10 @@ import Categoria from "./Categoria";
 })
 class Etiqueta extends Model {
   @AllowNull(false)
-  @Column(DataType.STRING)
+  @Column({
+    type: DataType.STRING(50),
+    defaultValue: 121231231231,
+  })
   declare trazabilidad: string;
 
   @AllowNull(false)
@@ -27,7 +30,7 @@ class Etiqueta extends Model {
     type: DataType.STRING(25),
     defaultValue: "No confirmado",
   })
-  declare estado: string
+  declare estado: string;
 
   @AllowNull(false)
   @Column({
@@ -36,15 +39,12 @@ class Etiqueta extends Model {
   })
   declare destino: string;
 
-
   @AllowNull(false)
   @Column({
     type: DataType.DATE,
     defaultValue: DataType.NOW,
   })
   declare fechaEmp: string;
-
- 
 
   // Productor
   @ForeignKey(() => Productor)
@@ -86,8 +86,3 @@ class Etiqueta extends Model {
 }
 
 export default Etiqueta;
-
-
-
-
-

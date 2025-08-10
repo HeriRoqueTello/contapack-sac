@@ -47,7 +47,7 @@ export const obtenerEtiqueta = async (req: Request, res: Response) => {
   try {
     const etiquetas = await Etiqueta.findAll({
       include: [
-        {model: Producto, attributes: ["nombre"],},
+        { model: Producto, attributes: ["nombre"] },
         { model: Calibre, attributes: ["nombre"] },
         { model: Categoria, attributes: ["nombre"] },
         { model: Exportador, attributes: ["nombreEmpresa"] },
@@ -55,7 +55,10 @@ export const obtenerEtiqueta = async (req: Request, res: Response) => {
       ],
     });
 
-    console.log("Etiquetas obtenidas con relaciones:", JSON.stringify(etiquetas, null, 2));
+    console.log(
+      "Etiquetas obtenidas con relaciones:",
+      JSON.stringify(etiquetas, null, 2)
+    );
 
     res.json(etiquetas);
   } catch (error) {
@@ -66,6 +69,8 @@ export const obtenerEtiqueta = async (req: Request, res: Response) => {
 
 // Crear nueva etiqueta
 export const crearEtiqueta = async (req: Request, res: Response) => {
+  console.log("envio al back: ", req.body);
+
   try {
     const nuevaEtiqueta = await Etiqueta.create({
       trazabilidad: req.body.trazabilidad,
@@ -167,11 +172,11 @@ export const confirmarEtiqueta = async (req: Request, res: Response) => {
       include: [
         {
           model: Producto,
-          attributes: ["nombre"], 
+          attributes: ["nombre"],
         },
         { model: Calibre, attributes: ["nombre"] },
         { model: Categoria, attributes: ["nombre"] },
-        
+
         { model: Exportador, attributes: ["nombreEmpresa"] },
         { model: Productor, attributes: ["clp"] },
       ],

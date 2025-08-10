@@ -7,9 +7,15 @@ export const fields = [
   {
     name: "productoNombre",
     label: "Nombre del Producto",
-    type: "text",
+    type: "combo",
+    options: ({ dynamic }) => {
+      if (!Array.isArray(dynamic?.productos)) return [];
+      return dynamic.productos.map((p) => ({
+        label: p.nombre,
+        value: p.id,
+      }));
+    },
     required: true,
-    placeholder: "Ej: Uva",
   },
   {
     name: "productoVariedad",
@@ -21,16 +27,28 @@ export const fields = [
   {
     name: "productoCalibre",
     label: "Calibre",
-    type: "text",
+    type: "select",
+    options: ({ dynamic }) => {
+      if (!Array.isArray(dynamic?.calibres)) return [];
+      return dynamic.calibres.map((c) => ({
+        label: c.nombre,
+        value: c.nombre,
+      }));
+    },
     required: true,
-    placeholder: "Ej: Jumbo",
   },
   {
     name: "productoCategoria",
     label: "Categoría",
-    type: "text",
+    type: "select",
+    options: ({ dynamic }) => {
+      if (!Array.isArray(dynamic?.categorias)) return [];
+      return dynamic.categorias.map((c) => ({
+        label: c.nombre,
+        value: c.nombre,
+      }));
+    },
     required: true,
-    placeholder: "Ej: Categoría I",
   },
 
   // === SECCIÓN PALLET ===

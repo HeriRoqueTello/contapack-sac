@@ -33,7 +33,6 @@ export function EtiquetaView() {
     cargarCampos();
   }, []);
 
-
   // Query para obtener todas las etiquetas
   const {
     isLoading,
@@ -46,10 +45,9 @@ export function EtiquetaView() {
   });
 
   //useEffect(() => {
-    //if (dataEtiqueta) {
-    //console.log("Data de etiquetas recibida en frontend:", dataEtiqueta);}
-   //}, [dataEtiqueta]);
-
+  //if (dataEtiqueta) {
+  //console.log("Data de etiquetas recibida en frontend:", dataEtiqueta);}
+  //}, [dataEtiqueta]);
 
   // Mutaciones
   const deleteEtiquetaMutation = useMutation({
@@ -82,6 +80,7 @@ export function EtiquetaView() {
 
   // Handlers
   const handleAdd = (nuevaEtiqueta) => {
+    console.log("Etiqueta que se envía al backend:", nuevaEtiqueta);
     addEtiquetaMutation.mutate(nuevaEtiqueta);
     setDialogOpen(false);
   };
