@@ -18,6 +18,10 @@ import responsableRouter from "./routes/responsableRouter";
 import guiaProductorRouter from "./routes/guiaProductorRouter";
 import transporteDescargaRouter from "./routes/transporteDescargaRouter";
 import choferRouter from "./routes/choferRouter";
+import produccionRouter from "./routes/produccionRouter";
+import palletRouter from "./routes/palletRouter";
+import empaqueRouter from "./routes/empaqueRouter";
+import tipoEmpaqueRouter from "./routes/tipoEmpaqueRouter";
 
 async function connectDB() {
   try {
@@ -56,5 +60,9 @@ app.use("/api/responsables", responsableRouter);
 app.use("/api/guiaProducto", guiaProductorRouter);
 app.use("/api/transporteDescarga", transporteDescargaRouter);
 app.use("/api/choferes", choferRouter);
+app.use("/api/produccion", produccionRouter);
+app.use("/api/pallets", palletRouter);
+app.use("/api/empaques", empaqueRouter);
+app.use("/api/tipoEmpaques", tipoEmpaqueRouter);
 
 export default app;

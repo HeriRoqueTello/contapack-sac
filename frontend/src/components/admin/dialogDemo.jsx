@@ -46,7 +46,6 @@ export function DialogDemo({
   useEffect(() => {
     if (open) {
       if (initialData) {
-        // --- Cambio principal: reconstruir la estructura "pallets" para edición ---
         const pallets = {};
         // si existen columnas izquierda y derecha, reconstruir objetos para react-hook-form
         if (initialData.palletBlock) {
@@ -58,14 +57,26 @@ export function DialogDemo({
           });
         }
 
+        // extrae primer pallet (si viene en initialData.pallets como array)
+        const pallet =
+          (initialData.pallets && initialData.pallets[0]) ||
+          initialData.pallet ||
+          {};
+        const empaque = (pallet.empaque && pallet.empaque[0]) || {};
+
         // Inicializar campos con valores existentes
         const formData = {
           ...initialData,
-          pallets, // inyectar los pallets reconstruidos
-          fecha: formatDate(initialData.fecha),
+          pallets,
+          // fecha: formatDate(initialData.fecha),
           fechaProceso: formatDate(initialData.fechaProceso),
           fechaGuia: formatDate(initialData.fechaGuia),
           horaDescarga: formatDateTimeLocal(initialData.horaDescarga),
+          // pallet -> campos planos
+          numeroPallet: pallet.numeropallet ?? initialData.numeropallet ?? "",
+          cantidadPallet: pallet.cantidad ?? initialData.cantidad ?? "",
+          pesoPallet: pallet.peso ?? initialData.peso ?? "",
+          posicionPallet: pallet.posicion ?? initialData.posicion ?? "",
         };
 
         // Buscar transporte asociado al registro
@@ -93,6 +104,20 @@ export function DialogDemo({
           formData.lugReferencia = initialData.lugReferencia;
         }
 
+        // --- Añadir esto para manejar el producto al editar ---
+        if (initialData.producto) {
+          formData.productoNombre = initialData.producto.nombre;
+          // Asumimos que el backend devuelve el objeto completo con las relaciones
+          formData.productoVariedad =
+            initialData.producto.variedad?.nombre ?? "";
+          formData.productoCalibre = initialData.producto.calibre?.nombre ?? "";
+          formData.productoCategoria =
+            initialData.producto.categoria?.nombre ?? "";
+        }
+        if (empaque) {
+          formData.empaqueFecha = formatDate(empaque.fecha);
+          formData.empaqueTipo = empaque.tipoEmpaques?.[0]?.tipo ?? "";
+        }
         reset(formData);
       } else {
         const emptyValues = {};
@@ -104,29 +129,52 @@ export function DialogDemo({
               ? formatDate(new Date().toISOString())
               : "";
         });
+        // inicializar los campos de pallet también (por si no están en fields)
+        emptyValues.palletNumero = "";
+        emptyValues.palletCantidad = "";
+        emptyValues.palletPeso = "";
+        emptyValues.empaqueFecha = formatDate(new Date().toISOString());
+        emptyValues.empaqueTipo = "Cajas";
+        emptyValues.empaquePeso = "";
+        // --- Añadir esto para inicializar los campos del producto al crear ---
+        emptyValues.productoNombre = "";
+        emptyValues.productoVariedad = "";
+        emptyValues.productoCalibre = "";
+        emptyValues.productoCategoria = "";
+
         reset(emptyValues);
       }
     }
   }, [open, initialData, fields, reset]);
 
   const handleFormSubmit = (data) => {
-    // --- Agrupar pallets en bloques izquierda y derecha ---
-    if (data.pallets && typeof data.pallets === "object") {
-      const izquierda = [];
-      const derecha = [];
+    const datosParaEnviar = {
+      // Pasamos los campos que pertenecen a RegistroProduccion
+      fecha: data.fecha,
+      estado: data.estado,
 
-      Object.keys(data.pallets).forEach((key) => {
-        const pallet = data.pallets[key];
-        if (key.startsWith("izq_")) izquierda.push(pallet);
-        if (key.startsWith("der_")) derecha.push(pallet);
-      });
+      // Creamos el objeto anidado 'producto'
+      producto: {
+        nombre: data.productoNombre,
+        variedad: data.productoVariedad,
+        calibre: data.productoCalibre,
+        categoria: data.productoCategoria,
+      },
+      // Creamos el objeto anidado 'pallet'
+      pallet: {
+        numero: data.palletNumero,
+        cantidad: data.palletCantidad,
+        peso: data.palletPeso,
+      },
+      // Creamos el objeto anidado 'empaque'
+      empaque: {
+        fecha: data.empaqueFecha,
+        peso: data.empaquePeso,
+        tipo: data.empaqueTipo,
+      },
+    };
 
-      // guardar como "palletBlock" para usar en la tabla
-      data.palletBlock = { izquierda, derecha };
-      delete data.pallets;
-    }
-
-    onSubmit?.(data);
+    onSubmit?.(datosParaEnviar);
     setOpen(false);
     onClose?.();
   };
@@ -166,7 +214,11 @@ export function DialogDemo({
                     </DialogDescription>
                   </DialogHeader>
 
-                  <RegInputs fields={fields} dynamic={dynamic} watch={methods.watch}/>
+                  <RegInputs
+                    fields={fields}
+                    dynamic={dynamic}
+                    watch={methods.watch}
+                  />
 
                   <DialogFooter className="mt-8 flex justify-end gap-4">
                     <Button

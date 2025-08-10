@@ -4,12 +4,14 @@ import {
   Column,
   DataType,
   ForeignKey,
+  HasOne,
   Model,
   Table,
 } from "sequelize-typescript";
 import Variedad from "./Variedad";
 import Calibre from "./Calibre";
 import Categoria from "./Categoria";
+import RegistroProduccion from "./RegistroProduccion";
 
 @Table({
   tableName: "producto",
@@ -39,7 +41,8 @@ class Producto extends Model {
   @BelongsTo(() => Categoria)
   declare Categoria: Categoria;
 
-  // Registro de Produccion
+  @HasOne(() => RegistroProduccion)
+  declare RegistroProduccion: RegistroProduccion;
 }
 
 export default Producto;
