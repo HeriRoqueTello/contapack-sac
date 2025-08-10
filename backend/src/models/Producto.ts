@@ -13,9 +13,9 @@ import Variedad from "./Variedad";
 //import Calibre from "./Calibre";
 //import Categoria from "./Categoria";
 //=======
-//import Calibre from "./Calibre";
-//import Categoria from "./Categoria";
-//import RegistroProduccion from "./RegistroProduccion";
+import Calibre from "./Calibre";
+import Categoria from "./Categoria";
+import RegistroProduccion from "./RegistroProduccion";
 //>>>>>>> main
 
 @Table({
@@ -34,17 +34,15 @@ class Producto extends Model {
   @BelongsTo(() => Variedad)
   declare Variedad: Variedad;
 
-  // Calibre
-  //@ForeignKey(() => Calibre)
-  //declare calibreId: number;
-  //@BelongsTo(() => Calibre)
-  //declare Calibre: Calibre;
+  @ForeignKey(() => Calibre)
+  declare calibreId: number;
+  @BelongsTo(() => Calibre)
+  declare Calibre: Calibre;
 
-  // Categoria
-  //@ForeignKey(() => Categoria)
-  //declare categoriaId: number;
-  //@BelongsTo(() => Categoria)
-  //declare Categoria: Categoria;
+  @ForeignKey(() => Categoria)
+  declare categoriaId: number;
+  @BelongsTo(() => Categoria)
+  declare Categoria: Categoria;
 
   @HasOne(() => RegistroProduccion)
   declare RegistroProduccion: RegistroProduccion;
