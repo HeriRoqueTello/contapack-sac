@@ -77,45 +77,73 @@ export const columnsProduccion = (
     ),
   },
   {
-    accessorKey: "nrPallet",
-    header: "Número de Pallet",
+    accessorKey: "productoNombre",
+    header: "Producto",
     cell: ({ row }) => (
-      <div className="text-center">{row.getValue("nrPallet")}</div>
+      <div className="text-center">{row.getValue("productoNombre")}</div>
     ),
   },
   {
-    accessorKey: "categoria",
-    header: "Categoría",
+    accessorKey: "productoVariedad",
+    header: "Variedad",
     cell: ({ row }) => (
-      <div className="text-center">{row.getValue("categoria")}</div>
+      <div className="text-center">{row.getValue("productoVariedad")}</div>
     ),
   },
   {
-    accessorKey: "calibre",
+    accessorKey: "productoCalibre",
     header: "Calibre",
     cell: ({ row }) => (
-      <div className="text-center">{row.getValue("calibre")}</div>
+      <div className="text-center">{row.getValue("productoCalibre")}</div>
     ),
   },
   {
-    accessorKey: "tipEmp",
-    header: "Tipo de empaque",
+    accessorKey: "productoCategoria",
+    header: "Categoria",
     cell: ({ row }) => (
-      <div className="text-center">{row.getValue("tipEmp")}</div>
+      <div className="text-center">{row.getValue("productoCategoria")}</div>
     ),
   },
   {
-    accessorKey: "pesoEmp",
-    header: "Peso por empaque",
+    accessorKey: "palletNumero",
+    header: "N° Pallet",
     cell: ({ row }) => (
-      <div className="text-center">{row.getValue("pesoEmp")}</div>
+      <div className="text-center">{row.getValue("palletNumero")}</div>
     ),
   },
   {
-    accessorKey: "cantEmp",
-    header: "Cantidad de empaques",
+    accessorKey: "palletCantidad",
+    header: "Cant. Cajas",
     cell: ({ row }) => (
-      <div className="text-center">{row.getValue("cantEmp")}</div>
+      <div className="text-center">{row.getValue("palletCantidad")}</div>
+    ),
+  },
+  {
+    accessorKey: "palletPeso",
+    header: "Peso Pallet (kg)",
+    cell: ({ row }) => (
+      <div className="text-center">{row.getValue("palletPeso")}</div>
+    ),
+  },
+  {
+    accessorKey: "empaqueFecha",
+    header: "Fecha empaque",
+    cell: ({ row }) => (
+      <div className="text-center">{row.getValue("empaqueFecha")}</div>
+    ),
+  },
+  {
+    accessorKey: "empaquePeso",
+    header: "Peso empaque (kg)",
+    cell: ({ row }) => (
+      <div className="text-center">{row.getValue("empaquePeso")}</div>
+    ),
+  },
+  {
+    accessorKey: "empaqueTipo",
+    header: "Tipo Empaque",
+    cell: ({ row }) => (
+      <div className="text-center">{row.getValue("empaqueTipo")}</div>
     ),
   },
 ];

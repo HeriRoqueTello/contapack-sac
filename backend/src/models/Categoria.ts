@@ -7,7 +7,7 @@ import Producto from "./Producto";
 class Categoria extends Model {
   @AllowNull(false)
   @Column({
-    type: DataType.STRING(2),
+    type: DataType.STRING(90),
   })
   declare nombre: string;
 
