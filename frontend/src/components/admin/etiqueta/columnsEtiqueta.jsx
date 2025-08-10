@@ -1,4 +1,3 @@
-import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -9,7 +8,6 @@ import {
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import { MoreHorizontal } from "lucide-react";
-import { useAuthStore } from "@/store/user-store";
 
 export const columnsEtiqueta = (
   onConfirmar,
@@ -28,12 +26,6 @@ export const columnsEtiqueta = (
     enableHiding: false,
     cell: ({ row }) => {
       const etiqueta = row.original;
-      // eslint-disable-next-line react-hooks/rules-of-hooks
-      const { profile } = useAuthStore();
-      const userRole = profile.Rol.descripcion;
-
-      const isEncargado =
-        userRole === "Encargado" || userRole === "Administrador";
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -43,14 +35,9 @@ export const columnsEtiqueta = (
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Opciones</DropdownMenuLabel>
-            {isEncargado && (
-              <DropdownMenuItem onClick={() => onConfirmar(etiqueta.id)}>
-                {etiqueta.estado === "Confirmado"
-                  ? "No confirmar"
-                  : "Confirmar"}
-              </DropdownMenuItem>
-            )}
-
+            <DropdownMenuItem onClick={() => onConfirmar(etiqueta.id)}>
+              {etiqueta.estado === "Confirmado" ? "No confirmar" : "Confirmar"}
+            </DropdownMenuItem>
             <DropdownMenuItem
               onClick={() => {
                 setRegistroEditando(etiqueta);
@@ -59,11 +46,9 @@ export const columnsEtiqueta = (
             >
               Editar
             </DropdownMenuItem>
-            {isEncargado && (
-              <DropdownMenuItem onClick={() => onEliminar(etiqueta.id)}>
-                Eliminar
-              </DropdownMenuItem>
-            )}
+            <DropdownMenuItem onClick={() => onEliminar(etiqueta.id)}>
+              Eliminar
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       );
@@ -73,16 +58,10 @@ export const columnsEtiqueta = (
     accessorKey: "estado",
     header: "Estado",
     cell: ({ row }) => (
-      <div className="text-center capitalize">{row.getValue("estado")}</div>
+      <div className="text-center ">{row.getValue("estado")}</div>
     ),
   },
-  {
-    accessorKey: "trazabilidad",
-    header: "Trazabilidad",
-    cell: ({ row }) => (
-      <div className="text-center">{row.getValue("trazabilidad")}</div>
-    ),
-  },
+  
 
   {
     accessorKey: "Productor.clp",
@@ -95,15 +74,6 @@ export const columnsEtiqueta = (
   },
 
   {
-    accessorKey: "Producto.nombre",
-    header: "Producto",
-    cell: ({ row }) => (
-      <div className="text-center">
-        {row.original.Producto?.nombre || "Sin producto"}
-      </div>
-    ),
-  },
-  {
     accessorKey: "Exportador.nombreEmpresa",
     header: "Exportador",
     cell: ({ row }) => (
@@ -112,4 +82,61 @@ export const columnsEtiqueta = (
       </div>
     ),
   },
+
+
+  {
+    accessorKey: "Producto.nombre",
+    header: "Producto",
+    cell: ({ row }) => (
+      <div className="text-center">
+        {row.original.Producto?.nombre || "Sin producto"}
+      </div>
+    ),
+  },
+
+   {
+    accessorKey: "Calibre.nombre", 
+    header: "Calibre",
+
+    cell: ({ row }) => (
+      <div className="text-center">
+        {row.original.Calibre?.nombre || ""}
+      </div>
+    ),
+  },
+  {
+    accessorKey: "Categoria.nombre", 
+    header: "Categoría",
+    cell: ({ row }) => (
+      <div className="text-center">
+        {row.original.Categoria?.nombre || ""}
+      </div>
+    ),
+  },
+   
+ 
+
+  {
+    accessorKey: "trazabilidad",
+    header: "Trazabilidad",
+    cell: ({ row }) => (
+      <div className="text-center">{row.getValue("trazabilidad")}</div>
+    ),
+  },
+
+  {
+    accessorKey: "fechaEmp",
+    header: "Fecha de Empaque",
+    cell: ({ row }) => (
+      <div className="text-center">{row.getValue("fechaEmp")}</div>
+    ),
+  },    
+
+  {
+    accessorKey: "destino",
+    header: "Destino",
+    cell: ({ row }) => (
+      <div className="text-center">{row.getValue("destino")}</div>
+    ),
+  },    
 ];

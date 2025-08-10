@@ -11,6 +11,8 @@ export const fetchDynamicFields = async () => {
     responsablesRes,
     transporteDescargaRes,
     choferesRes,
+    calibresRes,
+    categoriasRes,
   ] = await Promise.all([
     api.get("/productores"),
     api.get("/registroMP"),
@@ -21,6 +23,8 @@ export const fetchDynamicFields = async () => {
     api.get("/responsables"),
     api.get("/transporteDescarga"),
     api.get("/choferes"),
+    api.get("/calibres"),
+    api.get("/categorias"),
   ]);
 
   // console.log("Datos dinámicos recibidos:");
@@ -46,5 +50,7 @@ export const fetchDynamicFields = async () => {
     responsables: responsablesRes.data,
     transporteDescarga: transporteDescargaRes.data,
     choferes: choferesRes.data,
+    calibres: calibresRes.data,
+    categorias: categoriasRes.data,
   };
 };

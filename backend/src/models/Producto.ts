@@ -8,8 +8,8 @@ import {
   Table,
 } from "sequelize-typescript";
 import Variedad from "./Variedad";
-import Calibre from "./Calibre";
-import Categoria from "./Categoria";
+//import Calibre from "./Calibre";
+//import Categoria from "./Categoria";
 
 @Table({
   tableName: "producto",
@@ -28,16 +28,16 @@ class Producto extends Model {
   declare Variedad: Variedad;
 
   // Calibre
-  @ForeignKey(() => Calibre)
-  declare calibreId: number;
-  @BelongsTo(() => Calibre)
-  declare Calibre: Calibre;
+  //@ForeignKey(() => Calibre)
+  //declare calibreId: number;
+  //@BelongsTo(() => Calibre)
+  //declare Calibre: Calibre;
 
   // Categoria
-  @ForeignKey(() => Categoria)
-  declare categoriaId: number;
-  @BelongsTo(() => Categoria)
-  declare Categoria: Categoria;
+  //@ForeignKey(() => Categoria)
+  //declare categoriaId: number;
+  //@BelongsTo(() => Categoria)
+  //declare Categoria: Categoria;
 
   // Registro de Produccion
 }
