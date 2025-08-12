@@ -165,9 +165,10 @@ export const actualizarProduccion = async (req: Request, res: Response) => {
 
     const produccion = await RegistroProduccion.findByPk(id);
     if (!produccion) {
-      return res
+      res
         .status(404)
         .json({ mensaje: "Registro de producción no encontrado" });
+      return;
     }
 
     if (productoData && productoData.nombre) {
