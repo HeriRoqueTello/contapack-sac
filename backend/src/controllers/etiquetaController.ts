@@ -161,7 +161,8 @@ export const confirmarEtiqueta = async (req: Request, res: Response) => {
     const etiqueta = await Etiqueta.findByPk(id);
 
     if (!etiqueta) {
-      return res.status(404).json({ error: "Etiqueta no encontrada" });
+      res.status(404).json({ error: "Etiqueta no encontrada" });
+      return;
     }
 
     etiqueta.estado =
