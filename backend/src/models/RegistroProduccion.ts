@@ -34,10 +34,10 @@ class RegistroProduccion extends Model {
   @BelongsTo(() => Etiqueta)
   declare etiqueta: Etiqueta;
 
-  @ForeignKey(() => Producto)
-  declare productoId: number;
-  @BelongsTo(() => Producto)
-  declare Producto: Producto;
+  // @ForeignKey(() => Producto)
+  // declare productoId: number;
+  // @BelongsTo(() => Producto)
+  // declare Producto: Producto;
 
   @HasMany(() => Pallet)
   declare pallets: Pallet[];

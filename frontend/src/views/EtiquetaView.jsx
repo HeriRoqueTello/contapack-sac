@@ -1,139 +1,112 @@
-import { useState, useEffect } from "react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-
-// Componentes
-import { DialogDemo } from "@/components/admin/dialogDemo";
-import { DataTable } from "@/components/admin/DataTable";
-import { columnsEtiqueta } from "@/components/admin/etiqueta/columnsEtiqueta";
-import { fields } from "@/components/admin/etiqueta/fieldsEtiqueta";
-
-// API
+import { normalizarEtiqueta } from "@/components/admin/etiqueta/utils/EtiquetaUtils";
 import {
-  confirmarEtiqueta,
-  createEtiqueta,
-  deleteEtiqueta,
-  getEtiquetas,
-  updateEtiqueta,
-} from "@/api/etiquetaApi";
-import { fetchDynamicFields } from "@/api/dynamicFieldsApi";
+  EtiquetaDialog,
+  EtiquetaError,
+  EtiquetaLoading,
+  EtiquetaTable,
+  fields,
+  useEtiquetaData,
+  useEtiquetaMutations,
+} from "@/components/admin/etiqueta";
+import { useAuthStore } from "@/store/user-store";
+import { useMemo, useState } from "react";
+import { useNavigate } from "react-router";
 
 export function EtiquetaView() {
-  const queryCliente = useQueryClient();
-
-  const [dynamicFields, setDynamicFields] = useState({});
   const [dialogOpen, setDialogOpen] = useState(false);
   const [etiquetaEditando, setEtiquetaEditando] = useState(null);
 
-  useEffect(() => {
-    const cargarCampos = async () => {
-      const data = await fetchDynamicFields(); // trae productos y exportadores
-      console.log("Datos dinámicos recibidos:", data);
-      setDynamicFields(data);
-    };
-    cargarCampos();
-  }, []);
+  const { profile } = useAuthStore();
+  const userArea = profile.Area.descripcion;
+  const areasAllow = ["Sistemas", "Calidad"];
+  const navigate = useNavigate();
 
-  // Query para obtener todas las etiquetas
   const {
+    dataEtiqueta,
+    dynamicFields,
     isLoading,
-    data: dataEtiqueta,
-    isError,
-    error,
-  } = useQuery({
-    queryKey: ["etiquetas"],
-    queryFn: getEtiquetas,
-  });
+    isErrorEtiqueta,
+    errorEtiqueta,
+  } = useEtiquetaData();
 
-  //useEffect(() => {
-  //if (dataEtiqueta) {
-  //console.log("Data de etiquetas recibida en frontend:", dataEtiqueta);}
-  //}, [dataEtiqueta]);
+  const {
+    addEtiquetaMutate,
+    updateEtiquetaMutate,
+    deleteEtiquetaMutate,
+    confirmarEtiquetaMutate,
+  } = useEtiquetaMutations();
 
-  // Mutaciones
-  const deleteEtiquetaMutation = useMutation({
-    mutationFn: deleteEtiqueta,
-    onSuccess: () => {
-      queryCliente.invalidateQueries(["etiquetas"]);
-    },
-  });
+  const transformedData = useMemo(() => {
+    if (!dataEtiqueta) return [];
+    return dataEtiqueta.map((etiqueta) => ({
+      ...etiqueta,
+      productorClp: etiqueta.Productor?.clp,
+      exportadorNombre: etiqueta.Exportador?.nombreEmpresa,
+      productoNombre: etiqueta.Producto?.nombre,
+      variedadNombre: etiqueta.Variedad?.nombre,
+    }));
+  }, [dataEtiqueta]);
 
-  const updateEtiquetaMutation = useMutation({
-    mutationFn: ({ id, datos }) => updateEtiqueta(id, datos),
-    onSuccess: () => {
-      queryCliente.invalidateQueries(["etiquetas"]);
-    },
-  });
-
-  const addEtiquetaMutation = useMutation({
-    mutationFn: createEtiqueta,
-    onSuccess: () => {
-      queryCliente.invalidateQueries(["etiquetas"]);
-    },
-  });
-
-  const confirmarEtiquetaMutation = useMutation({
-    mutationFn: confirmarEtiqueta,
-    onSuccess: () => {
-      queryCliente.invalidateQueries(["etiquetas"]);
-    },
-  });
-
-  // Handlers
-  const handleAdd = (nuevaEtiqueta) => {
-    console.log("Etiqueta que se envía al backend:", nuevaEtiqueta);
-    addEtiquetaMutation.mutate(nuevaEtiqueta);
+  const handleAdd = (formData) => {
+    addEtiquetaMutate.mutate(formData);
     setDialogOpen(false);
   };
 
-  const handleUpdate = (etiquetaActualizada) => {
-    updateEtiquetaMutation.mutate({
-      id: etiquetaEditando.id,
-      datos: etiquetaActualizada,
-    });
+  const handleUpdate = (formData) => {
+    updateEtiquetaMutate.mutate({ id: etiquetaEditando.id, datos: formData });
     setEtiquetaEditando(null);
     setDialogOpen(false);
   };
 
-  const handleEliminar = (id) => {
-    deleteEtiquetaMutation.mutate(id);
+  const handleSubmit = (formData) => {
+    if (etiquetaEditando) {
+      handleUpdate(formData);
+    } else {
+      handleAdd(formData);
+    }
   };
 
-  const handleConfirmar = (id) => {
-    confirmarEtiquetaMutation.mutate(id);
+  const handleEditar = (etiqueta) => {
+    const datosNormalizados = normalizarEtiqueta(etiqueta);
+    setEtiquetaEditando(datosNormalizados);
+    setDialogOpen(true);
   };
 
-  if (isLoading) return <div>Cargando...</div>;
-  if (isError) return <div>Error: {error.message}</div>;
+  const handleEliminar = (id) => deleteEtiquetaMutate.mutate(id);
+  const handleConfirmar = (id) => confirmarEtiquetaMutate.mutate(id);
 
-  return (
-    <>
-      <div className="text-end">
-        <DialogDemo
+  const handleCloseDialog = () => {
+    setEtiquetaEditando(null);
+    setDialogOpen(false);
+  };
+
+  if (isLoading) return <EtiquetaLoading />;
+  if (isErrorEtiqueta)
+    return (
+      <EtiquetaError error={errorEtiqueta} message="Error al cargar etiqueta" />
+    );
+
+  if (areasAllow.includes(userArea)) {
+    return (
+      <>
+        <EtiquetaDialog
           fields={fields}
-          dynamic={dynamicFields}
-          title="Etiqueta"
-          onSubmit={etiquetaEditando ? handleUpdate : handleAdd}
+          dynamicFields={dynamicFields}
+          onSubmit={handleSubmit}
           initialData={etiquetaEditando}
-          onClose={() => {
-            setEtiquetaEditando(null);
-            setDialogOpen(false);
-          }}
+          onClose={handleCloseDialog}
           open={dialogOpen}
           setOpen={setDialogOpen}
         />
-      </div>
-
-      <DataTable
-        columns={columnsEtiqueta(
-          handleConfirmar,
-          handleEliminar,
-          setEtiquetaEditando,
-          setDialogOpen
-        )}
-        data={dataEtiqueta}
-        filterColumnKey="id"
-        placeholder="Buscar por ID"
-      />
-    </>
-  );
+        <EtiquetaTable
+          dataEtiqueta={transformedData}
+          onConfirmar={handleConfirmar}
+          onEliminar={handleEliminar}
+          onEditar={handleEditar}
+          onOpenDialog={setDialogOpen}
+        />
+      </>
+    );
+  }
+  return navigate(`/admin`);
 }

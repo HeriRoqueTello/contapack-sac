@@ -45,65 +45,12 @@ export function useProduccionMutations() {
       queryCliente.invalidateQueries(["produccion"]);
     },
   });
-
-  /**
-   * Maneja la creación de un nuevo registro de producción
-   */
-
-  const handleAdd = (nuevaProduccion, dynamicFields) => {
-    const payload = {
-      ...nuevaProduccion,
-      ...dynamicFields,
-    };
-
-    payload.fecha = new Date().toISOString().split("T")[0];
-    payload.estado = "No confirmado";
-
-    addProduccionMutate.mutate(payload);
-  };
-
-  /**
-   * Maneja la actualización de un registro de producción existente
-   */
-
-  const handleUpdate = (id, produccionActualizado, dynamicFields) => {
-    //Asginar la fecha actual en formato YYYY-MM-DD
-    produccionActualizado.fecha = new Date().toISOString().split("T")[0];
-    updateProduccionMutate.mutate({
-      id: id,
-      datos: {
-        ...produccionActualizado,
-        ...dynamicFields,
-      },
-    });
-  };
-
-  /**
-   * Maneja la eliminación de un registro de producción
-   */
-
-  const handleEliminar = (id) => {
-    deleteProduccionMutate.mutate(id);
-  };
-
-  /**
-   * Maneja la confirmación de un registro de producción
-   */
-
-  const handleConfirmar = (id) => {
-    confirmarProduccionMutate.mutate(id);
-  };
-
+  
   return {
     //Mutaciones
     addProduccionMutate,
     updateProduccionMutate,
     deleteProduccionMutate,
-
-    //Handlers
-    handleAdd,
-    handleUpdate,
-    handleEliminar,
-    handleConfirmar,
+    confirmarProduccionMutate,
   };
 }

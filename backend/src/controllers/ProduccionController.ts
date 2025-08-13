@@ -6,15 +6,16 @@ import RegistroProduccion from "../models/RegistroProduccion";
 import TipoEmpaque from "../models/TipoEmpaque";
 import Producto from "../models/Producto";
 import Variedad from "../models/Variedad";
-import Categoria from "../models/Categoria";
-import Calibre from "../models/Calibre";
 
 //listar producción -- GET
 export const obtenerProduccion = async (req: Request, res: Response) => {
   try {
     const produccion = await RegistroProduccion.findAll({
       include: [
-        { model: Etiqueta },
+        {
+          model: Etiqueta,
+          include: [{ model: Producto }, { model: Variedad }],
+        },
         {
           model: Pallet,
           include: [
@@ -25,20 +26,6 @@ export const obtenerProduccion = async (req: Request, res: Response) => {
                   model: TipoEmpaque,
                 },
               ],
-            },
-          ],
-        },
-        {
-          model: Producto,
-          include: [
-            {
-              model: Categoria,
-            },
-            {
-              model: Calibre,
-            },
-            {
-              model: Variedad,
             },
           ],
         },
@@ -57,42 +44,17 @@ export const obtenerProduccion = async (req: Request, res: Response) => {
 export const crearProduccion = async (req: Request, res: Response) => {
   try {
     const {
+      etiqueta: etiquetaData,
       pallet: palletData,
       empaque: empaqueData,
-      producto,
       ...produccionData
     } = req.body;
 
-    //----POST-PRODUCCIÓN
-    const [categoria] = await Categoria.findOrCreate({
-      where: { nombre: producto.categoria },
-      defaults: { nombre: producto.categoria },
+    //----POST-ETIQUETA (SOLO BUSQUEDA)
+    const etiquetaExistente = await Etiqueta.findOne({
+      where: { id: etiquetaData.id },
     });
-    const [calibre] = await Calibre.findOrCreate({
-      where: { nombre: producto.calibre },
-      defaults: { nombre: producto.calibre },
-    });
-    const [variedad] = await Variedad.findOrCreate({
-      where: { nombre: producto.variedad },
-      defaults: { nombre: producto.variedad },
-    });
-
-    const [productoCreado] = await Producto.findOrCreate({
-      where: {
-        nombre: producto.nombre,
-        variedadId: variedad.id,
-        calibreId: calibre.id,
-        categoriaId: categoria.id,
-      },
-      defaults: {
-        nombre: producto.nombre,
-        variedadId: variedad.id,
-        calibreId: calibre.id,
-        categoriaId: categoria.id,
-      },
-    });
-
-    produccionData.productoId = productoCreado.id;
+    produccionData.etiquetaId = etiquetaExistente.id;
 
     //----POST-PRODUCCION(PRINCIPAL)
     const nuevaProduccion = await RegistroProduccion.create(produccionData);
@@ -141,7 +103,7 @@ export const crearProduccion = async (req: Request, res: Response) => {
     //Respuesta final con todo
     res.status(201).json({
       produccion: nuevaProduccion,
-      producto: productoCreado,
+      etiqueta: etiquetaExistente,
       pallet: nuevoPallet,
       empaque: nuevoEmpaque,
       tipoEmpaque: nuevoTipoEmpaque,
@@ -157,7 +119,7 @@ export const actualizarProduccion = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     const {
-      producto: productoData,
+      etiqueta: etiquetaData,
       pallet: palletData,
       empaque: empaqueData,
       ...produccionData
@@ -165,35 +127,24 @@ export const actualizarProduccion = async (req: Request, res: Response) => {
 
     const produccion = await RegistroProduccion.findByPk(id);
     if (!produccion) {
-      res
-        .status(404)
-        .json({ mensaje: "Registro de producción no encontrado" });
+      res.status(404).json({ mensaje: "Registro de producción no encontrado" });
       return;
     }
 
-    if (productoData && productoData.nombre) {
-      const [categoria] = await Categoria.findOrCreate({
-        where: { nombre: productoData.categoria },
-      });
-      const [calibre] = await Calibre.findOrCreate({
-        where: { nombre: productoData.calibre },
-      });
-      const [variedad] = await Variedad.findOrCreate({
-        where: { nombre: productoData.variedad },
-      });
-      const [productoActualizado] = await Producto.findOrCreate({
-        where: {
-          nombre: productoData.nombre,
-          variedadId: variedad.id,
-          calibreId: calibre.id,
-          categoriaId: categoria.id,
-        },
-      });
-      produccionData.productoId = productoActualizado.id;
+    //--ACTUALIZAR ETIQUETA
+    if (etiquetaData && etiquetaData.id) {
+      const nuevaEtiqueta = await Etiqueta.findByPk(etiquetaData.id);
+      if (!nuevaEtiqueta) {
+        res.status(404).json({ mensaje: "Etiqueta no encontrada" });
+        return;
+      }
+      produccionData.etiquetaId = nuevaEtiqueta.id;
     }
 
+    //--ACTUALIZAR PRODUCCION (PRINCIPAL)
     await produccion.update(produccionData);
 
+    //--ACTUALIZAR PALLET
     if (palletData) {
       const [pallet] = await Pallet.findOrCreate({
         where: { registroProduccionId: produccion.id },
@@ -204,13 +155,13 @@ export const actualizarProduccion = async (req: Request, res: Response) => {
           registroProduccionId: produccion.id,
         },
       });
-
       await pallet.update({
         numeropallet: palletData.numero,
         cantidad: palletData.cantidad,
         peso: palletData.peso,
       });
 
+      //--ACTUALIZAR EMPAQUE
       if (empaqueData && pallet) {
         const { tipo, ...datosDelEmpaque } = empaqueData;
 
@@ -218,20 +169,20 @@ export const actualizarProduccion = async (req: Request, res: Response) => {
           where: { palletId: pallet.id },
           defaults: { ...datosDelEmpaque, palletId: pallet.id },
         });
-
         await empaque.update(datosDelEmpaque);
 
+        //--ACTUALIZAR TIPO_EMPAQUE
         if (tipo && empaque) {
           const [tipoEmpaque] = await TipoEmpaque.findOrCreate({
             where: { empaqueId: empaque.id },
             defaults: { tipo: tipo, empaqueId: empaque.id },
           });
-
           await tipoEmpaque.update({ tipo: tipo });
         }
       }
     }
 
+    //--SE AGRUPA TODO EL REGISTRO DE PRODUCCION ACTUALIZADO
     const produccionFinal = await RegistroProduccion.findByPk(id, {
       include: [
         { model: Etiqueta },
@@ -245,20 +196,6 @@ export const actualizarProduccion = async (req: Request, res: Response) => {
                   model: TipoEmpaque,
                 },
               ],
-            },
-          ],
-        },
-        {
-          model: Producto,
-          include: [
-            {
-              model: Categoria,
-            },
-            {
-              model: Calibre,
-            },
-            {
-              model: Variedad,
             },
           ],
         },

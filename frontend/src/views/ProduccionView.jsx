@@ -1,3 +1,4 @@
+import { normalizarProduccion } from "@/components/admin/produccion/utils/ProduccionUtils";
 import {
   fields,
   ProduccionDialog,
@@ -29,57 +30,89 @@ export function ProduccionView() {
     errorProduccion,
   } = useProduccionData();
 
+  const {
+    addProduccionMutate,
+    updateProduccionMutate,
+    deleteProduccionMutate,
+    confirmarProduccionMutate,
+  } = useProduccionMutations();
+
   //Aplanando la data de producción
   const transformedData = useMemo(() => {
+
     if (!dataProduccion) return [];
     return dataProduccion.map((produccion) => {
-      const Producto = produccion.Producto;
-      const pallet = produccion.pallets?.[0];
-      const empaque = pallet?.empaque?.[0];
-      const tipoEmpaque = empaque?.tipoEmpaques?.[0]?.tipo || "N/A";
+      const etiqueta = produccion.etiqueta || {};
+      const producto = etiqueta.Producto || {};
+      const variedad = etiqueta.Variedad || {};
+      const pallet = produccion.pallets?.[0] || {};
+      const empaque = pallet.empaque?.[0] || {};
+      const tipoEmpaque = empaque.tipoEmpaques?.[0]?.tipo || "N/A";
 
       return {
         ...produccion,
-        productoNombre: Producto?.nombre,
-        productoVariedad: Producto?.Variedad?.nombre,
-        productoCalibre: Producto?.Calibre?.nombre,
-        productoCategoria: Producto?.Categoria?.nombre,
-        palletNumero: pallet?.numeropallet,
-        palletCantidad: pallet?.cantidad,
-        palletPeso: pallet?.peso,
-        empaqueFecha: empaque
+        productoNombre: producto.nombre,
+        productoVariedad: variedad.nombre,
+        productoCalibre: etiqueta.calibre, 
+        productoCategoria: etiqueta.categoria,
+        etiquetaNumero: etiqueta.id,
+        palletNumero: pallet.numeropallet,
+        palletCantidad: pallet.cantidad,
+        palletPeso: pallet.peso,
+        empaqueFecha: empaque.fecha
           ? new Date(empaque.fecha).toLocaleDateString("es-PE", {
               timeZone: "UTC",
             })
           : "N/A",
-        empaquePeso: empaque?.peso,
+        empaquePeso: empaque.peso,
         empaqueTipo: tipoEmpaque,
       };
     });
   }, [dataProduccion]);
-
-  const { handleAdd, handleUpdate, handleEliminar, handleConfirmar } =
-    useProduccionMutations();
-
+  
   //Handlers
-  const handleSubmit = (produccion) => {
-    if (produccionEditando) {
-      handleUpdate(produccionEditando.id, produccion, dynamicFields);
-      setProduccionEditando(null);
-      setDialogOpen(false);
-    } else {
-      handleAdd(produccion, dynamicFields);
-      setDialogOpen(false);
-    }
+  const handleAdd = (formData) => {
+    const { etiquetaNumero, ...rest } = formData;
+    const payload = {
+      etiqueta: { id: etiquetaNumero },
+      ...rest,
+    };
+    // Asignar la fecha actual y estado por defecto
+    payload.fecha = new Date().toISOString().split("T")[0];
+    payload.estado = "No confirmado";
+    addProduccionMutate.mutate(payload);
+    setDialogOpen(false);
   };
 
-  const handleCloseDialog = () => {
+  const handleUpdate = (formData) => {
+    updateProduccionMutate.mutate({
+      id: produccionEditando.id,
+      datos: formData,
+    });
     setProduccionEditando(null);
     setDialogOpen(false);
   };
 
+  const handleSubmit = (formData) => {
+    if (produccionEditando) {
+      handleUpdate(formData);
+    } else {
+      handleAdd(formData);
+    }
+  };
+
   const handleEditar = (produccion) => {
-    setProduccionEditando(produccion);
+    const datosNormalizados = normalizarProduccion(produccion);
+    setProduccionEditando(datosNormalizados);
+    setDialogOpen(true);
+  };
+
+  const handleEliminar = (id) => deleteProduccionMutate.mutate(id);
+  const handleConfirmar = (id) => confirmarProduccionMutate.mutate(id);
+
+  const handleCloseDialog = () => {
+    setProduccionEditando(null);
+    setDialogOpen(false);
   };
 
   //Estados de carga y error
@@ -105,7 +138,6 @@ export function ProduccionView() {
         />
         <ProduccionTable
           dataProduccion={transformedData}
-          dynamicFields={dynamicFields}
           onConfirmar={handleConfirmar}
           onEliminar={handleEliminar}
           onEditar={handleEditar}

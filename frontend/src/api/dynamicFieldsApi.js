@@ -6,8 +6,6 @@ export const fetchDynamicFields = async () => {
     registrosMPRes,
     exportadoresRes,
     productosRes,
-    calibresRes,
-    categoriasRes,
     variedadesRes,
     guiaProductorRes,
     responsablesRes,
@@ -16,26 +14,21 @@ export const fetchDynamicFields = async () => {
     palletsRes,
     empaquesRes,
     tipoEmpaquesRes,
+    etiquetasRes,
   ] = await Promise.all([
     api.get("/productores"),
     api.get("/registroMP"),
     api.get("/exportadores"),
     api.get("/productos"),
-    api.get("/calibres"),
-    api.get("/categorias"),
     api.get("/variedades"),
     api.get("/guiaProducto"),
     api.get("/responsables"),
     api.get("/transporteDescarga"),
     api.get("/choferes"),
-    //<<<<<<< juan16
-    api.get("/calibres"),
-    api.get("/categorias"),
-    //=======
     api.get("/pallets"),
     api.get("/empaques"),
     api.get("/tipoEmpaques"),
-    //>>>>>>> main
+    api.get("/etiquetas")
   ]);
 
   // console.log("Datos dinámicos recibidos:");
@@ -61,13 +54,9 @@ export const fetchDynamicFields = async () => {
     responsables: responsablesRes.data,
     transporteDescarga: transporteDescargaRes.data,
     choferes: choferesRes.data,
-    //<<<<<<< juan16
-    calibres: calibresRes.data,
-    categorias: categoriasRes.data,
-    //=======
     pallets: palletsRes.data,
     empaques: empaquesRes.data,
     tipoEmpaques: tipoEmpaquesRes.data,
-    //>>>>>>> main
+    etiquetas: etiquetasRes.data,
   };
 };

@@ -3,6 +3,7 @@ import { useState, useEffect, useRef } from "react";
 import { ChevronDown, X } from "lucide-react";
 
 export const ComboSelectInput = ({ field, dynamic }) => {
+  // ... (toda la lógica inicial no cambia) ...
   const {
     register,
     setValue,
@@ -18,10 +19,7 @@ export const ComboSelectInput = ({ field, dynamic }) => {
 
   const currentValue = watch(field.name);
 
-  //Escuchar el productorId, por posibles cambios
-  //---Aqui se añaden mas si es necesario
   const productorId = useWatch({ name: "productorId" });
-  //Cada vez que el productorId o dynamic cambien, se actualiza las opciones
   useEffect(() => {
     const updatedOptions =
       typeof field.options === "function"
@@ -44,7 +42,6 @@ export const ComboSelectInput = ({ field, dynamic }) => {
       setSelectedItems(selectedOpt ? [selectedOpt] : []);
       setInputValue(selectedOpt?.label || "");
 
-      // Forzar la ejecución del onChange cuando se carga un valor inicial (para edición)
       if (selectedOpt && field.onChange) {
         field.onChange({ value: selectedOpt.value, dynamic, setValue, watch });
       }
@@ -97,7 +94,6 @@ export const ComboSelectInput = ({ field, dynamic }) => {
         value: inputValue.trim(),
       };
 
-      // Agregar a opciones si no existe
       const exists = options.some((opt) => opt.value === newOption.value);
       if (!exists) {
         setOptions((prev) => [...prev, newOption]);
@@ -184,7 +180,7 @@ export const ComboSelectInput = ({ field, dynamic }) => {
             <div className="flex flex-wrap gap-1 px-3 pb-2">
               {selectedItems.map((item) => (
                 <span
-                  key={item.value}
+                  key={item.uniqueKey || item.value} 
                   className="inline-flex items-center gap-1 px-2 py-1 bg-green-100 text-green-800 text-xs rounded-md"
                 >
                   {item.label}
@@ -219,7 +215,7 @@ export const ComboSelectInput = ({ field, dynamic }) => {
               ) : (
                 filteredOptions.map((option) => (
                   <div
-                    key={option.value}
+                    key={option.uniqueKey || option.value}
                     className="px-3 py-2 text-sm hover:bg-green-50 cursor-pointer flex items-center justify-between"
                     onClick={() => handleSelectOption(option)}
                   >
