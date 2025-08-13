@@ -3,189 +3,244 @@ import Etiqueta from "../models/Etiqueta";
 import Producto from "../models/Producto";
 import Exportador from "../models/Exportador";
 import Productor from "../models/Productor";
-import Calibre from "../models/Calibre";
-import Categoria from "../models/Categoria";
+import Variedad from "../models/Variedad";
 
-// Obtener datos dinámicos para selects
-export const getDynamicData = async (req: Request, res: Response) => {
-  try {
-    const productores = await Productor.findAll({
-      attributes: ["id", "clp"],
-    });
-
-    const productos = await Producto.findAll({
-      attributes: ["id", "nombre"],
-    });
-
-    const exportadores = await Exportador.findAll({
-      attributes: ["id", "nombreEmpresa"],
-    });
-
-    const calibres = await Calibre.findAll({
-      attributes: ["id", "nombre"],
-    });
-
-    const categorias = await Categoria.findAll({
-      attributes: ["id", "nombre"],
-    });
-
-    res.json({
-      productores,
-      productos,
-      exportadores,
-      calibres,
-      categorias,
-    });
-  } catch (error) {
-    console.error("Error obteniendo datos dinámicos:", error);
-    res.status(500).json({ message: "Error obteniendo datos dinámicos" });
-  }
-};
-
-// Obtener todas las etiquetas
+// 1. OBTENER TODAS LAS ETIQUETAS (GET)
 export const obtenerEtiqueta = async (req: Request, res: Response) => {
   try {
     const etiquetas = await Etiqueta.findAll({
       include: [
-        { model: Producto, attributes: ["nombre"] },
-        { model: Calibre, attributes: ["nombre"] },
-        { model: Categoria, attributes: ["nombre"] },
-        { model: Exportador, attributes: ["nombreEmpresa"] },
-        { model: Productor, attributes: ["clp"] },
+        { model: Productor },
+        { model: Exportador },
+        { model: Producto },
+        { model: Variedad },
       ],
     });
-
-    console.log(
-      "Etiquetas obtenidas con relaciones:",
-      JSON.stringify(etiquetas, null, 2)
-    );
-
-    res.json(etiquetas);
+    res.status(200).json(etiquetas);
   } catch (error) {
-    console.error("Error en obtenerEtiqueta:", error);
-    res.status(500).json({ error: "Error al obtener las etiquetas" });
+    console.log("Error al obtener etiquetas: ", error);
+    res.status(500).json({ mensaje: "No se pudieron obtener los datos" });
   }
 };
 
-// Crear nueva etiqueta
+// 2. CREAR UNA NUEVA ETIQUETA (POST)
 export const crearEtiqueta = async (req: Request, res: Response) => {
-  console.log("envio al back: ", req.body);
-
   try {
-    const nuevaEtiqueta = await Etiqueta.create({
-      trazabilidad: req.body.trazabilidad,
-      estado: req.body.estado,
-      productorId: req.body.productorId,
-      productoId: req.body.productoId,
-      exportadorId: req.body.exportadorId,
-      calibreId: req.body.calibreId,
-      categoriaId: req.body.categoriaId,
-      destino: req.body.destino,
-      fechaEmp: req.body.fechaEmp,
+    const {
+      productor: productorData,
+      exportador: exportadorData,
+      producto: productoData,
+      variedad: variedadData,
+      ...etiquetaData
+    } = req.body;
+
+    // Validaciones
+    if (!productorData?.clp)
+      return res
+        .status(400)
+        .json({ mensaje: "El CLP del productor es obligatorio." });
+    if (!exportadorData?.nombreEmpresa)
+      return res
+        .status(400)
+        .json({ mensaje: "El nombre del exportador es obligatorio." });
+    if (!productoData?.nombre)
+      return res
+        .status(400)
+        .json({ mensaje: "El nombre del producto es obligatorio." });
+    if (!variedadData?.nombre)
+      return res
+        .status(400)
+        .json({ mensaje: "El nombre de la variedad es obligatorio." });
+
+    // --- LÓGICA SIMPLIFICADA Y CORRECTA ---
+
+    const productor = await Productor.findOne({
+      where: { clp: productorData.clp },
+    });
+    if (!productor) {
+      return res.status(404).json({
+        mensaje: `El productor con CLP '${productorData.clp}' no fue encontrado.`,
+      });
+    }
+
+    const [exportador] = await Exportador.findOrCreate({
+      where: { nombreEmpresa: exportadorData.nombreEmpresa },
+      defaults: {
+        nombreEmpresa: exportadorData.nombreEmpresa,
+        codigo: exportadorData.codigo || "DEF",
+      },
+    });
+    const [variedad] = await Variedad.findOrCreate({
+      where: { nombre: variedadData.nombre },
+      defaults: { nombre: variedadData.nombre },
     });
 
-    const etiquetaConRelaciones = await Etiqueta.findByPk(nuevaEtiqueta.id, {
-      include: [
-        {
-          model: Producto,
-          attributes: ["nombre"],
-        },
-        { model: Calibre, attributes: ["nombre"] },
-        { model: Categoria, attributes: ["nombre"] },
-        { model: Exportador, attributes: ["nombreEmpresa"] },
-        { model: Productor, attributes: ["clp"] },
-      ],
+    const [producto] = await Producto.findOrCreate({
+      where: { nombre: productoData.nombre, variedadId: variedad.id },
+      defaults: {
+        nombre: productoData.nombre,
+        variedadId: variedad.id,
+      },
     });
 
-    res.status(201).json(etiquetaConRelaciones);
+    etiquetaData.productorId = productor.id;
+    etiquetaData.exportadorId = exportador.id;
+    etiquetaData.productoId = producto.id;
+    etiquetaData.variedadId = variedad.id;
+    etiquetaData.calibre = parseInt(etiquetaData.calibre, 10);
+
+    if (isNaN(etiquetaData.calibre)) {
+      return res
+        .status(400)
+        .json({ mensaje: "Calibre y Categoría deben ser números válidos." });
+    }
+
+    const nuevaEtiqueta = await Etiqueta.create(etiquetaData);
+    res.status(201).json(nuevaEtiqueta);
   } catch (error) {
     console.error("Error al crear Etiqueta:", error);
-    res.status(500).json({ error: "Error al crear la etiqueta" });
+    res.status(500).json({ mensaje: "Error al crear la etiqueta" });
   }
 };
 
-// Actualizar etiqueta
+// 3. ACTUALIZAR UNA ETIQUETA (PUT)
 export const actualizarEtiqueta = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const {
+    productor: productorData,
+    exportador: exportadorData,
+    producto: productoData,
+    variedad: variedadData,
+    ...etiquetaData
+  } = req.body;
+
   try {
-    const { id } = req.params;
+    const etiqueta = await Etiqueta.findByPk(id);
 
-    await Etiqueta.update(
-      {
-        trazabilidad: req.body.trazabilidad,
-        estado: req.body.estado,
-        productorId: req.body.productorId,
-        productoId: req.body.productoId,
-        exportadorId: req.body.exportadorId,
-        calibreId: req.body.calibreId,
-        categoriaId: req.body.categoriaId,
+    if (!etiqueta) {
+      return res.status(404).json({ mensaje: "Etiqueta no encontrada" });
+    }
+
+    // --- Validaciones (similar a crearEtiqueta) ---
+    if (!productorData?.clp)
+      return res
+        .status(400)
+        .json({ mensaje: "El CLP del productor es obligatorio." });
+    if (!exportadorData?.nombreEmpresa)
+      return res
+        .status(400)
+        .json({ mensaje: "El nombre del exportador es obligatorio." });
+    if (!productoData?.nombre)
+      return res
+        .status(400)
+        .json({ mensaje: "El nombre del producto es obligatorio." });
+    if (!variedadData?.nombre)
+      return res
+        .status(400)
+        .json({ mensaje: "El nombre de la variedad es obligatorio." });
+
+    const [productor] = await Productor.findOrCreate({
+      where: { clp: productorData.clp },
+      defaults: {
+        nombre: productorData.nombre || "Nombre por defecto",
+        clp: productorData.clp,
+        lugReferencia: productorData.lugReferencia || "Lugar por defecto",
+        codigo: productorData.codigo || "0000",
       },
-      { where: { id } }
-    );
-
-    const etiquetaActualizada = await Etiqueta.findByPk(id, {
-      include: [
-        {
-          model: Producto,
-          attributes: ["nombre"],
-        },
-        { model: Calibre, attributes: ["nombre"] },
-        { model: Categoria, attributes: ["nombre"] },
-        { model: Exportador, attributes: ["nombreEmpresa"] },
-        { model: Productor, attributes: ["clp"] },
-      ],
     });
 
-    res.json(etiquetaActualizada);
+    const [exportador] = await Exportador.findOrCreate({
+      where: { nombreEmpresa: exportadorData.nombreEmpresa },
+      defaults: {
+        nombreEmpresa: exportadorData.nombreEmpresa,
+        codigo: exportadorData.codigo || "DEF",
+      },
+    });
+
+    const [variedad] = await Variedad.findOrCreate({
+      where: { nombre: variedadData.nombre },
+      defaults: { nombre: variedadData.nombre },
+    });
+
+    const [producto] = await Producto.findOrCreate({
+      where: { nombre: productoData.nombre, variedadId: variedad.id },
+      defaults: {
+        nombre: productoData.nombre,
+        variedadId: variedad.id,
+      },
+    });
+
+    // --- Asignar IDs de las entidades relacionadas a los campos de la etiqueta ---
+    etiquetaData.productorId = productor.id;
+    etiquetaData.exportadorId = exportador.id;
+    etiquetaData.productoId = producto.id;
+    etiquetaData.variedadId = variedad.id;
+
+    // --- Convertir calibre a número y validar (similar a crearEtiqueta) ---
+    etiquetaData.calibre = parseInt(etiquetaData.calibre, 10);
+    if (isNaN(etiquetaData.calibre)) {
+      return res
+        .status(400)
+        .json({ mensaje: "Calibre debe ser un número válido." });
+    }
+    // --- Actualizar la etiqueta con los nuevos datos (incluyendo los FKs) ---
+    await etiqueta.update(etiquetaData);
+
+    res.status(200).json(etiqueta);
   } catch (error) {
     console.error("Error al actualizar Etiqueta:", error);
-    res.status(500).json({ error: "Error al actualizar la etiqueta" });
+    res.status(500).json({ mensaje: "Error al actualizar la etiqueta" });
   }
 };
 
-// Eliminar etiqueta
+// 4. ELIMINAR UNA ETIQUETA (DELETE)
 export const eliminarEtiqueta = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     await Etiqueta.destroy({ where: { id } });
-    res.json({ message: "Etiqueta eliminada correctamente" });
+    res.status(200).json({ mensaje: "Etiqueta eliminada correctamente" });
   } catch (error) {
     console.error("Error al eliminar Etiqueta:", error);
-    res.status(500).json({ error: "Error al eliminar la etiqueta" });
+    res.status(500).json({ mensaje: "Error interno al eliminar" });
   }
 };
 
-// Confirmar / desconfirmar etiqueta
+// 5. CONFIRMAR UNA ETIQUETA
 export const confirmarEtiqueta = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     const etiqueta = await Etiqueta.findByPk(id);
-
     if (!etiqueta) {
-      res.status(404).json({ error: "Etiqueta no encontrada" });
-      return;
+      return res.status(404).json({ mensaje: "Etiqueta no encontrada" });
     }
-
     etiqueta.estado =
-      etiqueta.estado === "Confirmado" ? "No Confirmado" : "Confirmado";
+      etiqueta.estado === "Confirmado" ? "No confirmado" : "Confirmado";
     await etiqueta.save();
-
-    const etiquetaConfirmada = await Etiqueta.findByPk(id, {
-      include: [
-        {
-          model: Producto,
-          attributes: ["nombre"],
-        },
-        { model: Calibre, attributes: ["nombre"] },
-        { model: Categoria, attributes: ["nombre"] },
-
-        { model: Exportador, attributes: ["nombreEmpresa"] },
-        { model: Productor, attributes: ["clp"] },
-      ],
-    });
-
-    res.json(etiquetaConfirmada);
+    res.status(200).json(etiqueta);
   } catch (error) {
-    console.error("Error al confirmar Etiqueta:", error);
-    res.status(500).json({ error: "Error al confirmar la etiqueta" });
+    console.log("Error al confirmar etiqueta: ", error);
+    res.status(500).json({ mensaje: "Error interno al confirmar" });
+  }
+};
+
+// 6. OBTENER DATOS PARA FORMULARIOS (GET)
+export const getDynamicData = async (req: Request, res: Response) => {
+  try {
+    const [productores, exportadores, productos, variedades] =
+      await Promise.all([
+        Productor.findAll(),
+        Exportador.findAll(),
+        Producto.findAll(),
+        Variedad.findAll(),
+      ]);
+    res.status(200).json({
+      productores,
+      exportadores,
+      productos,
+      variedades,
+    });
+  } catch (error) {
+    console.error("Error al obtener datos dinámicos para etiquetas: ", error);
+    res.status(500).json({ mensaje: "Error al obtener datos dinámicos" });
   }
 };

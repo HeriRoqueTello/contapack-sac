@@ -5,50 +5,59 @@ export const fields = [
     label: "Datos del Producto",
   },
   {
-    name: "productoNombre",
-    label: "Nombre del Producto",
+    name: "etiquetaNumero",
+    label: "Código de etiqueta",
     type: "combo",
+    required: true,
     options: ({ dynamic }) => {
-      if (!Array.isArray(dynamic?.productos)) return [];
-      return dynamic.productos.map((p) => ({
-        label: p.nombre,
-        value: p.id,
+      if (!Array.isArray(dynamic?.etiquetas)) return [];
+      return dynamic.etiquetas.map((e) => ({
+        label: `${e.id} - ${e.Producto.nombre}`,
+        value: e.id,
       }));
     },
+    onChange: ({ value, dynamic, setValue }) => {
+      const etiquetaSeleccionada = dynamic.etiquetas.find(
+        (e) => e.id === value
+      );
+
+      if (etiquetaSeleccionada) {
+        const { Producto, Variedad, calibre, categoria } = etiquetaSeleccionada;
+
+        setValue("productoNombre", Producto?.nombre || "");
+        setValue("productoVariedad", Variedad?.nombre || "");
+        setValue("productoCalibre", calibre || "");
+        setValue("productoCategoria", categoria || "");
+      }
+    },
+  },
+  {
+    name: "productoNombre",
+    label: "Nombre del Producto",
+    type: "text",
     required: true,
+    readOnly: true,
   },
   {
     name: "productoVariedad",
     label: "Variedad",
     type: "text",
     required: true,
-    placeholder: "Ej: Red Globe",
+    readOnly: true,
   },
   {
     name: "productoCalibre",
     label: "Calibre",
-    type: "select",
-    options: ({ dynamic }) => {
-      if (!Array.isArray(dynamic?.calibres)) return [];
-      return dynamic.calibres.map((c) => ({
-        label: c.nombre,
-        value: c.nombre,
-      }));
-    },
+    type: "text",
     required: true,
+    readOnly: true,
   },
   {
     name: "productoCategoria",
     label: "Categoría",
-    type: "select",
-    options: ({ dynamic }) => {
-      if (!Array.isArray(dynamic?.categorias)) return [];
-      return dynamic.categorias.map((c) => ({
-        label: c.nombre,
-        value: c.nombre,
-      }));
-    },
+    type: "text",
     required: true,
+    readOnly: true,
   },
 
   // === SECCIÓN PALLET ===

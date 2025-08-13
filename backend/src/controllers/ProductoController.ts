@@ -8,7 +8,6 @@ export const obtenerProductos = async (req, res) => {
       include: [
         {
           model: Variedad,
-          attributes: ["nombre"],
         },
       ],
     });

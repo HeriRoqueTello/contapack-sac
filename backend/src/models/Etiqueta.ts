@@ -6,36 +6,35 @@ import {
   ForeignKey,
   BelongsTo,
   AllowNull,
+  HasOne,
 } from "sequelize-typescript";
 import Productor from "./Productor";
 import Producto from "./Producto";
 import Exportador from "./Exportador";
-import Calibre from "./Calibre";
-import Categoria from "./Categoria";
+// import Calibre from "./Calibre";
+// import Categoria from "./Categoria";
+import Variedad from "./Variedad";
+import RegistroProduccion from "./RegistroProduccion";
 
-//jd
 @Table({
   tableName: "etiqueta",
 })
 class Etiqueta extends Model {
   @AllowNull(false)
   @Column({
+    type: DataType.STRING(25),
+    defaultValue: "No confirmado",
+  })
+  declare estado: string;
+  @AllowNull(false)
+  @Column({
     type: DataType.STRING(50),
-    defaultValue: 121231231231,
   })
   declare trazabilidad: string;
 
   @AllowNull(false)
   @Column({
-    type: DataType.STRING(25),
-    defaultValue: "No confirmado",
-  })
-  declare estado: string;
-
-  @AllowNull(false)
-  @Column({
     type: DataType.STRING,
-    defaultValue: "China",
   })
   declare destino: string;
 
@@ -46,43 +45,61 @@ class Etiqueta extends Model {
   })
   declare fechaEmp: string;
 
+  @AllowNull(false)
+  @Column({
+    type: DataType.INTEGER,
+  })
+  declare calibre: number;
+
+  @AllowNull(false)
+  @Column({
+    type: DataType.STRING(100),
+  })
+  declare categoria: string;
+
+  //--FOREINGS KEYS
+
   // Productor
   @ForeignKey(() => Productor)
-  @Column
   declare productorId: number;
-
   @BelongsTo(() => Productor)
   declare Productor: Productor;
 
-  // Producto
-  @ForeignKey(() => Producto)
-  @Column
-  declare productoId: number;
-
-  @BelongsTo(() => Producto)
-  declare Producto: Producto;
-
   // Exportador
   @ForeignKey(() => Exportador)
-  @Column
   declare exportadorId: number;
-
   @BelongsTo(() => Exportador)
   declare Exportador: Exportador;
 
-  // Calibre
-  @ForeignKey(() => Calibre)
-  @Column
-  declare calibreId: number;
-  @BelongsTo(() => Calibre)
-  declare Calibre: Calibre;
+  // Producto
+  @ForeignKey(() => Producto)
+  declare productoId: number;
+  @BelongsTo(() => Producto)
+  declare Producto: Producto;
 
-  // Categoria
-  @ForeignKey(() => Categoria)
-  @Column
-  declare categoriaId: number;
-  @BelongsTo(() => Categoria)
-  declare Categoria: Categoria;
+  // Variedad
+  @ForeignKey(() => Variedad)
+  declare variedadId: number;
+  @BelongsTo(() => Variedad)
+  declare Variedad: Variedad;
+
+  //--RELACIÓN
+  @HasOne(() => RegistroProduccion)
+  declare RegistroProduccion: RegistroProduccion;
+
+  // // Calibre
+  // @ForeignKey(() => Calibre)
+  // @Column
+  // declare calibreId: number;
+  // @BelongsTo(() => Calibre)
+  // declare Calibre: Calibre;
+
+  // // Categoria
+  // @ForeignKey(() => Categoria)
+  // @Column
+  // declare categoriaId: number;
+  // @BelongsTo(() => Categoria)
+  // declare Categoria: Categoria;
 }
 
 export default Etiqueta;

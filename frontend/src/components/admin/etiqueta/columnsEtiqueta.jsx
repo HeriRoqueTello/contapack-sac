@@ -5,16 +5,10 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
-  DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import { MoreHorizontal } from "lucide-react";
 
-export const columnsEtiqueta = (
-  onConfirmar,
-  onEliminar,
-  setRegistroEditando,
-  setDialogOpen
-) => [
+export const columnsEtiqueta = (onConfirmar, onEliminar, onEditar) => [
   {
     accessorKey: "id",
     header: () => null,
@@ -38,12 +32,7 @@ export const columnsEtiqueta = (
             <DropdownMenuItem onClick={() => onConfirmar(etiqueta.id)}>
               {etiqueta.estado === "Confirmado" ? "No confirmar" : "Confirmar"}
             </DropdownMenuItem>
-            <DropdownMenuItem
-              onClick={() => {
-                setRegistroEditando(etiqueta);
-                setDialogOpen(true);
-              }}
-            >
+            <DropdownMenuItem onClick={() => onEditar(etiqueta)}>
               Editar
             </DropdownMenuItem>
             <DropdownMenuItem onClick={() => onEliminar(etiqueta.id)}>
@@ -58,64 +47,57 @@ export const columnsEtiqueta = (
     accessorKey: "estado",
     header: "Estado",
     cell: ({ row }) => (
-      <div className="text-center ">{row.getValue("estado")}</div>
+      <div className="text-center">{row.getValue("estado")}</div>
     ),
   },
-  
-
   {
     accessorKey: "Productor.clp",
     header: "CLP",
     cell: ({ row }) => (
-      <div className="text-center">
-        {row.original.Productor?.clp || "Sin CLP"}
-      </div>
+      <div className="text-center">{row.original.Productor?.clp || "N/A"}</div>
     ),
   },
-
   {
     accessorKey: "Exportador.nombreEmpresa",
     header: "Exportador",
     cell: ({ row }) => (
       <div className="text-center">
-        {row.original.Exportador?.nombreEmpresa || "Sin exportador"}
+        {row.original.Exportador?.nombreEmpresa || "N/A"}
       </div>
     ),
   },
-
-
   {
     accessorKey: "Producto.nombre",
     header: "Producto",
     cell: ({ row }) => (
       <div className="text-center">
-        {row.original.Producto?.nombre || "Sin producto"}
-      </div>
-    ),
-  },
-
-   {
-    accessorKey: "Calibre.nombre", 
-    header: "Calibre",
-
-    cell: ({ row }) => (
-      <div className="text-center">
-        {row.original.Calibre?.nombre || ""}
+        {row.original.Producto?.nombre || "N/A"}
       </div>
     ),
   },
   {
-    accessorKey: "Categoria.nombre", 
-    header: "Categoría",
+    accessorKey: "Variedad.nombre", // AÑADIDO: Nueva columna para Variedad
+    header: "Variedad",
     cell: ({ row }) => (
       <div className="text-center">
-        {row.original.Categoria?.nombre || ""}
+        {row.original.Variedad?.nombre || "N/A"}
       </div>
     ),
   },
-   
- 
-
+  {
+    accessorKey: "calibre", // CAMBIADO: Ahora es un campo directo
+    header: "Calibre",
+    cell: ({ row }) => (
+      <div className="text-center">{row.getValue("calibre")}</div>
+    ),
+  },
+  {
+    accessorKey: "categoria", // CAMBIADO: Ahora es un campo directo
+    header: "Categoría",
+    cell: ({ row }) => (
+      <div className="text-center">{row.getValue("categoria")}</div>
+    ),
+  },
   {
     accessorKey: "trazabilidad",
     header: "Trazabilidad",
@@ -123,20 +105,25 @@ export const columnsEtiqueta = (
       <div className="text-center">{row.getValue("trazabilidad")}</div>
     ),
   },
-
   {
     accessorKey: "fechaEmp",
     header: "Fecha de Empaque",
-    cell: ({ row }) => (
-      <div className="text-center">{row.getValue("fechaEmp")}</div>
-    ),
-  },    
-
+    cell: ({ row }) => {
+      // Formateamos la fecha para mostrarla legible
+      const fecha = row.getValue("fechaEmp");
+      if (!fecha) return "N/A";
+      try {
+        return new Date(fecha).toLocaleDateString("es-PE", { timeZone: "UTC" });
+      } catch (e) {
+        return "Fecha inválida", e;
+      }
+    },
+  },
   {
     accessorKey: "destino",
     header: "Destino",
     cell: ({ row }) => (
       <div className="text-center">{row.getValue("destino")}</div>
     ),
-  },    
+  },
 ];

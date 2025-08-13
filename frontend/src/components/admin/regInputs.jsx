@@ -16,10 +16,8 @@ export const RegInputs = ({ fields, dynamic, watch }) => {
   const [palletLeft, setPalletLeft] = useState(["izq_0"]);
   const [palletRight, setPalletRight] = useState(["der_0"]);
 
-  // Observa todos los pallets
   const allPallets = watch("pallets") || {};
 
-  // Actualiza palletBlock en el form state cada vez que cambian los pallets
   useEffect(() => {
     const izquierda = palletLeft.map((id) => ({
       id,
@@ -48,10 +46,8 @@ export const RegInputs = ({ fields, dynamic, watch }) => {
 
   return (
     <div className="flex flex-col gap-10 px-4 sm:px-6 lg:px-8">
-      {/* Grid adaptable de inputs */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {fields.map((field, index) => {
-          // Título de sección
           if (field.type === "sectionTitle") {
             return (
               <h1
@@ -63,7 +59,6 @@ export const RegInputs = ({ fields, dynamic, watch }) => {
             );
           }
 
-          // Bloque de pallets
           if (field.type === "palletBlock") {
             return (
               <div
@@ -74,7 +69,6 @@ export const RegInputs = ({ fields, dynamic, watch }) => {
                   {field.label}
                 </h2>
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                  {/* Columna Izquierda */}
                   <div className="flex flex-col gap-4">
                     <h3 className="text-lg font-semibold text-gray-700">
                       Columna Izquierda
@@ -95,7 +89,6 @@ export const RegInputs = ({ fields, dynamic, watch }) => {
                     </button>
                   </div>
 
-                  {/* Columna Derecha */}
                   <div className="flex flex-col gap-4">
                     <h3 className="text-lg font-semibold text-gray-700">
                       Columna Derecha
@@ -120,7 +113,6 @@ export const RegInputs = ({ fields, dynamic, watch }) => {
             );
           }
 
-          // Campo tipo combo
           if (field.type === "combo") {
             return (
               <ComboSelectInput
@@ -132,7 +124,6 @@ export const RegInputs = ({ fields, dynamic, watch }) => {
             );
           }
 
-          // Campo tipo select
           if (field.type === "select") {
             const options =
               typeof field.options === "function"
@@ -163,7 +154,7 @@ export const RegInputs = ({ fields, dynamic, watch }) => {
                 >
                   <option value="">Seleccione una opción</option>
                   {options.map((opt) => (
-                    <option key={opt.value} value={opt.value}>
+                    <option key={opt.uniqueKey || opt.value} value={opt.value}>
                       {opt.label}
                     </option>
                   ))}
@@ -178,7 +169,6 @@ export const RegInputs = ({ fields, dynamic, watch }) => {
             );
           }
 
-          // Inputs normales
           return (
             <div
               key={field.name}
