@@ -1,15 +1,19 @@
-import { useState } from "react";
-import {
-  useLoteData,
-  useLoteMutations,
-  LoteLoading,
-  LoteError,
-  LoteDialog,
-  LoteTable,
-  fields,
-} from "@/components/admin/lote";
+import {  useState } from "react";
 import { useNavigate } from "react-router";
 import { useAuthStore } from "@/store/user-store";
+import {
+  LoteDialog,
+  LoteError,
+  LoteLoading,
+  LoteTable,
+  fields,
+  useLoteData,
+  useLoteMutations,
+} from "@/components/admin/lote";
+import {
+  normalizarRegistroParaEditar,
+  prepararLoteParaSubmit,
+} from "@/components/admin/lote/utils/loteUtils";
 
 export function LoteView() {
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -20,49 +24,95 @@ export function LoteView() {
   const areasAllow = ["Sistemas", "Recepcion"];
   const navigate = useNavigate();
 
-  // Hooks personalizados
+  // Hooks de datos y mutaciones (igual que antes)
+  const { dataLote, dynamicFields, isLoading, isError, error } = useLoteData();
   const {
-    dataLote,
-    dataRotulo,
-    dynamicFields,
-    isLoading,
-    isErrorLote,
-    isErrorRotulo,
-    errorLote,
-    errorRotulo,
-  } = useLoteData();
+    addRegistroMPMutation,
+    updateRegistroMPMutation,
+    deleteRegistroMPMutation,
+    confirmarRegistroMPMutation,
+  } = useLoteMutations();
 
-  const { handleAdd, handleUpdate, handleEliminar, handleConfirmar } =
-    useLoteMutations();
+  // const transformedData = useMemo(() => {
+  //   if (!dataLote) return [];
 
-  // Handlers
-  const handleSubmit = (registro) => {
-    console.log("Datos enviados al backend:", registro);
+  //   return dataLote.map((lote) => {
+  //     // Accedemos a los datos anidados de forma segura según tu log
+  //     const guia = lote.Productor?.guias?.[0];
+  //     const transporte = lote.transporteDescargas?.[0];
+  //     const chofer = transporte?.choferes?.[0];
+  //     const responsable = lote.Productor?.responsables?.[0];
+
+  //     // Devolvemos un nuevo objeto "plano" para la tabla
+  //     return {
+  //       ...lote, // Mantenemos los datos principales del lote (ID, codigo, etc.)
+  //       productorNombre: lote.Productor?.nombre,
+  //       exportadorNombre: lote.Exportador?.nombreEmpresa,
+  //       clp: lote.Productor?.clp,
+  //       lugReferencia: lote.Productor?.lugReferencia,
+
+  //       // Aplanamos los datos de las relaciones
+  //       fechaGuia: guia?.fechaGuia,
+  //       guiaProductor: guia?.guiaProductor,
+  //       pesoGuia: guia?.pesoGuia,
+
+  //       placa: transporte?.placa,
+  //       placa2: transporte?.placa2,
+  //       empresaTransporte: transporte?.empresaTransporte,
+  //       guiaTransportista: transporte?.guiaTransportista,
+
+  //       choferNombre: chofer?.nombre,
+  //       choferLicencia: chofer?.licencia,
+
+  //       responsableNombre: responsable?.nombre,
+  //     };
+  //   });
+  // }, [dataLote]);
+
+  // Esta es la función que le pasarás como prop 'onSubmit' al DialogDemo
+  const handleSubmit = (formData) => {
+    // formData son los datos crudos del formulario
     if (registroEditando) {
-      handleUpdate(registro, dynamicFields);
-      setRegistroEditando(null);
-      setDialogOpen(false);
+      // Lógica de Actualización
+      try {
+        const lotePreparado = prepararLoteParaSubmit(formData, dynamicFields);
+        updateRegistroMPMutation.mutate({
+          id: registroEditando.id,
+          datos: lotePreparado,
+        });
+      } catch (error) {
+        alert(error.message);
+      }
     } else {
-      handleAdd(registro, dynamicFields);
-      setDialogOpen(false);
+      // Lógica de Creación
+      try {
+        const lotePreparado = prepararLoteParaSubmit(formData, dynamicFields);
+        addRegistroMPMutation.mutate(lotePreparado);
+      } catch (error) {
+        alert(error.message);
+      }
     }
+    setDialogOpen(false);
   };
+
+  const handleEditar = (lote) => {
+    const datosNormalizados = normalizarRegistroParaEditar(lote);
+    setRegistroEditando(datosNormalizados);
+    setDialogOpen(true);
+  };
+
+  const handleEliminar = (id) => deleteRegistroMPMutation.mutate(id);
+  const handleConfirmar = (id) => confirmarRegistroMPMutation.mutate(id);
 
   const handleCloseDialog = () => {
     setRegistroEditando(null);
     setDialogOpen(false);
   };
 
-  const handleEditar = (registro) => {
-    setRegistroEditando(registro);
-  };
-
-  // Estados de carga y error
   if (isLoading) return <LoteLoading />;
-  if (isErrorLote)
-    return <LoteError error={errorLote} message="Error al cargar lotes" />;
-  if (isErrorRotulo)
-    return <LoteError error={errorRotulo} message="Error al cargar rótulos" />;
+  if (isError)
+    return <LoteError error={error} message="Error al cargar lotes" />;
+
   if (areasAllow.includes(userArea)) {
     return (
       <>
@@ -76,9 +126,7 @@ export function LoteView() {
           setOpen={setDialogOpen}
         />
         <LoteTable
-          dataLote={dataLote}
-          dataRotulo={dataRotulo}
-          dynamicFields={dynamicFields}
+          dataLote={dataLote || []}
           onConfirmar={handleConfirmar}
           onEliminar={handleEliminar}
           onEditar={handleEditar}
@@ -87,5 +135,6 @@ export function LoteView() {
       </>
     );
   }
+
   return navigate(`/admin`);
 }

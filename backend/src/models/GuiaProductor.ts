@@ -10,9 +10,9 @@ import {
 import Productor from "./Productor";
 
 @Table({
-  tableName: "guia",
+  tableName: "guia_productor",
 })
-class Guia extends Model {
+class GuiaProductor extends Model {
   @AllowNull(false)
   @Column({
     type: DataType.STRING(20),
@@ -27,13 +27,15 @@ class Guia extends Model {
 
   @AllowNull(false)
   @Column({
-    type: DataType.DATE,
+    type: DataType.DATEONLY,
   })
   declare fechaGuia: string;
 
+  //---FOREINGS KEYS
+  // Productor
   @ForeignKey(() => Productor)
   declare productorId: number;
   @BelongsTo(() => Productor)
   declare productor: Productor;
 }
-export default Guia;
+export default GuiaProductor;

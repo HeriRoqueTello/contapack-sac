@@ -1,10 +1,18 @@
-import { AllowNull, Column, DataType, HasMany, Model, Table } from "sequelize-typescript";
+import {
+  AllowNull,
+  BelongsTo,
+  Column,
+  DataType,
+  ForeignKey,
+  HasMany,
+  Model,
+  Table,
+} from "sequelize-typescript";
 import TransporteDescarga from "./TransporteDescarga";
 
 @Table({
   tableName: "chofer",
 })
-
 class Chofer extends Model {
   @AllowNull(false)
   @Column({
@@ -18,8 +26,12 @@ class Chofer extends Model {
   })
   declare nombre: string;
 
-  @HasMany(() => TransporteDescarga)
-  declare transporteDescargas: TransporteDescarga[];
+  //---FOREINGS KEYS
+  //TransporteDescarga
+  @ForeignKey(() => TransporteDescarga)
+  declare transporteDescargaId: number;
+  @BelongsTo(() => TransporteDescarga)
+  declare TransporteDescarga: TransporteDescarga;
 }
 
-export default Chofer; 
+export default Chofer;

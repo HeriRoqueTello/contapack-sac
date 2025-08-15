@@ -19,6 +19,8 @@ class Responsable extends Model {
   })
   declare nombre: string;
 
+  //---FOREINGS KEYS
+  //Productor
   @ForeignKey(() => Productor)
   declare productorId: number;
   @BelongsTo(() => Productor)

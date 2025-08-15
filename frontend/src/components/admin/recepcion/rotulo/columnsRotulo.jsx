@@ -77,18 +77,24 @@ export const columnsRotulo = (
     ),
   },
   {
-    accessorKey: "fecha",
+    // --- CAMBIO 1 ---
     header: "Fecha",
-    cell: ({ row }) => (
-      <div className="text-center">{row.getValue("fecha")}</div>
-    ),
+    cell: ({ row }) => {
+      const fecha = row.original.RegistroMateriaPrima?.fecha;
+      return (
+        <div className="text-center">
+          {fecha ? new Date(fecha).toLocaleDateString() : "Sin fecha"}
+        </div>
+      );
+    },
   },
   {
-    accessorKey: "Productor.nombre", //accede al nombre dentro del objeto Productor
+    // --- CAMBIO 2 ---
     header: "Productor/Proveedor",
     cell: ({ row }) => (
       <div className="text-center">
-        {row.original.Productor?.nombre || "Sin productor"}
+        {row.original.RegistroMateriaPrima?.Productor?.nombre ||
+          "Sin productor"}
       </div>
     ),
   },
@@ -100,7 +106,6 @@ export const columnsRotulo = (
     ),
   },
   {
-    accessorKey: "Producto.name",
     header: "Producto",
     cell: ({ row }) => (
       <div className="text-center">
@@ -109,7 +114,6 @@ export const columnsRotulo = (
     ),
   },
   {
-    accessorKey: "Producto.Variedad.nombre",
     header: "Variedad",
     cell: ({ row }) => (
       <div className="text-center">
@@ -118,27 +122,36 @@ export const columnsRotulo = (
     ),
   },
   {
-    accessorKey: "numIngreso",
+    // --- CAMBIO 3 ---
     header: "N° Ingreso",
     cell: ({ row }) => (
-      <div className="text-center">{row.getValue("numIngreso")}</div>
-    ),
-  },
-  {
-    accessorKey: "Exportador.nombreEmpresa",
-    header: "Exportador",
-    cell: ({ row }) => (
       <div className="text-center">
-        {row.original.Exportador?.nombreEmpresa || "Sin exportador"}
+        {row.original.RegistroMateriaPrima?.numIngreso || "N/A"}
       </div>
     ),
   },
   {
-    accessorKey: "responsable",
-    header: "Responsable",
+    // --- CAMBIO 4 ---
+    header: "Exportador",
     cell: ({ row }) => (
-      <div className="text-center">{row.getValue("responsable")}</div>
+      <div className="text-center">
+        {row.original.RegistroMateriaPrima?.Exportador?.nombreEmpresa ||
+          "Sin exportador"}
+      </div>
     ),
+  },
+  {
+    // --- CAMBIO 5 ---
+    header: "Responsable",
+    cell: ({ row }) => {
+      const responsables =
+        row.original.RegistroMateriaPrima?.Productor?.responsables || [];
+      return (
+        <div className="text-center">
+          {responsables.length > 0 ? responsables[0].nombre : "No asignado"}
+        </div>
+      );
+    },
   },
   {
     accessorKey: "bandJabas",
@@ -164,9 +177,14 @@ export const columnsRotulo = (
   {
     accessorKey: "fechaProceso",
     header: "Fecha de Proceso",
-    cell: ({ row }) => (
-      <div className="text-center">{row.getValue("fechaProceso")}</div>
-    ),
+    cell: ({ row }) => {
+      const fecha = row.getValue("fechaProceso");
+      return (
+        <div className="text-center">
+          {fecha ? new Date(fecha).toLocaleDateString() : "N/A"}
+        </div>
+      );
+    },
   },
   {
     accessorKey: "pesoJabaBandeja",

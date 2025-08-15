@@ -3,10 +3,12 @@ import {
   Column,
   DataType,
   HasMany,
+  HasOne,
   Model,
   Table,
 } from "sequelize-typescript";
 import Rotulo from "./Rotulo";
+import RegistroMateriaPrima from "./RegistroMateriaPrima";
 
 @Table({
   tableName: "exportador",
@@ -24,8 +26,9 @@ class Exportador extends Model {
   })
   declare codigo: string; 
   
-  @HasMany(() => Rotulo)
-  declare rotulos: Rotulo[];
+  //---CONTENEDOR DE ARRAYS
+  @HasOne(() => RegistroMateriaPrima)
+  declare registroMateriaPrima: RegistroMateriaPrima;
 }
 
 export default Exportador;

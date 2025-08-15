@@ -6,7 +6,7 @@ import Variedad from "../models/Variedad";
 import Producto from "../models/Producto";
 import RegistroMateriaPrima from "../models/RegistroMateriaPrima";
 import Guia from "../models/GuiaProductor";
-
+import Responsable from "../models/Responsable";
 
 // Función reutilizable para actualizar lote
 const actualizarLote = async (registroId: number) => {
@@ -56,24 +56,23 @@ export const obtenerRotulo = async (req: Request, res: Response) => {
     const rotulos = await Rotulo.findAll({
       include: [
         {
-          model: Productor,
-          attributes: ["nombre"],
-        },
-        {
-          model: Exportador,
-          attributes: ["nombreEmpresa"],
-        },
-        {
           model: Producto,
-          attributes: ["nombre"],
+          include: [{ model: Variedad }],
+        },
+        {
+          model: RegistroMateriaPrima,
           include: [
             {
-              model: Variedad,
-              attributes: ["nombre"],
+              model: Productor,
+              include: [{ model: Responsable }],
+            },
+            {
+              model: Exportador,
             },
           ],
         },
       ],
+      order: [["id", "DESC"]],
     });
     res.status(200).json(rotulos);
   } catch (error) {
@@ -105,7 +104,7 @@ export const actualizarRotulo = async (req: Request, res: Response) => {
     const rotuloOriginal = await Rotulo.findByPk(id);
     if (!rotuloOriginal) {
       res.status(404).json({ mensaje: "Registro no encontrado" });
-      return
+      return;
     }
 
     const loteAnteriorId = rotuloOriginal.registroMateriaPrimaId;

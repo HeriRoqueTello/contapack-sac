@@ -34,7 +34,7 @@ export const crearEtiqueta = async (req: Request, res: Response) => {
       ...etiquetaData
     } = req.body;
 
-    // Validaciones
+    // VALIDACIONES
     if (!productorData?.clp)
       return res
         .status(400)
@@ -52,29 +52,35 @@ export const crearEtiqueta = async (req: Request, res: Response) => {
         .status(400)
         .json({ mensaje: "El nombre de la variedad es obligatorio." });
 
-    // --- LÓGICA SIMPLIFICADA Y CORRECTA ---
-
+    //----BUSQUEDA Y CREACIÓN DE DATOS DE OTRAS TABLAS
+    //BUSQUEDA DE PRODUCTOR POR CLP
     const productor = await Productor.findOne({
       where: { clp: productorData.clp },
     });
+    //SI NO ENCUENTRA AL PRODUCTOR POR EL CLP, MARCA ERROR 404
     if (!productor) {
       return res.status(404).json({
         mensaje: `El productor con CLP '${productorData.clp}' no fue encontrado.`,
       });
     }
 
+    //BUSQUEDA/CREACIÓN DE EXPORTADOR
     const [exportador] = await Exportador.findOrCreate({
       where: { nombreEmpresa: exportadorData.nombreEmpresa },
       defaults: {
         nombreEmpresa: exportadorData.nombreEmpresa,
+        //PARA QUE SE CREE SE AÑADE COMO CODIGO DE DEFECTO "DEF"
         codigo: exportadorData.codigo || "DEF",
       },
     });
+
+    //BUSQUEDA/CREACIÓN DE VARIEDAD
     const [variedad] = await Variedad.findOrCreate({
       where: { nombre: variedadData.nombre },
       defaults: { nombre: variedadData.nombre },
     });
 
+    //BUSQUEDA/CREACIÓN DE PRODUCTO
     const [producto] = await Producto.findOrCreate({
       where: { nombre: productoData.nombre, variedadId: variedad.id },
       defaults: {
@@ -83,18 +89,21 @@ export const crearEtiqueta = async (req: Request, res: Response) => {
       },
     });
 
+    //ASIGNAR LOS IDs
     etiquetaData.productorId = productor.id;
     etiquetaData.exportadorId = exportador.id;
     etiquetaData.productoId = producto.id;
     etiquetaData.variedadId = variedad.id;
     etiquetaData.calibre = parseInt(etiquetaData.calibre, 10);
 
+    //VALIDAR QUE EL CALIBRE SI ES UN NÚMERO
     if (isNaN(etiquetaData.calibre)) {
       return res
         .status(400)
-        .json({ mensaje: "Calibre y Categoría deben ser números válidos." });
+        .json({ mensaje: "Calibre debe ser un número válido." });
     }
 
+    //CREACIÓN DE LA ETIQUETA
     const nuevaEtiqueta = await Etiqueta.create(etiquetaData);
     res.status(201).json(nuevaEtiqueta);
   } catch (error) {
@@ -115,13 +124,13 @@ export const actualizarEtiqueta = async (req: Request, res: Response) => {
   } = req.body;
 
   try {
+    // VALIDAR SI EXISTE LA ETIQUETA
     const etiqueta = await Etiqueta.findByPk(id);
-
     if (!etiqueta) {
       return res.status(404).json({ mensaje: "Etiqueta no encontrada" });
     }
 
-    // --- Validaciones (similar a crearEtiqueta) ---
+    // VALIDACIONES (SIMILAR AL CREATE)
     if (!productorData?.clp)
       return res
         .status(400)
@@ -139,16 +148,12 @@ export const actualizarEtiqueta = async (req: Request, res: Response) => {
         .status(400)
         .json({ mensaje: "El nombre de la variedad es obligatorio." });
 
-    const [productor] = await Productor.findOrCreate({
+    //BUSQUEDA POR CLP
+    const productor = await Productor.findOne({
       where: { clp: productorData.clp },
-      defaults: {
-        nombre: productorData.nombre || "Nombre por defecto",
-        clp: productorData.clp,
-        lugReferencia: productorData.lugReferencia || "Lugar por defecto",
-        codigo: productorData.codigo || "0000",
-      },
     });
 
+    //BUSQUEDA/CREACIÓN DE EXPORTADOR
     const [exportador] = await Exportador.findOrCreate({
       where: { nombreEmpresa: exportadorData.nombreEmpresa },
       defaults: {
@@ -157,11 +162,13 @@ export const actualizarEtiqueta = async (req: Request, res: Response) => {
       },
     });
 
+    //BUSQUEDA/CREACIÓN DE VARIEDAD
     const [variedad] = await Variedad.findOrCreate({
       where: { nombre: variedadData.nombre },
       defaults: { nombre: variedadData.nombre },
     });
 
+    //BUSQUEDA/CREACIÓN DE PRODUCTO
     const [producto] = await Producto.findOrCreate({
       where: { nombre: productoData.nombre, variedadId: variedad.id },
       defaults: {
@@ -170,22 +177,22 @@ export const actualizarEtiqueta = async (req: Request, res: Response) => {
       },
     });
 
-    // --- Asignar IDs de las entidades relacionadas a los campos de la etiqueta ---
+    //ASIGNAR LOS IDs
     etiquetaData.productorId = productor.id;
     etiquetaData.exportadorId = exportador.id;
     etiquetaData.productoId = producto.id;
     etiquetaData.variedadId = variedad.id;
-
-    // --- Convertir calibre a número y validar (similar a crearEtiqueta) ---
     etiquetaData.calibre = parseInt(etiquetaData.calibre, 10);
+
+    //VALIDAR QUE EL CALIBRE SI ES UN NÚMERO
     if (isNaN(etiquetaData.calibre)) {
       return res
         .status(400)
         .json({ mensaje: "Calibre debe ser un número válido." });
     }
-    // --- Actualizar la etiqueta con los nuevos datos (incluyendo los FKs) ---
-    await etiqueta.update(etiquetaData);
 
+    //ACTUALIZAR ETIQUETA
+    await etiqueta.update(etiquetaData);
     res.status(200).json(etiqueta);
   } catch (error) {
     console.error("Error al actualizar Etiqueta:", error);

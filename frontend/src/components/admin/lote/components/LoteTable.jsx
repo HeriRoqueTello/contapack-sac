@@ -1,6 +1,6 @@
 import { DataTable } from "@/components/admin/DataTable";
 import { columnsLote } from "../index";
-import { normalizarRegistro, validarRegistroParaEditar } from "../utils/loteUtils";
+import { normalizarRegistroParaEditar, validarRegistroParaEditar } from "../utils/loteUtils";
 
 /**
  * Componente de tabla para lotes
@@ -15,7 +15,7 @@ export function LoteTable({
   onOpenDialog,
 }) {
   const handleEditar = (lote) => {
-    const registroNormalizado = normalizarRegistro(lote, dynamicFields);
+    const registroNormalizado = normalizarRegistroParaEditar(lote, dynamicFields);
 
     if (!validarRegistroParaEditar(registroNormalizado)) {
       alert("Este lote no tiene IDs válidos para editar.");
