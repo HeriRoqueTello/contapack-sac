@@ -18,7 +18,7 @@ import {
   getRotulos,
   updateRotulo,
 } from "@/api/rotuloApi";
-import { fetchDynamicFields } from "@/api/dynamicFieldsApi"; // Importa los datos dinámicos
+import { fetchDynamicFields } from "@/api/dynamicFieldsApi"; 
 import { useAuthStore } from "@/store/user-store";
 import { useNavigate } from "react-router";
 
@@ -56,6 +56,7 @@ export function RotuloView() {
     queryKey: ["rotulos"],
     queryFn: getRotulos,
   });
+
 
   // Mutaciones
   const deleteRotuloMutation = useMutation({
@@ -166,10 +167,10 @@ export function RotuloView() {
             setRotuloEditando,
             setDialogOpen
           )}
-          data={dataRotulo}
+          data={dataRotulo || []}
           filterColumnKey="id"
           placeholder="Buscar por ID"
-          meta={{ rotulos: dataRotulo }} // <-- aquí pasas los rótulos
+          meta={{ rotulos: dataRotulo }}
         />
       </>
     );

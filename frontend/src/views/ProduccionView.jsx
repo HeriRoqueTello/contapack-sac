@@ -1,4 +1,7 @@
-import { normalizarProduccion } from "@/components/admin/produccion/utils/ProduccionUtils";
+import {
+  normalizarProduccion,
+  prepararProduccionParaSubmit,
+} from "@/components/admin/produccion/utils/ProduccionUtils";
 import {
   fields,
   ProduccionDialog,
@@ -21,7 +24,6 @@ export function ProduccionView() {
   const areasAllow = ["Sistemas", "Produccion"];
   const navigate = useNavigate();
 
-  //Hooks personalizados
   const {
     dataProduccion,
     dynamicFields,
@@ -37,9 +39,7 @@ export function ProduccionView() {
     confirmarProduccionMutate,
   } = useProduccionMutations();
 
-  //Aplanando la data de producción
   const transformedData = useMemo(() => {
-
     if (!dataProduccion) return [];
     return dataProduccion.map((produccion) => {
       const etiqueta = produccion.etiqueta || {};
@@ -53,7 +53,7 @@ export function ProduccionView() {
         ...produccion,
         productoNombre: producto.nombre,
         productoVariedad: variedad.nombre,
-        productoCalibre: etiqueta.calibre, 
+        productoCalibre: etiqueta.calibre,
         productoCategoria: etiqueta.categoria,
         etiquetaNumero: etiqueta.id,
         palletNumero: pallet.numeropallet,
@@ -69,35 +69,17 @@ export function ProduccionView() {
       };
     });
   }, [dataProduccion]);
-  
-  //Handlers
-  const handleAdd = (formData) => {
-    const { etiquetaNumero, ...rest } = formData;
-    const payload = {
-      etiqueta: { id: etiquetaNumero },
-      ...rest,
-    };
-    // Asignar la fecha actual y estado por defecto
-    payload.fecha = new Date().toISOString().split("T")[0];
-    payload.estado = "No confirmado";
-    addProduccionMutate.mutate(payload);
-    setDialogOpen(false);
-  };
-
-  const handleUpdate = (formData) => {
-    updateProduccionMutate.mutate({
-      id: produccionEditando.id,
-      datos: formData,
-    });
-    setProduccionEditando(null);
-    setDialogOpen(false);
-  };
 
   const handleSubmit = (formData) => {
+    const datosParaEnviar = prepararProduccionParaSubmit(formData);
+
     if (produccionEditando) {
-      handleUpdate(formData);
+      updateProduccionMutate.mutate({
+        id: produccionEditando.id,
+        datos: datosParaEnviar,
+      });
     } else {
-      handleAdd(formData);
+      addProduccionMutate.mutate(datosParaEnviar);
     }
   };
 
@@ -115,7 +97,6 @@ export function ProduccionView() {
     setDialogOpen(false);
   };
 
-  //Estados de carga y error
   if (isLoading) return <ProduccionLoading />;
   if (isErrorProduccion)
     return (
@@ -130,7 +111,7 @@ export function ProduccionView() {
         <ProduccionDialog
           fields={fields}
           dynamicFields={dynamicFields}
-          onSubmit={handleSubmit}
+          onSubmit={handleSubmit} 
           initialData={produccionEditando}
           onClose={handleCloseDialog}
           open={dialogOpen}

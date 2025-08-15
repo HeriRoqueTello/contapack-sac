@@ -168,8 +168,12 @@ export const columnsLote = (
     accessorKey: "fechaGuia",
     header: "Fecha de guía",
     cell: ({ row }) => {
-      const fecha = row.original.Guia?.fechaGuia ?? "Sin Fecha de Guia";
-      return <div className="text-center">{fecha}</div>;
+      const fecha =
+        row.original.Productor?.guias?.[0]?.fechaGuia ?? "Sin Fecha de Guia";
+      const fechaFormateada = fecha
+        ? new Date(fecha).toLocaleDateString()
+        : "Sin Fecha";
+      return <div className="text-center">{fechaFormateada}</div>;
     },
   },
   // --- Guías asociadas ---
@@ -177,7 +181,8 @@ export const columnsLote = (
     accessorKey: "guiaProductor",
     header: "Guía productor",
     cell: ({ row }) => {
-      const guia = row.original.Guia?.guiaProductor ?? "Sin Guía";
+      const guia =
+        row.original.Productor?.guias?.[0]?.guiaProductor ?? "Sin Guía";
       return <div className="text-center">{guia}</div>;
     },
   },
@@ -229,7 +234,7 @@ export const columnsLote = (
     accessorKey: "chofer",
     header: "Chofer",
     cell: ({ row }) => {
-      const chofer = row.original.transporteDescargas?.[0]?.chofer;
+      const chofer = row.original.transporteDescargas?.[0]?.choferes?.[0];
       const nombreChofer = chofer?.nombre || "Sin Chofer";
       return <div className="text-center">{nombreChofer}</div>;
     },
@@ -238,7 +243,7 @@ export const columnsLote = (
     accessorKey: "licConducir",
     header: "Licencia de conducir",
     cell: ({ row }) => {
-      const chofer = row.original.transporteDescargas?.[0]?.chofer;
+      const chofer = row.original.transporteDescargas?.[0]?.choferes?.[0];
       const licencia = chofer?.licencia || "Sin Licencia";
       return <div className="text-center">{licencia}</div>;
     },
@@ -255,7 +260,7 @@ export const columnsLote = (
     accessorKey: "pesoGuia",
     header: "Peso según Guía",
     cell: ({ row }) => {
-      const valor = row.original.Guia?.pesoGuia ?? "-";
+      const valor = row.original.Productor?.guias?.[0]?.pesoGuia ?? "-";
       return <div className="text-center">{valor}</div>;
     },
   },
@@ -280,7 +285,6 @@ export const columnsLote = (
       <div className="text-center">{row.getValue("pesoDescuento")}</div>
     ),
   },
-  // --- Otros datos relevantes ---
   {
     accessorKey: "ordenVolcado",
     header: "Orden de volcado",

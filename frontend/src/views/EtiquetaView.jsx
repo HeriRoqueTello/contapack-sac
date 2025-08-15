@@ -1,4 +1,7 @@
-import { normalizarEtiqueta } from "@/components/admin/etiqueta/utils/EtiquetaUtils";
+import {
+  normalizarEtiqueta,
+  prepararEtiquetaParaSubmit,
+} from "@/components/admin/etiqueta/utils/EtiquetaUtils";
 import {
   EtiquetaDialog,
   EtiquetaError,
@@ -47,25 +50,18 @@ export function EtiquetaView() {
     }));
   }, [dataEtiqueta]);
 
-  const handleAdd = (formData) => {
-    addEtiquetaMutate.mutate(formData);
-    setDialogOpen(false);
-  };
-
-  const handleUpdate = (formData) => {
-    updateEtiquetaMutate.mutate({ id: etiquetaEditando.id, datos: formData });
-    setEtiquetaEditando(null);
-    setDialogOpen(false);
-  };
-
   const handleSubmit = (formData) => {
+    const datosParaEnviar = prepararEtiquetaParaSubmit(formData);
+
     if (etiquetaEditando) {
-      handleUpdate(formData);
+      updateEtiquetaMutate.mutate({
+        id: etiquetaEditando.id,
+        datos: datosParaEnviar,
+      });
     } else {
-      handleAdd(formData);
+      addEtiquetaMutate.mutate(datosParaEnviar);
     }
   };
-
   const handleEditar = (etiqueta) => {
     const datosNormalizados = normalizarEtiqueta(etiqueta);
     setEtiquetaEditando(datosNormalizados);

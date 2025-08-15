@@ -24,11 +24,11 @@ class Rotulo extends Model {
   })
   declare estado: string;
 
-  @AllowNull(false)
-  @Column({
-    type: DataType.DATE,
-  })
-  declare fecha: Date;
+  // @AllowNull(false)
+  // @Column({
+  //   type: DataType.DATE,
+  // })
+  // declare fecha: Date;
 
   @AllowNull(false)
   @Column({
@@ -36,17 +36,17 @@ class Rotulo extends Model {
   })
   declare kgIngresados: number;
 
-  @AllowNull(false)
-  @Column({
-    type: DataType.INTEGER,
-  })
-  declare numIngreso: number;
+  // @AllowNull(false)
+  // @Column({
+  //   type: DataType.INTEGER,
+  // })
+  // declare numIngreso: number;
 
-  @AllowNull(false)
-  @Column({
-    type: DataType.STRING(150),
-  })
-  declare responsable: string;
+  // @AllowNull(false)
+  // @Column({
+  //   type: DataType.STRING(150),
+  // })
+  // declare responsable: string;
 
   @AllowNull(false)
   @Column({
@@ -109,39 +109,17 @@ class Rotulo extends Model {
   })
   declare descarte: boolean;
 
-  //FOREIGNS KEY:
+  //---FOREIGNS KEY
   // RegistroMateriaPrima
   @ForeignKey(() => RegistroMateriaPrima)
   declare registroMateriaPrimaId: number;
-
   @BelongsTo(() => RegistroMateriaPrima)
   declare RegistroMateriaPrima: RegistroMateriaPrima;
-
 
   // Producto
   @ForeignKey(() => Producto)
   declare productoId: number;
-  
   @BelongsTo(() => Producto)
   declare Producto: Producto;
-
-
-  // Exportador
-  @ForeignKey(() => Exportador)
-  declare exportadorId: number;
-
-  @BelongsTo(() => Exportador)
-  declare Exportador: Exportador;
-
-
-  // Productor
-  @ForeignKey(() => Productor)
-  declare productorId: number;
-
-  @BelongsTo(() => Productor)
-  declare Productor: Productor;
-
-
-  // Lote
 }
 export default Rotulo;

@@ -3,12 +3,14 @@ import {
   Column,
   DataType,
   HasMany,
+  HasOne,
   Model,
   Table,
 } from "sequelize-typescript";
 import Rotulo from "./Rotulo";
 import Guia from "./GuiaProductor";
 import Responsable from "./Responsable";
+import RegistroMateriaPrima from "./RegistroMateriaPrima";
 
 @Table({
   tableName: "productor",
@@ -38,10 +40,14 @@ class Productor extends Model {
   })
   declare codigo: string;
 
-  @HasMany(() => Rotulo)
-  declare rotulos: Rotulo[];
+  //--CONTENEDOR DE ARRAYS
+  //RegistroMateriaPrima
+  @HasOne(() => RegistroMateriaPrima)
+  declare registroMateriaPrima: RegistroMateriaPrima;
+  //GuiaProductor
   @HasMany(() => Guia)
   declare guias: Guia[];
+  //Responsable
   @HasMany(() => Responsable)
   declare responsables: Responsable[];
 }

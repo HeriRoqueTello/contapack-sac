@@ -4,6 +4,7 @@ import {
   Column,
   DataType,
   ForeignKey,
+  HasMany,
   Model,
   Table,
 } from "sequelize-typescript";
@@ -39,17 +40,17 @@ class TransporteDescarga extends Model {
   })
   declare guiaTransportista: string;
 
-  //Foreign key para RegistroMateriaPrima
+  //---FOREINGS KEYS
+  //RegistroMateriaPrima
   @ForeignKey(() => RegistroMateriaPrima)
   declare registroMateriaPrimaId: number;
   @BelongsTo(() => RegistroMateriaPrima)
-  declare registroMateriaPrima: RegistroMateriaPrima;
+  declare RegistroMateriaPrima: RegistroMateriaPrima;
 
-  //Foreign key para Chofer
-  @ForeignKey(() => Chofer)
-  declare choferId: number;
-  @BelongsTo(() => Chofer)
-  declare chofer: Chofer;
+  //---CONTENEDOR DE ARRAYS
+  //Chofer
+  @HasMany(() => Chofer)
+  declare choferes: Chofer[];
 }
 
 export default TransporteDescarga;

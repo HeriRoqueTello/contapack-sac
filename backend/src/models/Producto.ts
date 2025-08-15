@@ -11,6 +11,7 @@ import {
 import Variedad from "./Variedad";
 
 import RegistroProduccion from "./RegistroProduccion";
+import Rotulo from "./Rotulo";
 //>>>>>>> main
 
 @Table({
@@ -22,12 +23,18 @@ class Producto extends Model {
     type: DataType.STRING(100),
   })
   declare nombre: string;
-  // Relaciones con otras tablas
-  // Variedad
+
+  //---FOREIGNS KEYS
+  //Variedad
   @ForeignKey(() => Variedad)
   declare variedadId: number;
   @BelongsTo(() => Variedad)
   declare Variedad: Variedad;
+
+  //--CONTENEDOR DE ARRAYS
+  //Rotulo
+  @HasOne(() => Rotulo)
+  declare rotulo: Rotulo;
 }
 
 export default Producto;

@@ -7,7 +7,6 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogDescription,
 } from "@/components/ui/dialog";
 import { useEffect } from "react";
 
@@ -15,68 +14,102 @@ export function DialogDemo({
   title,
   fields,
   dynamic,
-  onSubmit,
+  onSubmit, // La función que viene del componente padre (ej. LoteView)
   open,
   setOpen,
   initialData,
   onClose,
 }) {
-  const formatDate = (isoString) => {
-    if (!isoString) return "";
-    return new Date(isoString).toISOString().split("T")[0];
+  const methods = useForm();
+  const { reset, handleSubmit, setValue, watch } = methods;
+  // --- INICIO DE LA LÓGICA DE AUTOCOMPLETADO ---
+  const selectedLoteId = watch("registroMateriaPrimaId");
+
+  useEffect(() => {
+    if (selectedLoteId && dynamic?.registrosMP) {
+      const selectedLote = dynamic.registrosMP.find(
+        (lote) => lote.id === parseInt(selectedLoteId, 10)
+      );
+
+      if (selectedLote) {
+        console.log("Estructura del Lote seleccionado:", selectedLote);
+
+        // Formatear la fecha
+        const formattedDate = selectedLote.fecha
+          ? new Date(selectedLote.fecha).toISOString().split("T")[0]
+          : "";
+
+        // Autocompletar los campos del formulario
+        setValue("fecha", formattedDate);
+        setValue("productorId", selectedLote.productorId);
+        setValue("numIngreso", selectedLote.numIngreso);
+        setValue("exportadorId", selectedLote.exportadorId);
+
+        if (
+          selectedLote.Productor &&
+          Array.isArray(selectedLote.Productor.responsables) &&
+          selectedLote.Productor.responsables.length > 0
+        ) {
+          setValue(
+            "responsable",
+            selectedLote.Productor.responsables[0].nombre
+          );
+        } else {
+          setValue("responsable", "No asignado");
+        }
+      }
+    }
+  }, [selectedLoteId, dynamic, setValue]);
+
+  const formatDate = (dateValue) => {
+    // Si el valor es nulo o indefinido, devuelve una cadena vacía.
+    if (!dateValue) return "";
+
+    // Intenta crear un objeto Date.
+    const date = new Date(dateValue);
+
+    // Si la fecha creada no es válida (ej. por un formato incorrecto), devuelve una cadena vacía.
+    if (isNaN(date.getTime())) {
+      return "";
+    }
+
+    // Si es válida, la formatea a YYYY-MM-DD.
+    return date.toISOString().split("T")[0];
   };
 
-  const methods = useForm();
-  const { reset } = methods;
-
-  // Este useEffect prepara los datos del formulario, tanto para crear como para editar.
   useEffect(() => {
-    // Solo se ejecuta si el diálogo está abierto.
     if (open) {
       if (initialData) {
-        // --- MODO EDICIÓN: Rellenar el formulario con datos existentes ---
-        // Se asegura de que tanto los datos iniciales como los dinámicos estén presentes.
-        let dataParaFormulario = { ...initialData };
+        const formattedData = { ...initialData };
+        // Itera sobre los campos definidos para el formulario
+        fields.forEach((field) => {
+          // Si el campo es de tipo 'date' y existe en los datos iniciales
+          if (field.type === "date" && formattedData[field.name]) {
+            // Formatea su valor
+            formattedData[field.name] = formatDate(formattedData[field.name]);
+          }
+        });
 
-        // LÓGICA PARA PRODUCCIÓN
-        if (title.includes("Producción")) {
-          const etiqueta = initialData.etiqueta || {};
-          const producto = etiqueta.Producto || {};
-          const variedad = etiqueta.Variedad || {};
-          const pallet = initialData.pallets?.[0] || {};
-          const empaque = pallet.empaque?.[0] || {};
-          
-          dataParaFormulario = {
-            ...initialData,
-            productoNombre: producto.nombre,
-            productoVariedad: variedad.nombre,
-            productoCalibre: etiqueta.calibre,
-            productoCategoria: etiqueta.categoria,
-            etiquetaNumero: etiqueta.id,
-            palletNumero: pallet.numeropallet,
-            palletCantidad: pallet.cantidad,
-            palletPeso: pallet.peso,
-            empaqueFecha: formatDate(empaque.fecha),
-            empaquePeso: empaque.peso,
-            empaqueTipo: empaque.tipoEmpaques?.[0]?.tipo,
-          };
-        }
+        const {
+          responsableId,
+          guiaProductorId,
+          etiquetaNumero,
+          ...dataPrincipal
+        } = formattedData;
+        reset(dataPrincipal);
 
-        // LÓGICA PARA ETIQUETA
-        if (title.includes("Etiqueta")) {
-          dataParaFormulario = {
-            ...initialData,
-            productor: initialData.Productor?.clp,
-            exportador: initialData.Exportador?.nombreEmpresa,
-            producto: initialData.Producto?.nombre,
-            variedad: initialData.Variedad?.nombre,
-            fechaEmp: formatDate(initialData.fechaEmp),
-          };
-        }
-
-        reset(dataParaFormulario);
+        setTimeout(() => {
+          if (responsableId !== undefined) {
+            setValue("responsableId", responsableId);
+          }
+          if (guiaProductorId !== undefined) {
+            setValue("guiaProductorId", guiaProductorId);
+          }
+          if (etiquetaNumero !== undefined) {
+            setValue("etiquetaNumero", etiquetaNumero);
+          }
+        }, 50);
       } else {
-        // --- MODO CREACIÓN: Rellenar el formulario con valores por defecto ---
         const defaultValues = {};
         fields.forEach((field) => {
           if (field.type === "date") {
@@ -88,59 +121,16 @@ export function DialogDemo({
         reset(defaultValues);
       }
     }
-  }, [open, initialData, fields, reset, title, dynamic]);
+  }, [open, initialData, fields, reset, setValue]);
 
-  // Esta función se ejecuta al enviar el formulario.
-  // Prepara los datos para enviarlos al backend.
-  const handleFormSubmit = (data) => {
-    let datosParaEnviar = data;
-
-    // LÓGICA PARA PRODUCCIÓN
-    if (title.includes("Producción")) {
-      datosParaEnviar = {
-        fecha: data.fecha,
-        estado: data.estado,
-        etiqueta: {
-          id: data.etiquetaNumero,
-        },
-        // producto: {
-        //   nombre: data.productoNombre,
-        //   variedad: data.productoVariedad,
-        //   calibre: data.productoCalibre,
-        //   categoria: data.productoCategoria,
-        // },
-        pallet: {
-          numero: data.palletNumero,
-          cantidad: data.palletCantidad,
-          peso: data.palletPeso,
-        },
-        empaque: {
-          fecha: data.empaqueFecha,
-          peso: data.empaquePeso,
-          tipo: data.empaqueTipo,
-        },
-      };
-    }
-
-    // LÓGICA PARA ETIQUETA
-    if (title.includes("Etiqueta")) {
-      datosParaEnviar = {
-        productor: { clp: data.productor },
-        exportador: { nombreEmpresa: data.exportador },
-        producto: { nombre: data.producto },
-        variedad: { nombre: data.variedad },
-        calibre: data.calibre,
-        categoria: data.categoria,
-        trazabilidad: data.trazabilidad,
-        destino: data.destino,
-        fechaEmp: data.fechaEmp,
-        estado: data.estado || "No Confirmado",
-      };
-    }
-
-    onSubmit?.(datosParaEnviar);
+  const handleDialogClose = () => {
     setOpen(false);
     onClose?.();
+  };
+
+  const handleFormSubmit = (data) => {
+    onSubmit?.(data);
+    handleDialogClose();
   };
 
   return (
@@ -149,8 +139,7 @@ export function DialogDemo({
         <Button
           variant="outline"
           onClick={() => {
-            // Limpiamos cualquier dato de edición anterior al abrir para crear
-            reset({});
+            onClose?.();
             setOpen(true);
           }}
         >
@@ -161,15 +150,12 @@ export function DialogDemo({
       {open && (
         <Dialog
           open={open}
-          onOpenChange={(value) => {
-            if (!value) onClose?.();
-            setOpen(value);
-          }}
+          onOpenChange={(value) => !value && handleDialogClose()}
         >
           <DialogContent className="w-full !max-w-[95vw] max-h-[90vh] overflow-y-auto bg-white p-0 rounded-2xl shadow-xl">
             <div className="w-full px-4 py-6">
               <FormProvider {...methods}>
-                <form onSubmit={methods.handleSubmit(handleFormSubmit)}>
+                <form onSubmit={handleSubmit(handleFormSubmit)}>
                   <DialogHeader>
                     <DialogTitle className="text-3xl text-center mb-8">
                       {title}
@@ -184,10 +170,7 @@ export function DialogDemo({
                     <Button
                       variant="ghost"
                       type="button"
-                      onClick={() => {
-                        setOpen(false);
-                        onClose?.();
-                      }}
+                      onClick={handleDialogClose}
                     >
                       Cancelar
                     </Button>

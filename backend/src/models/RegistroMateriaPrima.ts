@@ -39,7 +39,7 @@ class RegistroMateriaPrima extends Model {
 
   @AllowNull(false)
   @Column({
-    type: DataType.DATE,
+    type: DataType.STRING(70),
   })
   declare guiaSENASA: string;
 
@@ -140,17 +140,11 @@ class RegistroMateriaPrima extends Model {
   @BelongsTo(() => Exportador)
   declare Exportador: Exportador;
 
-  //Guia de Productor
-  @ForeignKey(() => Guia)
-  declare guiaProductorId: number;
-  @BelongsTo(() => Guia)
-  declare Guia: Guia;
-
   //---CONTENEDOR DE ARRAYS
   //Rotulo
   @HasMany(() => Rotulo)
   declare rotulos: Rotulo[];
-  //Rotulo
+  //TransporteDescarga
   @HasMany(() => TransporteDescarga)
   declare transporteDescargas: TransporteDescarga[];
 }
