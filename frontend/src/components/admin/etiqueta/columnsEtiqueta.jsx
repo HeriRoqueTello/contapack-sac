@@ -105,20 +105,26 @@ export const columnsEtiqueta = (onConfirmar, onEliminar, onEditar) => [
       <div className="text-center">{row.getValue("trazabilidad")}</div>
     ),
   },
+
   {
-    accessorKey: "fechaEmp",
-    header: "Fecha de Empaque",
-    cell: ({ row }) => {
-      // Formateamos la fecha para mostrarla legible
-      const fecha = row.getValue("fechaEmp");
-      if (!fecha) return "N/A";
-      try {
-        return new Date(fecha).toLocaleDateString("es-PE", { timeZone: "UTC" });
-      } catch (e) {
-        return "Fecha inválida", e;
-      }
-    },
+  accessorKey: "fechaEmp",
+  header: "Fecha de Empaque",
+  cell: ({ row }) => {
+    const fecha = row.getValue("fechaEmp");
+    if (!fecha) return <div className="text-center">N/A</div>;
+    try {
+      return (
+        <div className="text-center">
+          {new Date(fecha).toLocaleDateString("es-PE", { timeZone: "UTC" })}
+        </div>
+      );
+    } catch (e) {
+      return <div className="text-center">Fecha inválida</div>,e;
+    }
   },
+  },
+
+
   {
     accessorKey: "destino",
     header: "Destino",
