@@ -56,29 +56,34 @@ export const crearRegistro = async (req: Request, res: Response) => {
     } = req.body;
 
     if (!productorData?.nombre) {
-      return res
+      res
         .status(400)
         .json({ mensaje: "El nombre del productor es obligatorio." });
+      return;
     }
     if (!exportadorData?.nombreEmpresa) {
-      return res.status(400).json({
+      res.status(400).json({
         mensaje: "El nombre de empresa del exportador es obligatorio.",
       });
+      return;
     }
     if (!responsableData?.nombre) {
-      return res
+      res
         .status(400)
         .json({ mensaje: "El nombre del responsable es obligatorio." });
+      return;
     }
     if (!guiaProductorData?.guiaProductor) {
-      return res
+      res
         .status(400)
         .json({ mensaje: "El número de guía del productor es obligatorio." });
+      return;
     }
     if (!choferData?.licencia || !choferData?.nombre) {
-      return res.status(400).json({
+      res.status(400).json({
         mensaje: "El nombre y la licencia del chofer son obligatorios.",
       });
+      return;
     }
 
     //--LÓGICA PARA CODIGO INCREMENTAL EN PRODUCTOR Y EXPORTADOR
