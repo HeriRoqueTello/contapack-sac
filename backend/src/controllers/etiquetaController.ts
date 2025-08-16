@@ -63,9 +63,10 @@ export const crearEtiqueta = async (req: Request, res: Response) => {
     });
     //SI NO ENCUENTRA AL PRODUCTOR POR EL CLP, MARCA ERROR 404
     if (!productor) {
-      return res.status(404).json({
+      res.status(404).json({
         mensaje: `El productor con CLP '${productorData.clp}' no fue encontrado.`,
       });
+      return;
     }
 
     //BUSQUEDA/CREACIÓN DE EXPORTADOR
@@ -102,9 +103,10 @@ export const crearEtiqueta = async (req: Request, res: Response) => {
 
     //VALIDAR QUE EL CALIBRE SI ES UN NÚMERO
     if (isNaN(etiquetaData.calibre)) {
-      return res
+      res
         .status(400)
         .json({ mensaje: "Calibre debe ser un número válido." });
+      return;
     }
 
     //CREACIÓN DE LA ETIQUETA
@@ -131,26 +133,31 @@ export const actualizarEtiqueta = async (req: Request, res: Response) => {
     // VALIDAR SI EXISTE LA ETIQUETA
     const etiqueta = await Etiqueta.findByPk(id);
     if (!etiqueta) {
-      return res.status(404).json({ mensaje: "Etiqueta no encontrada" });
+      res.status(404).json({ mensaje: "Etiqueta no encontrada" });
+      return;
     }
 
     // VALIDACIONES (SIMILAR AL CREATE)
     if (!productorData?.clp)
-      return res
+      res
         .status(400)
         .json({ mensaje: "El CLP del productor es obligatorio." });
+      return;
     if (!exportadorData?.nombreEmpresa)
-      return res
+      res
         .status(400)
         .json({ mensaje: "El nombre del exportador es obligatorio." });
+      return;
     if (!productoData?.nombre)
-      return res
+      res
         .status(400)
         .json({ mensaje: "El nombre del producto es obligatorio." });
+      return;
     if (!variedadData?.nombre)
-      return res
+      res
         .status(400)
         .json({ mensaje: "El nombre de la variedad es obligatorio." });
+      return;
 
     //BUSQUEDA POR CLP
     const productor = await Productor.findOne({
@@ -190,9 +197,10 @@ export const actualizarEtiqueta = async (req: Request, res: Response) => {
 
     //VALIDAR QUE EL CALIBRE SI ES UN NÚMERO
     if (isNaN(etiquetaData.calibre)) {
-      return res
+      res
         .status(400)
         .json({ mensaje: "Calibre debe ser un número válido." });
+      return;
     }
 
     //ACTUALIZAR ETIQUETA
@@ -222,7 +230,8 @@ export const confirmarEtiqueta = async (req: Request, res: Response) => {
     const { id } = req.params;
     const etiqueta = await Etiqueta.findByPk(id);
     if (!etiqueta) {
-      return res.status(404).json({ mensaje: "Etiqueta no encontrada" });
+      res.status(404).json({ mensaje: "Etiqueta no encontrada" });
+      return;
     }
     etiqueta.estado =
       etiqueta.estado === "Confirmado" ? "No confirmado" : "Confirmado";
