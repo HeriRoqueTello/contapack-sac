@@ -36,21 +36,25 @@ export const crearEtiqueta = async (req: Request, res: Response) => {
 
     // VALIDACIONES
     if (!productorData?.clp)
-      return res
+      res
         .status(400)
         .json({ mensaje: "El CLP del productor es obligatorio." });
+      return;
     if (!exportadorData?.nombreEmpresa)
-      return res
+      res
         .status(400)
         .json({ mensaje: "El nombre del exportador es obligatorio." });
+      return;
     if (!productoData?.nombre)
-      return res
+      res
         .status(400)
         .json({ mensaje: "El nombre del producto es obligatorio." });
+      return;
     if (!variedadData?.nombre)
-      return res
+      res
         .status(400)
         .json({ mensaje: "El nombre de la variedad es obligatorio." });
+      return;
 
     //----BUSQUEDA Y CREACIÓN DE DATOS DE OTRAS TABLAS
     //BUSQUEDA DE PRODUCTOR POR CLP
