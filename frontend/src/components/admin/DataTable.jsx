@@ -30,8 +30,7 @@ import {
 export function DataTable({
   data,
   columns,
-  filterColumnKey = "id",
-  placeholder = "Buscar...",
+  
 }) {
   const [sorting, setSorting] = React.useState([]);
   const [columnFilters, setColumnFilters] = React.useState([]);
@@ -60,14 +59,7 @@ export function DataTable({
   return (
     <div className="w-full">
       <div className="flex items-center py-4">
-        <Input
-          placeholder={placeholder}
-          value={table.getColumn(filterColumnKey)?.getFilterValue() ?? ""}
-          onChange={(event) =>
-            table.getColumn(filterColumnKey)?.setFilterValue(event.target.value)
-          }
-          className="max-w-sm"
-        />
+       
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="ml-auto">
