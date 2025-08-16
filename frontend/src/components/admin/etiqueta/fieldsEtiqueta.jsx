@@ -64,6 +64,7 @@ export const fields = [
       { value: "China", label: "China", uniqueKey: "cn" },
       { value: "Chile", label: "Chile", uniqueKey: "cl" },
       { value: "Japón", label: "Japón", uniqueKey: "jp" },
+      
     ],
   },
   {

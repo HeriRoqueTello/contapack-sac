@@ -1,4 +1,3 @@
-
 import {
   normalizarEtiqueta,
   prepararEtiquetaParaSubmit,
@@ -16,6 +15,7 @@ import { useAuthStore } from "@/store/user-store";
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router";
 
+
 export function EtiquetaView() {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [etiquetaEditando, setEtiquetaEditando] = useState(null);
@@ -27,6 +27,7 @@ export function EtiquetaView() {
 
   const [filterType, setFilterType] = useState("");
   const [filterValue, setFilterValue] = useState("");
+  const [filterDate, setFilterDate] = useState(""); // fecha separada
 
   const {
     dataEtiqueta,
@@ -51,29 +52,41 @@ export function EtiquetaView() {
       exportadorNombre: etiqueta.Exportador?.nombreEmpresa,
       productoNombre: etiqueta.Producto?.nombre,
       variedadNombre: etiqueta.Variedad?.nombre,
+      estado: etiqueta.estado?.trim(), // 🔹 Normalizamos estado
     }));
   }, [dataEtiqueta]);
 
-  // Filtrado dinámico (incluyendo Estado)
+  // Filtrado dinámico
   const filteredData = transformedData.filter((item) => {
-    if (!filterType || !filterValue) return true;
+    let cumple = true;
 
-    if (filterType === "productor") {
-      return item.Productor?.clp === filterValue;
+    // Filtro select
+    if (filterType && filterValue) {
+      if (filterType === "estado") {
+        cumple =
+          item.estado?.toLowerCase() === filterValue.toLowerCase();
+      }
+      if (filterType === "productor") {
+        cumple = item.Productor?.clp === filterValue;
+      }
+      if (filterType === "exportador") {
+        cumple = item.Exportador?.nombreEmpresa === filterValue;
+      }
+      if (filterType === "producto") {
+        cumple = item.Producto?.nombre === filterValue;
+      }
+      if (filterType === "destino") {
+        cumple = item.destino === filterValue;
+      }
     }
-    if (filterType === "exportador") {
-      return item.Exportador?.nombreEmpresa === filterValue;
+
+    // Filtro separado de fecha
+    if (filterDate) {
+      const fechaItem = item.fechaEmp?.split("T")[0];
+      if (fechaItem !== filterDate) cumple = false;
     }
-     if (filterType === "fecha") {
-    const fechaItem = item.fechaEmp?.split("T")[0]; // extraer solo yyyy-mm-dd
-    return fechaItem === filterValue;
-    }
-     if (filterType === "estado") {
-    return (
-      item.estado?.toLowerCase().trim() === filterValue.toLowerCase().trim()
-    );
-  }
-    return true;
+
+    return cumple;
   });
 
   const handleSubmit = (formData) => {
@@ -85,7 +98,9 @@ export function EtiquetaView() {
         datos: datosParaEnviar,
       });
     } else {
-      addEtiquetaMutate.mutate(datosParaEnviar);
+      addEtiquetaMutate.mutate(datosParaEnviar, {
+        onSuccess: () => setDialogOpen(false), // 🔹 Cierra el diálogo al crear
+      });
     }
   };
 
@@ -113,72 +128,119 @@ export function EtiquetaView() {
     return (
       <>
         {/* Controles de filtro */}
-        <div className="flex gap-2 mb-4">
-          <select
-            className="border rounded p-2"
-            value={filterType}
-            onChange={(e) => {
-              setFilterType(e.target.value);
-              setFilterValue("");
-            }}
-          >
-            <option value="">Seleccionar filtro</option>
-            
-            <option value="estado">Estado</option>
-            <option value="productor">CLP</option>
-            <option value="exportador">Exportador</option>
-            <option value="fecha">Fecha de Empaque</option>
-            
-          </select>
-
-          {filterType === "estado" && (
+        <div className="flex gap-4 mb-4">
+          <div className="flex gap-2">
             <select
               className="border rounded p-2"
-              value={filterValue}
-              onChange={(e) => setFilterValue(e.target.value)}
+              value={filterType}
+              onChange={(e) => {
+                setFilterType(e.target.value);
+                setFilterValue("");
+              }}
             >
-              
-              <option value="Confirmado">Confirmado</option>
-              <option value="No confirmado">No Confirmado</option>
+              <option value="">Seleccionar filtro</option>
+              <option value="estado">Estado</option>
+              <option value="productor">CLP</option>
+              <option value="exportador">Exportador</option>
+              <option value="producto">Producto</option>
+              <option value="destino">Destino</option>
             </select>
-          )}
 
-          {filterType === "productor" && (
-            <select
-              className="border rounded p-2"
-              value={filterValue}
-              onChange={(e) => setFilterValue(e.target.value)}
-            >
-              <option value="">Todos</option>
-              {[...new Set(transformedData.map((i) => i.Productor?.clp).filter(Boolean))].map((clp) => (
-                <option key={clp} value={clp}>{clp}</option>
-              ))}
-            </select>
-          )}
+            {filterType === "estado" && (
+              <select
+                className="border rounded p-2"
+                value={filterValue}
+                onChange={(e) => setFilterValue(e.target.value)}
+              >
+                <option value="">Todos</option>
+                <option value="Confirmado">Confirmado</option>
+                <option value="No Confirmado">No Confirmado</option>
+              </select>
+            )}
 
-          {filterType === "exportador" && (
-            <select
-              className="border rounded p-2"
-              value={filterValue}
-              onChange={(e) => setFilterValue(e.target.value)}
-            >
-              <option value="">Todos</option>
-              {[...new Set(transformedData.map((i) => i.Exportador?.nombreEmpresa).filter(Boolean))].map((nombre) => (
-                <option key={nombre} value={nombre}>{nombre}</option>
-              ))}
-            </select>
-          )}
+            {filterType === "productor" && (
+              <select
+                className="border rounded p-2"
+                value={filterValue}
+                onChange={(e) => setFilterValue(e.target.value)}
+              >
+                <option value="">Todos</option>
+                {[...new Set(
+                  transformedData.map((i) => i.Productor?.clp).filter(Boolean)
+                )].map((clp) => (
+                  <option key={clp} value={clp}>
+                    {clp}
+                  </option>
+                ))}
+              </select>
+            )}
 
-          {filterType === "fecha" && (
+            {filterType === "exportador" && (
+              <select
+                className="border rounded p-2"
+                value={filterValue}
+                onChange={(e) => setFilterValue(e.target.value)}
+              >
+                <option value="">Todos</option>
+                {[...new Set(
+                  transformedData
+                    .map((i) => i.Exportador?.nombreEmpresa)
+                    .filter(Boolean)
+                )].map((nombre) => (
+                  <option key={nombre} value={nombre}>
+                    {nombre}
+                  </option>
+                ))}
+
+              </select>
+
+            )}
+            {filterType === "producto" && (
+              <select
+                className="border rounded p-2"
+                value={filterValue}
+                onChange={(e) => setFilterValue(e.target.value)}
+              >
+                <option value="">Todos</option>
+                {[...new Set(
+                  transformedData.map((i) => i.Producto?.nombre).filter(Boolean)
+                )].map((nombre) => (
+                  <option key={nombre} value={nombre}>
+                    {nombre}
+                  </option>
+                ))}
+              </select>
+            )}
+            {filterType === "destino" && (
+              <select
+                className="border rounded p-2"
+                value={filterValue}
+                onChange={(e) => setFilterValue(e.target.value)}
+              >
+                <option value="">Todos</option>
+                {[...new Set(
+                  transformedData
+                    .map((i) => i.destino) // 
+                    .filter(Boolean)
+                )].map((dest) => (
+                  <option key={dest} value={dest}>
+                    {dest}
+                  </option>
+                ))}
+              </select>
+            )}
+
+          </div>
+
+          {/* Filtro separado de fecha */}
+          <div>
             <input
               type="date"
               className="border rounded p-2"
-              value={filterValue}
-              onChange={(e) => setFilterValue(e.target.value)}
+              value={filterDate}
+              onChange={(e) => setFilterDate(e.target.value)}
             />
-          )}
-
-          
+          </div>
         </div>
 
         <EtiquetaDialog
@@ -189,6 +251,7 @@ export function EtiquetaView() {
           onClose={handleCloseDialog}
           open={dialogOpen}
           setOpen={setDialogOpen}
+          description="Formulario de registro de etiqueta" // 🔹 Para evitar el warning
         />
         <EtiquetaTable
           dataEtiqueta={filteredData}

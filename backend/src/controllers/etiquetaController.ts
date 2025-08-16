@@ -35,26 +35,30 @@ export const crearEtiqueta = async (req: Request, res: Response) => {
     } = req.body;
 
     // VALIDACIONES
-    if (!productorData?.clp)
+    if (!productorData?.clp){
       res
         .status(400)
         .json({ mensaje: "El CLP del productor es obligatorio." });
       return;
-    if (!exportadorData?.nombreEmpresa)
+    }
+    if (!exportadorData?.nombreEmpresa){
       res
         .status(400)
         .json({ mensaje: "El nombre del exportador es obligatorio." });
       return;
-    if (!productoData?.nombre)
+    }
+    if (!productoData?.nombre){
       res
         .status(400)
         .json({ mensaje: "El nombre del producto es obligatorio." });
       return;
-    if (!variedadData?.nombre)
+    }
+    if (!variedadData?.nombre){
       res
         .status(400)
         .json({ mensaje: "El nombre de la variedad es obligatorio." });
       return;
+    }
 
     //----BUSQUEDA Y CREACIÓN DE DATOS DE OTRAS TABLAS
     //BUSQUEDA DE PRODUCTOR POR CLP
@@ -138,26 +142,30 @@ export const actualizarEtiqueta = async (req: Request, res: Response) => {
     }
 
     // VALIDACIONES (SIMILAR AL CREATE)
-    if (!productorData?.clp)
+    if (!productorData?.clp){
       res
         .status(400)
         .json({ mensaje: "El CLP del productor es obligatorio." });
       return;
-    if (!exportadorData?.nombreEmpresa)
+    }
+    if (!exportadorData?.nombreEmpresa){
       res
         .status(400)
         .json({ mensaje: "El nombre del exportador es obligatorio." });
       return;
-    if (!productoData?.nombre)
+    }
+    if (!productoData?.nombre){
       res
         .status(400)
         .json({ mensaje: "El nombre del producto es obligatorio." });
       return;
-    if (!variedadData?.nombre)
+    }
+    if (!variedadData?.nombre){
       res
         .status(400)
         .json({ mensaje: "El nombre de la variedad es obligatorio." });
       return;
+    }
 
     //BUSQUEDA POR CLP
     const productor = await Productor.findOne({
