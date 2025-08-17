@@ -16,7 +16,8 @@ export const columnsRotulo = (
   onConfirmar,
   onEliminar,
   setRegistroEditando,
-  setDialogOpen
+  setDialogOpen,
+  onGenerarReporte
 ) => [
   {
     accessorKey: "id",
@@ -44,6 +45,13 @@ export const columnsRotulo = (
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Opciones</DropdownMenuLabel>
+            <DropdownMenuItem
+              onClick={() => {
+                onGenerarReporte(rotulo);
+              }}
+            >
+              Generar Reporte
+            </DropdownMenuItem>
             {isEncargado && (
               <DropdownMenuItem onClick={() => onConfirmar(rotulo.id)}>
                 {rotulo.estado === "Confirmado" ? "No confirmar" : "Confirmar"}

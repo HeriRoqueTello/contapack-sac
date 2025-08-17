@@ -1,9 +1,9 @@
-import { useState, useEffect } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
 
 // Componentes
-import { DialogDemo } from "@/components/admin/dialogDemo";
 import { DataTable } from "@/components/admin/DataTable";
+import { DialogDemo } from "@/components/admin/dialogDemo";
 import { columnsRotulo } from "@/components/admin/recepcion/rotulo/columnsRotulo";
 import { fields } from "@/components/admin/recepcion/rotulo/fieldsRotulo";
 
@@ -11,6 +11,7 @@ import { fields } from "@/components/admin/recepcion/rotulo/fieldsRotulo";
 import { convertirChequeos, detectarChequeo } from "@/utils/chequeosUtils";
 
 // API
+import { fetchDynamicFields } from "@/api/dynamicFieldsApi";
 import {
   confirmarRotulo,
   createRotulo,
@@ -18,8 +19,11 @@ import {
   getRotulos,
   updateRotulo,
 } from "@/api/rotuloApi";
-import { fetchDynamicFields } from "@/api/dynamicFieldsApi"; 
+import { ReporteRotulo } from "@/components/reportes/ReporteRotulo";
 import { useAuthStore } from "@/store/user-store";
+import html2canvas from "html2canvas";
+import jsPDF from "jspdf";
+import { createRoot } from "react-dom/client";
 import { useNavigate } from "react-router";
 
 export function RotuloView() {
@@ -56,7 +60,6 @@ export function RotuloView() {
     queryKey: ["rotulos"],
     queryFn: getRotulos,
   });
-
 
   // Mutaciones
   const deleteRotuloMutation = useMutation({
@@ -131,6 +134,101 @@ export function RotuloView() {
     confirmarRotuloMutation.mutate(id);
   };
 
+  const mapLoteDataToReporte = (rotulo) => {
+    const idComoString = String(rotulo.id);
+    const idFormateado = idComoString.padStart(3, "0");
+    const codigoFinal = `CP-F${idFormateado}`;
+    const numeroFormatoFormateado = idComoString.padStart(6, "0");
+    const numeroFormatoFinal = ` N° ${numeroFormatoFormateado}`;
+
+    const responsablesArray = rotulo.Productor?.responsables;
+
+    const nombresResponsables =
+      responsablesArray && responsablesArray.length > 0
+        ? responsablesArray.map((resp) => resp.nombre).join(", ")
+        : "N/A";
+
+    return {
+      numeroFormato: numeroFormatoFinal,
+      codigo: codigoFinal,
+      revision: "02",
+      pagina: "1 de 1",
+      fecha: rotulo.createdAt,
+      productorProveedor: rotulo.RegistroMateriaPrima.Productor.nombre || "N/A",
+      kgIngresados: rotulo.kgIngresados,
+      bandejas: rotulo.bandJabas,
+      producto: rotulo.Producto.nombre,
+      numeroPallet: rotulo.numPallet,
+      variedad: rotulo.Producto.Variedad.nombre,
+      trazRecepcion: rotulo.trazRecepcion,
+      lote: rotulo.RegistroMateriaPrima.id,
+      numeroIngreso: rotulo.RegistroMateriaPrima.numIngreso,
+      fechaProceso: rotulo.fechaProceso,
+      exportador: rotulo.RegistroMateriaPrima.Exportador.nombreEmpresa || "N/A",
+      pesoJabaBandeja: rotulo.pesoJabaBandeja,
+      responsable: nombresResponsables,
+      firma: rotulo.firma,
+      observaciones: rotulo.RegistroMateriaPrima.obs,
+      materiaPrima: rotulo.materiaPrima,
+      frutaRechazada: rotulo.frutaRechazada,
+      descarte: rotulo.descarte,
+    };
+  };
+
+  const handleGenerarReporte = (rowData) => {
+    // 1. Guarda los datos del registro en el estado para que el componente ReporteTemplate se renderice
+    const mappedData = mapLoteDataToReporte(rowData);
+
+    // Obtener la fecha y hora actual en un formato de string
+    const now = new Date();
+    const dateString = now.toLocaleDateString("es-ES").replace(/\//g, "-"); // Formato dd-mm-yyyy
+    const timeString = now
+      .toLocaleTimeString("es-ES", { hour12: false })
+      .replace(/:/g, "-"); // Formato hh-mm-ss
+    const dateTimeString = `${dateString}_${timeString}`;
+
+    // 1. Crea un contenedor temporal fuera de la vista del usuario
+    const tempContainer = document.createElement("div");
+    tempContainer.style.position = "absolute";
+    tempContainer.style.left = "-9999px";
+    tempContainer.style.width = "210mm"; // Ancho de una A4 para html2canvas
+    tempContainer.style.padding = "10mm";
+    document.body.appendChild(tempContainer);
+
+    // 2. Renderiza el componente de reporte en el contenedor temporal
+    const root = createRoot(tempContainer);
+    root.render(<ReporteRotulo datos={mappedData} />);
+
+    // 2. Espera un ciclo de renderizado para que el componente esté disponible en el DOM
+    setTimeout(() => {
+      html2canvas(tempContainer, {
+        allowTaint: true,
+        useCORS: true,
+        logging: true,
+        // Desactivamos la capacidad de ignorar la hoja de estilos principal
+        ignoreElements: (element) => element.tagName === "STYLE",
+      })
+        .then((canvas) => {
+          const imgData = canvas.toDataURL("image/png");
+          const pdf = new jsPDF("p", "mm", "a4");
+          const imgProps = pdf.getImageProperties(imgData);
+          const pdfWidth = pdf.internal.pageSize.getWidth();
+          const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+
+          pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
+          pdf.save(`reporte_${mappedData.numeroFormato}_${dateTimeString}.pdf`);
+        })
+        .catch((error) => {
+          console.error("Error al generar el PDF:", error);
+        })
+        .finally(() => {
+          // 4. Limpia el contenedor temporal del DOM
+          root.unmount();
+          document.body.removeChild(tempContainer);
+        });
+    }, 100);
+  };
+
   // Renderizado condicional
   if (isLoading) return <div>Cargando...</div>;
   if (isError) return <div>Error: {error.message}</div>;
@@ -165,7 +263,8 @@ export function RotuloView() {
             handleConfirmar,
             handleEliminar,
             setRotuloEditando,
-            setDialogOpen
+            setDialogOpen,
+            handleGenerarReporte
           )}
           data={dataRotulo || []}
           filterColumnKey="id"
