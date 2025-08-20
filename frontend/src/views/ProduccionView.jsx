@@ -15,12 +15,21 @@ import {
   useProduccionMutations,
 } from "@/components/admin/produccion";
 
+// ✅ Importa el Select de shadcn
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+
 export function ProduccionView() {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [produccionEditando, setProduccionEditando] = useState(null);
 
-  // Select de tipo de filtro
-  const [tipoFiltro, setTipoFiltro] = useState(""); 
+  // Filtros
+  const [tipoFiltro, setTipoFiltro] = useState("");
   const [valorFiltro, setValorFiltro] = useState("");
   const [filtroFechaEmpaque, setFiltroFechaEmpaque] = useState("");
 
@@ -44,13 +53,11 @@ export function ProduccionView() {
     confirmarProduccionMutate,
   } = useProduccionMutations();
 
-  //Para filtro de la fecha de empaque
   const toDMY2 = (iso) => {
-  if (!iso) return "";
-  const [y, m, d] = iso.split("-");
-  return `${d}/${m}/${y.slice(2)}`; // dd/mm/aa
+    if (!iso) return "";
+    const [y, m, d] = iso.split("-");
+    return `${d}/${m}/${y.slice(2)}`;
   };
-
 
   const transformedData = useMemo(() => {
     if (!dataProduccion) return [];
@@ -63,12 +70,10 @@ export function ProduccionView() {
       const tipoEmpaque = empaque.tipoEmpaques?.[0]?.tipo || "N/A";
 
       const empaqueFechaISO = empaque.fecha
-        ? new Date(empaque.fecha).toLocaleDateString("en-CA") // ISO para YYYY-MM-DD
+        ? new Date(empaque.fecha).toLocaleDateString("en-CA")
         : "";
 
       const empaqueFechaFormato = empaqueFechaISO ? toDMY2(empaqueFechaISO) : "";
-
-      
 
       return {
         ...produccion,
@@ -76,7 +81,6 @@ export function ProduccionView() {
         productoVariedad: variedad.nombre,
         productoCalibre: etiqueta.calibre,
         productoCategoria: etiqueta.categoria,
-        
         etiquetaNumero: etiqueta.id,
         palletNumero: pallet.numeropallet,
         palletCantidad: pallet.cantidad,
@@ -86,46 +90,37 @@ export function ProduccionView() {
               const date = new Date(empaque.fecha);
               const day = String(date.getDate()).padStart(2, "0");
               const month = String(date.getMonth() + 1).padStart(2, "0");
-              const year = String(date.getFullYear()); //  
+              const year = String(date.getFullYear());
               return `${day}/${month}/${year}`;
             })()
           : "",
-
-        empaqueFechaISO,   // <- para filtro de fecha
+        empaqueFechaISO,
         empaqueFechaFormato,
         empaquePeso: empaque.peso,
         empaqueTipo: tipoEmpaque,
-        
       };
     });
   }, [dataProduccion]);
 
-  // Filtros
+  const filteredData = useMemo(() => {
+    return transformedData.filter((item) => {
+      let match = true;
 
-const filteredData = useMemo(() => {
-  return transformedData.filter((item) => {
-    let match = true;
+      if (tipoFiltro === "Producto") {
+        match = valorFiltro ? item.productoNombre === valorFiltro : true;
+      } else if (tipoFiltro === "Estado") {
+        match = valorFiltro
+          ? (item.estado || "").toLowerCase() === valorFiltro.toLowerCase()
+          : true;
+      }
 
-    if (tipoFiltro === "Producto") {
-      match = valorFiltro
-        ? item.productoNombre === valorFiltro
+      const matchFecha = filtroFechaEmpaque
+        ? item.empaqueFechaISO === filtroFechaEmpaque
         : true;
-    } else if (tipoFiltro === "Estado") {
-      match = valorFiltro
-        ? (item.estado || "").toLowerCase() === valorFiltro.toLowerCase()
-        : true;
-    } 
-    
-    // Filtro separado de fecha
 
-    const matchFecha    = filtroFechaEmpaque
-      ? item.empaqueFechaISO === filtroFechaEmpaque   // <-- usa el ISO
-      : true;
-
-    return match && matchFecha;
-  });
-}, [transformedData, tipoFiltro, valorFiltro, filtroFechaEmpaque]);
-
+      return match && matchFecha;
+    });
+  }, [transformedData, tipoFiltro, valorFiltro, filtroFechaEmpaque]);
 
   const handleSubmit = (formData) => {
     const datosParaEnviar = prepararProduccionParaSubmit(formData);
@@ -164,63 +159,64 @@ const filteredData = useMemo(() => {
     );
 
   if (areasAllow.includes(userArea)) {
-    // Listas únicas
     const productosUnicos = [
       ...new Set(transformedData.map((p) => p.productoNombre).filter(Boolean)),
     ];
-   
 
     return (
       <>
         {/* Filtros */}
         <div className="flex gap-4 mb-4">
           {/* Select principal */}
-          <select
+          <Select
             value={tipoFiltro}
-            onChange={(e) => {
-              setTipoFiltro(e.target.value);
-              setValorFiltro(""); // reset al cambiar tipo
+            onValueChange={(val) => {
+              setTipoFiltro(val);
+              setValorFiltro("");
             }}
-            className="border p-2 rounded"
           >
-            <option value="">Seleccionar filtro</option>
-            <option value="Estado">Estado</option>
-            <option value="Producto">Producto</option>
-            
-            
-          </select>
+            <SelectTrigger className="w-[200px]">
+              <SelectValue placeholder="Seleccionar filtro" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">Sin filtro</SelectItem>
+              <SelectItem value="Estado">Estado</SelectItem>
+              <SelectItem value="Producto">Producto</SelectItem>
+            </SelectContent>
+          </Select>
 
-          {/* Input dinámico según filtro */}
+          {/* Select dinámico Producto */}
           {tipoFiltro === "Producto" && (
-            <select
-              value={valorFiltro}
-              onChange={(e) => setValorFiltro(e.target.value)}
-              className="border p-2 rounded"
-            >
-              <option value="">Todos los productos</option>
-              {productosUnicos.map((prod) => (
-                <option key={prod} value={prod}>
-                  {prod}
-                </option>
-              ))}
-            </select>
+            <Select value={valorFiltro} onValueChange={setValorFiltro}>
+              <SelectTrigger className="w-[200px]">
+                <SelectValue placeholder="Todos" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">Todos</SelectItem>
+                {productosUnicos.map((prod) => (
+                  <SelectItem key={prod} value={prod}>
+                    {prod}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           )}
 
-          
-
+          {/* Select dinámico Estado */}
           {tipoFiltro === "Estado" && (
-            <select
-              value={valorFiltro}
-              onChange={(e) => setValorFiltro(e.target.value)}
-              className="border p-2 rounded"
-            >
-              <option value="">Todos los estados</option>
-              <option value="Confirmado">Confirmado</option>
-              <option value="No Confirmado">No Confirmado</option>
-            </select>
+            <Select value={valorFiltro} onValueChange={setValorFiltro}>
+              <SelectTrigger className="w-[200px]">
+                <SelectValue placeholder="Todos" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">Todos</SelectItem>
+                <SelectItem value="Confirmado">Confirmado</SelectItem>
+                <SelectItem value="No Confirmado">No Confirmado</SelectItem>
+              </SelectContent>
+            </Select>
           )}
 
-          {/* Filtro aparte: fecha */}
+          {/* Filtro fecha */}
           <input
             type="date"
             value={filtroFechaEmpaque}

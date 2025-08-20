@@ -11,6 +11,14 @@ import {
   useEtiquetaData,
   useEtiquetaMutations,
 } from "@/components/admin/etiqueta";
+import {
+  Select,
+  SelectTrigger,
+  SelectContent,
+  SelectItem,
+  SelectValue,
+} from "@/components/ui/select";
+
 import { useAuthStore } from "@/store/user-store";
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router";
@@ -99,7 +107,7 @@ export function EtiquetaView() {
       });
     } else {
       addEtiquetaMutate.mutate(datosParaEnviar, {
-        onSuccess: () => setDialogOpen(false), // 🔹 Cierra el diálogo al crear
+        onSuccess: () => setDialogOpen(false), // Cierra el diálogo al crear
       });
     }
   };
@@ -124,115 +132,122 @@ export function EtiquetaView() {
       <EtiquetaError error={errorEtiqueta} message="Error al cargar etiqueta" />
     );
 
-  if (areasAllow.includes(userArea)) {
+ if (areasAllow.includes(userArea)) {
     return (
       <>
         {/* Controles de filtro */}
         <div className="flex gap-4 mb-4">
           <div className="flex gap-2">
-            <select
-              className="border rounded p-2"
+            {/* Select para elegir tipo de filtro */}
+            <Select
               value={filterType}
-              onChange={(e) => {
-                setFilterType(e.target.value);
+              onValueChange={(value) => {
+                setFilterType(value);
                 setFilterValue("");
               }}
             >
-              <option value="">Seleccionar filtro</option>
-              <option value="estado">Estado</option>
-              <option value="productor">CLP</option>
-              <option value="exportador">Exportador</option>
-              <option value="producto">Producto</option>
-              <option value="destino">Destino</option>
-            </select>
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Seleccionar filtro" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all" >Sin filtro</SelectItem>
+                <SelectItem value="estado">Estado</SelectItem>
+                <SelectItem value="productor">CLP</SelectItem>
+                <SelectItem value="exportador">Exportador</SelectItem>
+                <SelectItem value="producto">Producto</SelectItem>
+                <SelectItem value="destino">Destino</SelectItem>
+                
+              </SelectContent>
+            </Select>
 
+            {/* Filtros dinámicos */}
             {filterType === "estado" && (
-              <select
-                className="border rounded p-2"
-                value={filterValue}
-                onChange={(e) => setFilterValue(e.target.value)}
-              >
-                <option value="">Todos</option>
-                <option value="Confirmado">Confirmado</option>
-                <option value="No Confirmado">No Confirmado</option>
-              </select>
+              <Select value={filterValue} onValueChange={setFilterValue}>
+                <SelectTrigger className="w-[180px]">
+                  <SelectValue placeholder="Todos" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Todos</SelectItem>
+                  <SelectItem value="Confirmado">Confirmado</SelectItem>
+                  <SelectItem value="No Confirmado">No Confirmado</SelectItem>
+                </SelectContent>
+              </Select>
             )}
 
             {filterType === "productor" && (
-              <select
-                className="border rounded p-2"
-                value={filterValue}
-                onChange={(e) => setFilterValue(e.target.value)}
-              >
-                <option value="">Todos</option>
-                {[...new Set(
-                  transformedData.map((i) => i.Productor?.clp).filter(Boolean)
-                )].map((clp) => (
-                  <option key={clp} value={clp}>
-                    {clp}
-                  </option>
-                ))}
-              </select>
+              <Select value={filterValue} onValueChange={setFilterValue}>
+                <SelectTrigger className="w-[180px]">
+                  <SelectValue placeholder="Todos" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Todos</SelectItem>
+                  {[...new Set(transformedData.map((i) => i.Productor?.clp).filter(Boolean))].map(
+                    (clp) => (
+                      <SelectItem key={clp} value={clp}>
+                        {clp}
+                      </SelectItem>
+                    )
+                  )}
+                </SelectContent>
+              </Select>
             )}
 
             {filterType === "exportador" && (
-              <select
-                className="border rounded p-2"
-                value={filterValue}
-                onChange={(e) => setFilterValue(e.target.value)}
-              >
-                <option value="">Todos</option>
-                {[...new Set(
-                  transformedData
-                    .map((i) => i.Exportador?.nombreEmpresa)
-                    .filter(Boolean)
-                )].map((nombre) => (
-                  <option key={nombre} value={nombre}>
-                    {nombre}
-                  </option>
-                ))}
-
-              </select>
-
+              <Select value={filterValue} onValueChange={setFilterValue}>
+                <SelectTrigger className="w-[180px]">
+                  <SelectValue placeholder="Todos" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Todos</SelectItem>
+                  {[...new Set(
+                    transformedData.map((i) => i.Exportador?.nombreEmpresa).filter(Boolean)
+                  )].map((nombre) => (
+                    <SelectItem key={nombre} value={nombre}>
+                      {nombre}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             )}
+
             {filterType === "producto" && (
-              <select
-                className="border rounded p-2"
-                value={filterValue}
-                onChange={(e) => setFilterValue(e.target.value)}
-              >
-                <option value="">Todos</option>
-                {[...new Set(
-                  transformedData.map((i) => i.Producto?.nombre).filter(Boolean)
-                )].map((nombre) => (
-                  <option key={nombre} value={nombre}>
-                    {nombre}
-                  </option>
-                ))}
-              </select>
-            )}
-            {filterType === "destino" && (
-              <select
-                className="border rounded p-2"
-                value={filterValue}
-                onChange={(e) => setFilterValue(e.target.value)}
-              >
-                <option value="">Todos</option>
-                {[...new Set(
-                  transformedData
-                    .map((i) => i.destino) // 
-                    .filter(Boolean)
-                )].map((dest) => (
-                  <option key={dest} value={dest}>
-                    {dest}
-                  </option>
-                ))}
-              </select>
+              <Select value={filterValue} onValueChange={setFilterValue}>
+                <SelectTrigger className="w-[180px]">
+                  <SelectValue placeholder="Todos" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Todos</SelectItem>
+                  {[...new Set(
+                    transformedData.map((i) => i.Producto?.nombre).filter(Boolean)
+                  )].map((nombre) => (
+                    <SelectItem key={nombre} value={nombre}>
+                      {nombre}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             )}
 
+            {filterType === "destino" && (
+              <Select value={filterValue} onValueChange={setFilterValue}>
+                <SelectTrigger className="w-[180px]">
+                  <SelectValue placeholder="Todos" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Todos</SelectItem>
+                  {[...new Set(
+                    transformedData.map((i) => i.destino).filter(Boolean)
+                  )].map((dest) => (
+                    <SelectItem key={dest} value={dest}>
+                      {dest}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            )}
           </div>
 
-          {/* Filtro separado de fecha */}
+          {/* Filtro de fecha */}
           <div>
             <input
               type="date"
