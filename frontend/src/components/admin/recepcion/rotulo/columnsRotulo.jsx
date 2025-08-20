@@ -1,4 +1,3 @@
-import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import { detectarChequeo } from "@/utils/chequeosUtils";
 import {
@@ -86,6 +85,7 @@ export const columnsRotulo = (
   },
   {
     // --- CAMBIO 1 ---
+    accessorKey: "fecha",
     header: "Fecha",
     cell: ({ row }) => {
       const fecha = row.original.RegistroMateriaPrima?.fecha;
@@ -224,7 +224,7 @@ export const columnsRotulo = (
   },
   {
     accessorKey: "registroMateriaPrimaId",
-    header: "Lote asociado",
+    header: "Lote Asociado",
     cell: ({ row }) => (
       <div className="text-center">
         {row.getValue("registroMateriaPrimaId")}
