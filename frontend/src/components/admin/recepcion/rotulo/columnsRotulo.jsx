@@ -183,17 +183,23 @@ export const columnsRotulo = (
     ),
   },
   {
-    accessorKey: "fechaProceso",
-    header: "Fecha de Proceso",
-    cell: ({ row }) => {
-      const fecha = row.getValue("fechaProceso");
-      return (
-        <div className="text-center">
-          {fecha ? new Date(fecha).toLocaleDateString() : "N/A"}
-        </div>
-      );
-    },
+  accessorKey: "fechaProceso",
+  header: "Fecha de Proceso",
+  cell: ({ row }) => {
+    const fecha = row.getValue("fechaProceso");
+    if (!fecha) return "N/A";
+
+    // fecha tiene formato YYYY-MM-DD
+    const [yyyy, mm, dd] = fecha.split("-");
+    
+
+    return (
+      <div className="text-center">
+        {`${dd}/${mm}/${yyyy}`} {/* Formato DD/MM/AA */}
+      </div>
+    );
   },
+},
   {
     accessorKey: "pesoJabaBandeja",
     header: "Peso Jaba/Bandeja",
