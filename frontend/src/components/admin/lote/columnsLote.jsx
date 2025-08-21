@@ -153,9 +153,17 @@ export const columnsLote = (
   {
     accessorKey: "fecha",
     header: "Fecha de recepción",
-    cell: ({ row }) => (
-      <div className="text-center">{row.getValue("fecha")}</div>
-    ),
+    cell: ({ row }) => {
+    const fecha = row.getValue("fecha");
+    if (!fecha) return "N/A";
+
+    const d = new Date(fecha);
+    const day = String(d.getDate()).padStart(2, "0");
+    const month = String(d.getMonth() + 1).padStart(2, "0");
+    const year = String(d.getFullYear()).slice(-2); // solo últimos 2 dígitos
+
+    return <div className="text-center">{`${day}/${month}/${year}`}</div>;
+  },
   },
   {
     accessorKey: "horaDescarga",

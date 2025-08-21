@@ -205,11 +205,10 @@ export function RotuloView() {
 
 // --- FILTROS ---
 const transformedData = useMemo(() => {
-  return dataRotulo?.map((rotulo) => {
+  const mapped = dataRotulo?.map((rotulo) => {
     const fechaRaw = rotulo.RegistroMateriaPrima?.fecha;
     const fechaProcesoRaw = rotulo.fechaProceso;
 
-    // Convertir a YYYY-MM-DD 
     const formatDate = (date) => {
       if (!date) return null;
       const d = new Date(date);
@@ -219,49 +218,60 @@ const transformedData = useMemo(() => {
       return `${yyyy}-${mm}-${dd}`;
     };
 
-    const formatDateProceso = (dateStr) => {
-      if (!dateStr) return null;
-      // Si viene con "Z" al final (UTC), elimínalo para evitar ajuste de zona horaria
-      const cleanStr = dateStr.endsWith("Z") ? dateStr.slice(0, -1) : dateStr;
-      return cleanStr.split("T")[0]; // toma YYYY-MM-DD
-    };
-
-
     return {
       ...rotulo,
       estado: rotulo.estado?.trim(),
       productorNombre: rotulo.RegistroMateriaPrima?.Productor?.nombre,
       exportadorNombre: rotulo.RegistroMateriaPrima?.Exportador?.nombreEmpresa,
+      producto: rotulo.Producto?.nombre,
       loteNombre:
         rotulo.RegistroMateriaPrima?.nombreLote || rotulo.RegistroMateriaPrima?.id,
       fecha: formatDate(fechaRaw),
-      fechaProceso: formatDateProceso(fechaProcesoRaw),
+      fechaProceso: formatDate(fechaProcesoRaw),
     };
   }) || [];
+
+  // Ordenar por fecha de creación (ascendente → nuevos al final)
+  return mapped.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
 }, [dataRotulo]);
+
 
 const filteredData = useMemo(() => {
   return transformedData.filter((item) => {
     let cumple = true;
 
+    // Filtro por selects
     if (filterType && filterValue && filterValue !== "all") {
-      const filterValLower = filterValue.toLowerCase();
+      const filterValLower = String(filterValue).toLowerCase();
+
       if (filterType === "estado")
-        cumple = item.estado?.toLowerCase() === filterValLower;
-      if (filterType === "productor") cumple = item.productorNombre === filterValue;
-      if (filterType === "exportador") cumple = item.exportadorNombre === filterValue;
-      if (filterType === "lote") cumple = item.loteNombre === filterValue;
+        cumple = cumple && item.estado?.toLowerCase() === filterValLower;
+
+      if (filterType === "productor")
+        cumple = cumple && item.productorNombre === filterValue;
+
+      if (filterType === "exportador")
+        cumple = cumple && item.exportadorNombre === filterValue;
+
+      if (filterType === "producto") cumple = cumple && item.producto === filterValue;
+      
+
+      if (filterType === "lote")
+        cumple = cumple && String(item.loteNombre) === String(filterValue);
     }
 
+    // Filtro por fechas
     if (filterDateType && filterDateValue) {
-      if (filterDateType === "fecha") cumple = item.fecha === filterDateValue;
-      if (filterDateType === "fechaProceso") cumple = item.fechaProceso === filterDateValue;
+      if (filterDateType === "fecha")
+        cumple = cumple && item.fecha === filterDateValue;
+
+      if (filterDateType === "fechaProceso")
+        cumple = cumple && item.fechaProceso === filterDateValue;
     }
 
     return cumple;
   });
 }, [transformedData, filterType, filterValue, filterDateType, filterDateValue]);
-
 
   // Renderizado
   if (isLoading) return <div>Cargando...</div>;
@@ -271,18 +281,7 @@ const filteredData = useMemo(() => {
 
   return (
     <>
-      <div className="text-end">
-        <DialogDemo
-          fields={fields}
-          dynamic={dynamicFields}
-          title="Rotulo"
-          onSubmit={rotuloEditando ? handleUpdate : handleAdd}
-          initialData={rotuloEditando ? { ...rotuloEditando, chequeos: detectarChequeo(rotuloEditando) } : null}
-          onClose={() => { setRotuloEditando(null); setDialogOpen(false); }}
-          open={dialogOpen}
-          setOpen={setDialogOpen}
-        />
-      </div>
+      
 
       {/* FILTROS */}
       <div className="flex gap-4 mb-4">
@@ -295,6 +294,7 @@ const filteredData = useMemo(() => {
               <SelectItem value="estado">Estado</SelectItem>
               <SelectItem value="productor">Productor</SelectItem>
               <SelectItem value="exportador">Exportador</SelectItem>
+              <SelectItem value="producto">Producto</SelectItem>
               <SelectItem value="lote">Lote asociado</SelectItem>
             </SelectContent>
           </Select>
@@ -310,6 +310,8 @@ const filteredData = useMemo(() => {
                   [...new Set(transformedData.map((i) => i.productorNombre).filter(Boolean))].map((val) => <SelectItem key={val} value={val}>{val}</SelectItem>)}
                 {filterType === "exportador" &&
                   [...new Set(transformedData.map((i) => i.exportadorNombre).filter(Boolean))].map((val) => <SelectItem key={val} value={val}>{val}</SelectItem>)}
+                {filterType === "producto" &&
+                  [...new Set(transformedData.map((i) => i.producto).filter(Boolean))].map((val) => <SelectItem key={val} value={val}>{val}</SelectItem>)}
                 {filterType === "lote" &&
                   [...new Set(transformedData.map((i) => i.loteNombre).filter(Boolean))].map((val) => <SelectItem key={val} value={val}>{val}</SelectItem>)}
               </SelectContent>
@@ -337,6 +339,19 @@ const filteredData = useMemo(() => {
             />
           )}
         </div>
+      </div>
+
+      <div className="text-end">
+        <DialogDemo
+          fields={fields}
+          dynamic={dynamicFields}
+          title="Rotulo"
+          onSubmit={rotuloEditando ? handleUpdate : handleAdd}
+          initialData={rotuloEditando ? { ...rotuloEditando, chequeos: detectarChequeo(rotuloEditando) } : null}
+          onClose={() => { setRotuloEditando(null); setDialogOpen(false); }}
+          open={dialogOpen}
+          setOpen={setDialogOpen}
+        />
       </div>
 
       {/* DataTable */}
