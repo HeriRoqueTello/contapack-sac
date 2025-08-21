@@ -5,8 +5,8 @@ export const fields = [
   },
   {
     name: "productor",
-    label: "CLP del Productor", 
-    type: "select",
+    label: "CLP del Productor",
+    type: "combo",
     required: true,
     options: ({ dynamic }) => {
       //Si productores no es un array retorna vacío
@@ -22,10 +22,26 @@ export const fields = [
       //Retorna los productores filtrados
       return productoresFiltrados.map((p) => ({
         label: p.clp,
-        value: p.clp,   
-        uniqueKey: p.id, 
+        value: p.clp,
+        uniqueKey: p.id,
       }));
     },
+    onChange: ({ value, dynamic, setValue }) => {
+      const productorSeleccionado = dynamic.productores.find(
+        (p) => p.clp === value
+      );
+
+      if (productorSeleccionado) {
+        setValue("nombreProductor", productorSeleccionado.nombre);
+      }
+    },
+  },
+  {
+    name: "nombreProductor",
+    label: "Nombre del Productor",
+    type: "text",
+    required: true,
+    readOnly: true,
   },
   {
     name: "exportador",
@@ -64,7 +80,6 @@ export const fields = [
       { value: "China", label: "China", uniqueKey: "cn" },
       { value: "Chile", label: "Chile", uniqueKey: "cl" },
       { value: "Japón", label: "Japón", uniqueKey: "jp" },
-      
     ],
   },
   {
