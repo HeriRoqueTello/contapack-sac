@@ -33,9 +33,11 @@ export function AdminLayout() {
       />
 
       {/* Main Content Area */}
-      <div className="flex-1 flex flex-col overflow-hidden px-4">
+      <div className="flex-1 flex flex-col overflow-y-scroll overflow-x-hidden px-4">
         <Navbar data={data} onMenuClick={() => setSidebarOpen(true)} />
-        <Outlet />
+        <div className="py-4">
+          <Outlet />
+        </div>
       </div>
 
       {/* mobile */}

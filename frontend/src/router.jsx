@@ -27,7 +27,7 @@ export default function Router() {
           <Route index element={<DashboardView />} />
           <Route path="embarque" element={<EmbarqueView />} />
           <Route path="anexo" element={<AnexoView />} />
-          <Route path="taetiqueta" element={<EtiquetaView />} />
+          <Route path="etiqueta" element={<EtiquetaView />} />
           <Route path="produccion" element={<ProduccionView />} />
           <Route path="recepcion/rotulo" element={<RotuloView />} />
           <Route path="recepcion/lote" element={<LoteView />} />
