@@ -13,8 +13,8 @@ export const RegInputs = ({ fields, dynamic, watch }) => {
     formState: { errors },
   } = useFormContext();
 
-  const [palletLeft, setPalletLeft] = useState(["izq_0"]);
-  const [palletRight, setPalletRight] = useState(["der_0"]);
+  const [palletLeft, setPalletLeft] = useState([]);
+  const [palletRight, setPalletRight] = useState([]);
 
   const allPallets = watch("pallets") || {};
 
