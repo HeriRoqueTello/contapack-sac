@@ -36,7 +36,7 @@ export const ReporteRotulo = forwardRef(({ datos }, ref) => {
             </div>
 
             <div className="p-2 text-center">
-              <span className="font-bold">N° </span>
+              <span className="font-bold"></span>
 
               <span className="text-blue-600 font-bold text-lg">
                 {datos.numeroFormato}
