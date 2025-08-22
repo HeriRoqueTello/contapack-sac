@@ -19,6 +19,20 @@ export const RegInputs = ({ fields, dynamic, watch }) => {
   const allPallets = watch("pallets") || {};
 
   useEffect(() => {
+    // Solo inicializa si allPallets ya tiene datos
+    if (Object.keys(allPallets).length > 0) {
+      const initialPalletLeft = Object.keys(allPallets).filter((key) =>
+        key.startsWith("izq")
+      );
+      const initialPalletRight = Object.keys(allPallets).filter((key) =>
+        key.startsWith("der")
+      );
+      setPalletLeft(initialPalletLeft);
+      setPalletRight(initialPalletRight);
+    }
+  }, [allPallets]); // Se ejecuta cada vez que allPallets cambia
+
+  useEffect(() => {
     const izquierda = palletLeft.map((id) => ({
       id,
       ...(allPallets[id] || {}),
