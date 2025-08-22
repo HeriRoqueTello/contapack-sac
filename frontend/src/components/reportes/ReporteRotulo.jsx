@@ -1,7 +1,18 @@
+import dayjs from "dayjs";
+import localizedFormat from "dayjs/plugin/localizedFormat";
+import "dayjs/locale/es";
 import { forwardRef } from "react";
 
 export const ReporteRotulo = forwardRef(({ datos }, ref) => {
   if (!datos) return null;
+
+  dayjs.extend(localizedFormat);
+  dayjs.locale("es"); // Usa español globalmente
+
+  // ...dentro de tu componente o donde renderices la fecha
+  const fechaBonita = dayjs(datos.fecha).format(
+    "dddd, D [de] MMMM [de] YYYY, h:mm A"
+  );
 
   return (
     <div
@@ -72,7 +83,7 @@ export const ReporteRotulo = forwardRef(({ datos }, ref) => {
             FECHA :
           </div>
 
-          <div className="flex-1 p-2">{datos.fecha}</div>
+          <div className="flex-1 p-2">{fechaBonita}</div>
         </div>
       </div>
 
