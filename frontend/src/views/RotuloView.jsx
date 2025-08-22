@@ -199,7 +199,6 @@ export function RotuloView() {
         allowTaint: true,
         useCORS: true,
         logging: true,
-        ignoreElements: (e) => e.tagName === "STYLE",
       })
         .then((canvas) => {
           const imgData = canvas.toDataURL("image/png");

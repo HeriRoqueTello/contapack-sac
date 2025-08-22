@@ -2,495 +2,235 @@ import { forwardRef } from "react";
 
 export const ReporteRotulo = forwardRef(({ datos }, ref) => {
   if (!datos) return null;
+
   return (
     <div
       ref={ref}
-      style={{
-        width: "100%",
-        maxWidth: "64rem" /* 1024px */,
-        margin: "0 auto",
-        backgroundColor: "#ffffff",
-        borderWidth: "2px",
-        borderColor: "#000000",
-        borderStyle: "solid",
-        fontFamily: "sans-serif",
-        fontSize: "0.875rem" /* 14px */,
-      }}
+      className="w-full max-w-4xl mx-auto bg-white border-2 border-black font-sans text-sm"
     >
       {/* Encabezado */}
-      <div style={{ borderBottom: "2px solid #000000" }}>
-        <div style={{ display: "flex" }}>
+
+      <div className="border-b-2 border-black">
+        <div className="flex">
           {/* Logo y empresa */}
-          <div
-            style={{
-              width: "12rem",
-              borderWidth: "2px",
-              borderRightStyle: "solid",
-              borderColor: "#000000",
-              padding: "1rem",
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <div
-              style={{
-                width: "5rem",
-                height: "5rem",
-                marginBottom: "0.5rem",
-                borderRadius: "9999px",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                backgroundColor: "#F3F4F6",
-              }}
-            >
-              <img
-                src="/logo.svg"
-                style={{
-                  fontSize: "0.75rem",
-                  textAlign: "center",
-                  height: "90px",
-                }}
-              />
+
+          <div className="w-48 border-r-2 border-black p-4 flex flex-col items-center justify-center">
+            <div className="w-20 h-20 mb-2 bg-gray-100 rounded-full flex items-center justify-center">
+              <img src="/logo.svg" className="text-xs text-center"></img>
             </div>
-            <div
-              style={{
-                fontSize: "0.75rem",
-                textAlign: "center",
-                fontWeight: "500",
-              }}
-            >
+
+            <div className="text-xs text-center font-medium">
               EMPACADORA DE FRUTAS Y HORTALIZAS
             </div>
           </div>
-          <div style={{ flex: "1 1 0%" }}>
-            <div
-              style={{
-                borderBottom: "1px solid #000000",
-                padding: "0.5rem",
-                textAlign: "center",
-                fontWeight: "700",
-              }}
-            >
+
+          {/* Título y número */}
+
+          <div className="flex-1">
+            <div className="border-b border-black p-2 text-center font-bold">
               FORMATO
             </div>
-            <div
-              style={{
-                borderBottom: "1px solid #000000",
-                padding: "0.5rem",
-                textAlign: "center",
-                fontWeight: "700",
-              }}
-            >
+
+            <div className="border-b border-black p-2 text-center font-bold">
               CONTROL DE RECEPCION MATERIA PRIMA
             </div>
-            <div style={{ padding: "0.5rem", textAlign: "center" }}>
-              <span style={{ fontWeight: "700" }}>N° </span>
-              <span
-                style={{
-                  fontWeight: "700",
-                  fontSize: "1.125rem",
-                  color: "#2563EB",
-                }}
-              >
+
+            <div className="p-2 text-center">
+              <span className="font-bold">N° </span>
+
+              <span className="text-blue-600 font-bold text-lg">
                 {datos.numeroFormato}
               </span>
             </div>
           </div>
+
           {/* Información del documento */}
-          <div
-            style={{
-              width: "8rem",
-              borderLeftWidth: "2px",
-              borderLeftStyle: "solid",
-              borderColor: "#000000",
-            }}
-          >
-            <div
-              style={{
-                borderBottom: "1px solid #000000",
-                padding: "0.25rem",
-                fontSize: "0.75rem",
-              }}
-            >
+
+          <div className="w-32 border-l-2 border-black">
+            <div className="border-b border-black p-1 text-xs">
               <div>Código: {datos.codigo}</div>
             </div>
-            <div
-              style={{
-                borderBottom: "1px solid #000000",
-                padding: "0.25rem",
-                fontSize: "0.75rem",
-              }}
-            >
+
+            <div className="border-b border-black p-1 text-xs">
               <div>Revisión: {datos.revision}</div>
             </div>
-            <div
-              style={{
-                borderBottom: "1px solid #000000",
-                padding: "0.25rem",
-                fontSize: "0.75rem",
-              }}
-            >
+
+            <div className="border-b border-black p-1 text-xs">
               <div>Fecha: {new Date().toLocaleDateString("es-ES")}</div>
             </div>
-            <div style={{ padding: "0.25rem", fontSize: "0.75rem" }}>
+
+            <div className="p-1 text-xs">
               <div>Página: {datos.pagina}</div>
             </div>
           </div>
         </div>
+
         {/* Fecha */}
-        <div style={{ borderTop: "2px solid #000000", display: "flex" }}>
-          <div
-            style={{
-              width: "8rem",
-              borderRight: "1px solid #000000",
-              padding: "0.5rem",
-              fontWeight: "700",
-              textAlign: "center",
-            }}
-          >
+
+        <div className="border-t-2 border-black flex">
+          <div className="w-32 border-r border-black p-2 font-bold text-center">
             FECHA :
           </div>
-          <div style={{ flex: "1 1 0%", padding: "0.5rem" }}>{datos.fecha}</div>
+
+          <div className="flex-1 p-2">{datos.fecha}</div>
         </div>
       </div>
+
       {/* Productor/Proveedor */}
-      <div style={{ borderBottom: "2px solid #000000", display: "flex" }}>
-        <div
-          style={{
-            width: "12rem",
-            borderRight: "1px solid #000000",
-            padding: "0.5rem",
-            fontWeight: "700",
-            backgroundColor: "#F3F4F6",
-          }}
-        >
+
+      <div className="border-b-2 border-black flex">
+        <div className="w-48 border-r border-black p-2 font-bold bg-gray-100">
           PRODUCTOR / PROVEEDOR:
         </div>
-        <div style={{ flex: "1 1 0%", padding: "0.5rem" }}>
-          {datos.productorProveedor}
-        </div>
+
+        <div className="flex-1 p-2">{datos.productorProveedor}</div>
       </div>
+
       {/* Tabla principal */}
-      <div style={{ borderBottom: "2px solid #000000" }}>
+
+      <div className="border-b-2 border-black">
         {/* Fila 1 */}
-        <div style={{ display: "flex", borderBottom: "1px solid #000000" }}>
-          <div
-            style={{
-              width: "50%",
-              borderRight: "1px solid #000000",
-              display: "flex",
-            }}
-          >
-            <div
-              style={{
-                width: "8rem",
-                padding: "0.5rem",
-                fontWeight: "700",
-                backgroundColor: "#F3F4F6",
-              }}
-            >
-              KG INGRESADOS:
-            </div>
-            <div style={{ flex: "1 1 0%", padding: "0.5rem" }}>
-              {datos.kgIngresados}
-            </div>
+
+        <div className="flex border-b border-black">
+          <div className="w-1/2 border-r border-black flex">
+            <div className="w-32 p-2 font-bold bg-gray-100">KG INGRESADOS:</div>
+
+            <div className="flex-1 p-2">{datos.kgIngresados}</div>
           </div>
-          <div style={{ width: "50%", display: "flex" }}>
-            <div
-              style={{
-                width: "8rem",
-                padding: "0.5rem",
-                fontWeight: "700",
-                backgroundColor: "#F3F4F6",
-              }}
-            >
+
+          <div className="w-1/2 flex">
+            <div className="w-32 p-2 font-bold bg-gray-100">
               BANDEJAS / JABAS:
             </div>
-            <div style={{ flex: "1 1 0%", padding: "0.5rem" }}>
-              {datos.bandejas}
-            </div>
+
+            <div className="flex-1 p-2">{datos.bandejas}</div>
           </div>
         </div>
+
         {/* Fila 2 */}
-        <div style={{ display: "flex", borderBottom: "1px solid #000000" }}>
-          <div
-            style={{
-              width: "50%",
-              borderRight: "1px solid #000000",
-              display: "flex",
-            }}
-          >
-            <div
-              style={{
-                width: "8rem",
-                padding: "0.5rem",
-                fontWeight: "700",
-                backgroundColor: "#F3F4F6",
-              }}
-            >
-              PRODUCTO:
-            </div>
-            <div style={{ flex: "1 1 0%", padding: "0.5rem" }}>
-              {datos.producto}
-            </div>
+
+        <div className="flex border-b border-black">
+          <div className="w-1/2 border-r border-black flex">
+            <div className="w-32 p-2 font-bold bg-gray-100">PRODUCTO:</div>
+
+            <div className="flex-1 p-2">{datos.producto}</div>
           </div>
-          <div style={{ width: "50%", display: "flex" }}>
-            <div
-              style={{
-                width: "8rem",
-                padding: "0.5rem",
-                fontWeight: "700",
-                backgroundColor: "#F3F4F6",
-              }}
-            >
-              N° PALLET:
-            </div>
-            <div style={{ flex: "1 1 0%", padding: "0.5rem" }}>
-              {datos.numeroPallet}
-            </div>
+
+          <div className="w-1/2 flex">
+            <div className="w-32 p-2 font-bold bg-gray-100">N° PALLET:</div>
+
+            <div className="flex-1 p-2">{datos.numeroPallet}</div>
           </div>
         </div>
+
         {/* Fila 3 */}
-        <div style={{ display: "flex", borderBottom: "1px solid #000000" }}>
-          <div
-            style={{
-              width: "50%",
-              borderRight: "1px solid #000000",
-              display: "flex",
-            }}
-          >
-            <div
-              style={{
-                width: "8rem",
-                padding: "0.5rem",
-                fontWeight: "700",
-                backgroundColor: "#F3F4F6",
-              }}
-            >
-              VARIEDAD:
-            </div>
-            <div style={{ flex: "1 1 0%", padding: "0.5rem" }}>
-              {datos.variedad}
-            </div>
+
+        <div className="flex border-b border-black">
+          <div className="w-1/2 border-r border-black flex">
+            <div className="w-32 p-2 font-bold bg-gray-100">VARIEDAD:</div>
+
+            <div className="flex-1 p-2">{datos.variedad}</div>
           </div>
-          <div style={{ width: "50%", display: "flex" }}>
-            <div
-              style={{
-                width: "8rem",
-                padding: "0.5rem",
-                fontWeight: "700",
-                backgroundColor: "#F3F4F6",
-              }}
-            >
+
+          <div className="w-1/2 flex">
+            <div className="w-32 p-2 font-bold bg-gray-100">
               TRAZ. RECEPCION:
             </div>
-            <div style={{ flex: "1 1 0%", padding: "0.5rem" }}>
-              {datos.trazRecepcion}
-            </div>
+
+            <div className="flex-1 p-2">{datos.trazRecepcion}</div>
           </div>
         </div>
+
         {/* Fila 4 */}
-        <div style={{ display: "flex", borderBottom: "1px solid #000000" }}>
-          <div
-            style={{
-              width: "50%",
-              borderRight: "1px solid #000000",
-              display: "flex",
-            }}
-          >
-            <div
-              style={{
-                width: "4rem",
-                padding: "0.5rem",
-                fontWeight: "700",
-                backgroundColor: "#F3F4F6",
-              }}
-            >
-              LOTE
-            </div>
-            <div
-              style={{
-                flex: "1 1 0%",
-                padding: "0.5rem",
-                borderRight: "1px solid #000000",
-              }}
-            >
-              {datos.lote}
-            </div>
-            <div
-              style={{
-                width: "5rem",
-                padding: "0.5rem",
-                fontWeight: "700",
-                backgroundColor: "#F3F4F6",
-              }}
-            >
-              # INGRESO
-            </div>
-            <div style={{ flex: "1 1 0%", padding: "0.5rem" }}>
-              {datos.numeroIngreso}
-            </div>
+
+        <div className="flex border-b border-black">
+          <div className="w-1/2 border-r border-black flex">
+            <div className="w-16 p-2 font-bold bg-gray-100">LOTE</div>
+
+            <div className="flex-1 p-2 border-r border-black">{datos.lote}</div>
+
+            <div className="w-20 p-2 font-bold bg-gray-100"># INGRESO</div>
+
+            <div className="flex-1 p-2">{datos.numeroIngreso}</div>
           </div>
-          <div style={{ width: "50%", display: "flex" }}>
-            <div
-              style={{
-                width: "8rem",
-                padding: "0.5rem",
-                fontWeight: "700",
-                backgroundColor: "#F3F4F6",
-              }}
-            >
+
+          <div className="w-1/2 flex">
+            <div className="w-32 p-2 font-bold bg-gray-100">
               FECHA DE PROCESO:
             </div>
-            <div style={{ flex: "1 1 0%", padding: "0.5rem" }}>
-              {datos.fechaProceso}
-            </div>
+
+            <div className="flex-1 p-2">{datos.fechaProceso}</div>
           </div>
         </div>
+
         {/* Fila 5 */}
-        <div style={{ display: "flex", borderBottom: "1px solid #000000" }}>
-          <div
-            style={{
-              width: "50%",
-              borderRight: "1px solid #000000",
-              display: "flex",
-            }}
-          >
-            <div
-              style={{
-                width: "8rem",
-                padding: "0.5rem",
-                fontWeight: "700",
-                backgroundColor: "#F3F4F6",
-              }}
-            >
-              EXPORTADOR:
-            </div>
-            <div style={{ flex: "1 1 0%", padding: "0.5rem" }}>
-              {datos.exportador}
-            </div>
+
+        <div className="flex border-b border-black">
+          <div className="w-1/2 border-r border-black flex">
+            <div className="w-32 p-2 font-bold bg-gray-100">EXPORTADOR:</div>
+
+            <div className="flex-1 p-2">{datos.exportador}</div>
           </div>
-          <div style={{ width: "50%", display: "flex" }}>
-            <div
-              style={{
-                width: "8rem",
-                padding: "0.5rem",
-                fontWeight: "700",
-                backgroundColor: "#F3F4F6",
-              }}
-            >
+
+          <div className="w-1/2 flex">
+            <div className="w-32 p-2 font-bold bg-gray-100">
               PESO JABA/BANDEJA:
             </div>
-            <div style={{ flex: "1 1 0%", padding: "0.5rem" }}>
-              {datos.pesoJabaBandeja}
-            </div>
+
+            <div className="flex-1 p-2">{datos.pesoJabaBandeja}</div>
           </div>
         </div>
+
         {/* Fila 6 */}
-        <div style={{ display: "flex" }}>
-          <div
-            style={{
-              width: "50%",
-              borderRight: "1px solid #000000",
-              display: "flex",
-            }}
-          >
-            <div
-              style={{
-                width: "8rem",
-                padding: "0.5rem",
-                fontWeight: "700",
-                backgroundColor: "#F3F4F6",
-              }}
-            >
-              RESPONSABLE:
-            </div>
-            <div style={{ flex: "1 1 0%", padding: "0.5rem" }}>
-              {datos.responsable}
-            </div>
+
+        <div className="flex">
+          <div className="w-1/2 border-r border-black flex">
+            <div className="w-32 p-2 font-bold bg-gray-100">RESPONSABLE:</div>
+
+            <div className="flex-1 p-2">{datos.responsable}</div>
           </div>
-          <div style={{ width: "50%", display: "flex" }}>
-            <div
-              style={{
-                width: "8rem",
-                padding: "0.5rem",
-                fontWeight: "700",
-                backgroundColor: "#F3F4F6",
-              }}
-            >
-              FIRMA:
-            </div>
-            <div style={{ flex: "1 1 0%", padding: "0.5rem" }}>
-              {datos.firma}
-            </div>
+
+          <div className="w-1/2 flex">
+            <div className="w-32 p-2 font-bold bg-gray-100">FIRMA:</div>
+
+            <div className="flex-1 p-2">{datos.firma}</div>
           </div>
         </div>
       </div>
+
       {/* Observaciones */}
-      <div style={{ borderBottom: "2px solid #000000" }}>
-        <div
-          style={{
-            padding: "0.5rem",
-            fontWeight: "700",
-            backgroundColor: "#F3F4F6",
-          }}
-        >
-          OBSERVACIONES:
-        </div>
-        <div style={{ padding: "1rem", minHeight: "4rem" }}>
-          {datos.observaciones}
-        </div>
+
+      <div className="border-b-2 border-black">
+        <div className="p-2 font-bold bg-gray-100">OBSERVACIONES:</div>
+
+        <div className="p-4 min-h-16">{datos.observaciones}</div>
       </div>
+
       {/* Checkboxes */}
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-around",
-          padding: "1rem",
-        }}
-      >
-        <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-          <span style={{ fontWeight: "700" }}>MATERIA PRIMA</span>
-          <div
-            style={{
-              width: "1.5rem",
-              height: "1.5rem",
-              borderWidth: "2px",
-              borderColor: "#000000",
-              borderStyle: "solid",
-              backgroundColor: datos.materiaPrima ? "#000000" : "transparent",
-            }}
-          ></div>
+
+      <div className="flex items-center justify-around p-4">
+        <div className="flex items-center gap-2">
+          <span className="font-bold">MATERIA PRIMA</span>
+
+          <div className="w-6 h-6 border-2 border-black flex items-center justify-center">
+            {datos.materiaPrima && <span className="text-lg">✓</span>}
+          </div>
         </div>
-        <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-          <span style={{ fontWeight: "700" }}>FRUTA RECHAZADA</span>
-          <div
-            style={{
-              width: "1.5rem",
-              height: "1.5rem",
-              borderWidth: "2px",
-              borderColor: "#000000",
-              borderStyle: "solid",
-              backgroundColor: datos.frutaRechazada ? "#000000" : "transparent",
-            }}
-          ></div>
+
+        <div className="flex items-center gap-2">
+          <span className="font-bold">FRUTA RECHAZADA</span>
+
+          <div className="w-6 h-6 border-2 border-black flex items-center justify-center">
+            {datos.frutaRechazada && <span className="text-lg">✓</span>}
+          </div>
         </div>
-        <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-          <span style={{ fontWeight: "700" }}>DESCARTE</span>
-          <div
-            style={{
-              width: "1.5rem",
-              height: "1.5rem",
-              borderWidth: "2px",
-              borderColor: "#000000",
-              borderStyle: "solid",
-              backgroundColor: datos.descarte ? "#000000" : "transparent",
-            }}
-          ></div>
+
+        <div className="flex items-center gap-2">
+          <span className="font-bold">DESCARTE</span>
+
+          <div className="w-6 h-6 border-2 border-black flex items-center justify-center">
+            {datos.descarte && <span className="text-lg">✓</span>}
+          </div>
         </div>
       </div>
     </div>
