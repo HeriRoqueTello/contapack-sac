@@ -28,7 +28,7 @@ import {
 } from "@/api/rotuloApi";
 import { ReporteRotulo } from "@/components/reportes/ReporteRotulo";
 import { useAuthStore } from "@/store/user-store";
-import html2canvas from "html2canvas";
+import html2canvas from "html2canvas-pro";
 import jsPDF from "jspdf";
 import { createRoot } from "react-dom/client";
 import { useNavigate } from "react-router";
