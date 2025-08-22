@@ -8,7 +8,7 @@ export const fields = [
     {
       name: "fecha",
       label: "Fecha",
-      type: "text",
+      type: "date",
       required: "true",
     },
     {
@@ -115,13 +115,13 @@ export const fields = [
     {
       name: "hInicial",
       label: "Hora inicial",
-      type: "text",
+      type: "datetime-local",
       required: true,
     },
     {
       name: "hFinal",
       label: "Hora final ",
-      type: "text",
+      type: "datetime-local",
       required: true,
     },
     {
