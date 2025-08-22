@@ -58,13 +58,13 @@ const menuItems = [
     allowedRoles: ["Administrador", "Encargado", "Personal"],
     allowedAreas: ["Sistemas", "Produccion"],
   },
-  {
-    title: "Anexo",
-    url: "anexo",
-    icon: DonutIcon,
-    allowedRoles: ["Administrador", "Encargado", "Personal"],
-    allowedAreas: ["Sistemas", "Produccion", "Calidad"],
-  },
+  // {
+  //   title: "Anexo",
+  //   url: "anexo",
+  //   icon: DonutIcon,
+  //   allowedRoles: ["Administrador", "Encargado", "Personal"],
+  //   allowedAreas: ["Sistemas", "Produccion", "Calidad"],
+  // },
   {
     title: "Embarque",
     url: "embarque",
