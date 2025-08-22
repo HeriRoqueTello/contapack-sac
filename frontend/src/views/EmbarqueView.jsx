@@ -35,13 +35,17 @@ export function EmbarqueView() {
   // Función para abrir modal
   const handleVerPallets = (data, title) => {
     setPalletsModal({ open: true, data, title });
+    console.log(palletsModal);
   };
 
   // Agregar la función `onVerPallets` a cada registro
-  const dataConFuncion = dataEmbarque.map((item) => ({
-    ...item,
-    onVerPallets: handleVerPallets,
-  }));
+  const dataConFuncion = dataEmbarque.map((item) => {
+    console.log({ item });
+    return {
+      ...item,
+      onVerPallets: handleVerPallets,
+    };
+  });
   if (areasAllow.includes(userArea)) {
     return (
       <div className="text-end">

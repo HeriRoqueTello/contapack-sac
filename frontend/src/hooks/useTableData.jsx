@@ -11,6 +11,7 @@ export function useTableData(key, initialData = []) {
   }, [data, key]);
 
   const addRegistro = (newData) => {
+    console.log({ newData });
     setData((prev) => {
       const maxId =
         prev.length > 0 ? Math.max(...prev.map((item) => Number(item.id))) : 0;
@@ -45,5 +46,12 @@ export function useTableData(key, initialData = []) {
     setData((prev) => prev.filter((item) => item.id !== id));
   };
 
-  return { data, addRegistro, confirmRegistro, deleteRegistro, actualizarRegistro };
+  console.log({ data });
+  return {
+    data,
+    addRegistro,
+    confirmRegistro,
+    deleteRegistro,
+    actualizarRegistro,
+  };
 }

@@ -237,12 +237,18 @@ export const columnsEmbarque = (
       <Button
         variant="outline"
         size="sm"
-        onClick={() =>
-          handleVerPallets(
-            row.original.palletBlock?.izquierda || [],
-            "Columna Izquierda"
-          )
-        }
+        onClick={() => {
+          // Filtra las claves que comienzan con "izq"
+          const keysIzquierda = Object.keys(row.original.pallets || {}).filter(
+            (key) => key.startsWith("izq")
+          );
+          // Mapea las claves filtradas para obtener los objetos de pallets correspondientes
+          const palletsIzquierda = keysIzquierda.map(
+            (key) => row.original.pallets[key]
+          );
+          // Llama a la función con el array filtrado y el título
+          handleVerPallets(palletsIzquierda, "Columna Izquierda");
+        }}
         className={"justify-center text-center"}
       >
         Ver más…
@@ -255,12 +261,18 @@ export const columnsEmbarque = (
       <Button
         variant="outline"
         size="sm"
-        onClick={() =>
-          handleVerPallets(
-            row.original.palletBlock?.derecha || [],
-            "Columna Derecha"
-          )
-        }
+        onClick={() => {
+          // Filtra las claves que comienzan con "der"
+          const keysDerecha = Object.keys(row.original.pallets || {}).filter(
+            (key) => key.startsWith("der")
+          );
+          // Mapea las claves filtradas para obtener los objetos de pallets correspondientes
+          const palletsDerecha = keysDerecha.map(
+            (key) => row.original.pallets[key]
+          );
+          // Llama a la función con el array filtrado y el título
+          handleVerPallets(palletsDerecha, "Columna Derecha");
+        }}
       >
         Ver más…
       </Button>
