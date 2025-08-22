@@ -6,7 +6,13 @@ import { DataTable } from "@/components/admin/DataTable";
 import { DialogDemo } from "@/components/admin/dialogDemo";
 import { columnsRotulo } from "@/components/admin/recepcion/rotulo/columnsRotulo";
 import { fields } from "@/components/admin/recepcion/rotulo/fieldsRotulo";
-import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectTrigger,
+  SelectContent,
+  SelectItem,
+  SelectValue,
+} from "@/components/ui/select";
 
 // Utilidades
 import { convertirChequeos, detectarChequeo } from "@/utils/chequeosUtils";
@@ -26,6 +32,8 @@ import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 import { createRoot } from "react-dom/client";
 import { useNavigate } from "react-router";
+import { RotuloLoading } from "@/components/admin/recepcion/rotulo/RotuloLoading";
+import { RotuloError } from "@/components/admin/recepcion/rotulo/RotuloError";
 
 export function RotuloView() {
   const queryCliente = useQueryClient();
@@ -171,7 +179,9 @@ export function RotuloView() {
     const mappedData = mapLoteDataToReporte(rowData);
     const now = new Date();
     const dateString = now.toLocaleDateString("es-ES").replace(/\//g, "-");
-    const timeString = now.toLocaleTimeString("es-ES", { hour12: false }).replace(/:/g, "-");
+    const timeString = now
+      .toLocaleTimeString("es-ES", { hour12: false })
+      .replace(/:/g, "-");
     const dateTimeString = `${dateString}_${timeString}`;
 
     const tempContainer = document.createElement("div");
@@ -185,7 +195,12 @@ export function RotuloView() {
     root.render(<ReporteRotulo datos={mappedData} />);
 
     setTimeout(() => {
-      html2canvas(tempContainer, { allowTaint: true, useCORS: true, logging: true, ignoreElements: (e) => e.tagName === "STYLE" })
+      html2canvas(tempContainer, {
+        allowTaint: true,
+        useCORS: true,
+        logging: true,
+        ignoreElements: (e) => e.tagName === "STYLE",
+      })
         .then((canvas) => {
           const imgData = canvas.toDataURL("image/png");
           const pdf = new jsPDF("p", "mm", "a4");
@@ -202,93 +217,107 @@ export function RotuloView() {
     }, 100);
   };
 
+  // --- FILTROS ---
+  const transformedData = useMemo(() => {
+    const mapped =
+      dataRotulo?.map((rotulo) => {
+        const fechaRaw = rotulo.RegistroMateriaPrima?.fecha;
+        const fechaProcesoRaw = rotulo.fechaProceso;
 
-// --- FILTROS ---
-const transformedData = useMemo(() => {
-  const mapped = dataRotulo?.map((rotulo) => {
-    const fechaRaw = rotulo.RegistroMateriaPrima?.fecha;
-    const fechaProcesoRaw = rotulo.fechaProceso;
+        const formatDate = (date) => {
+          if (!date) return null;
+          const d = new Date(date);
+          const yyyy = d.getFullYear();
+          const mm = String(d.getMonth() + 1).padStart(2, "0");
+          const dd = String(d.getDate()).padStart(2, "0");
+          return `${yyyy}-${mm}-${dd}`;
+        };
 
-    const formatDate = (date) => {
-      if (!date) return null;
-      const d = new Date(date);
-      const yyyy = d.getFullYear();
-      const mm = String(d.getMonth() + 1).padStart(2, "0");
-      const dd = String(d.getDate()).padStart(2, "0");
-      return `${yyyy}-${mm}-${dd}`;
-    };
+        return {
+          ...rotulo,
+          estado: rotulo.estado?.trim(),
+          productorNombre: rotulo.RegistroMateriaPrima?.Productor?.nombre,
+          exportadorNombre:
+            rotulo.RegistroMateriaPrima?.Exportador?.nombreEmpresa,
+          producto: rotulo.Producto?.nombre,
+          loteNombre:
+            rotulo.RegistroMateriaPrima?.nombreLote ||
+            rotulo.RegistroMateriaPrima?.id,
+          fecha: formatDate(fechaRaw),
+          fechaProceso: formatDate(fechaProcesoRaw),
+        };
+      }) || [];
 
-    return {
-      ...rotulo,
-      estado: rotulo.estado?.trim(),
-      productorNombre: rotulo.RegistroMateriaPrima?.Productor?.nombre,
-      exportadorNombre: rotulo.RegistroMateriaPrima?.Exportador?.nombreEmpresa,
-      producto: rotulo.Producto?.nombre,
-      loteNombre:
-        rotulo.RegistroMateriaPrima?.nombreLote || rotulo.RegistroMateriaPrima?.id,
-      fecha: formatDate(fechaRaw),
-      fechaProceso: formatDate(fechaProcesoRaw),
-    };
-  }) || [];
+    // Ordenar por fecha de creación (ascendente → nuevos al final)
+    return mapped.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+  }, [dataRotulo]);
 
-  // Ordenar por fecha de creación (ascendente → nuevos al final)
-  return mapped.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
-}, [dataRotulo]);
+  const filteredData = useMemo(() => {
+    return transformedData.filter((item) => {
+      let cumple = true;
 
+      // Filtro por selects
+      if (filterType && filterValue && filterValue !== "all") {
+        const filterValLower = String(filterValue).toLowerCase();
 
-const filteredData = useMemo(() => {
-  return transformedData.filter((item) => {
-    let cumple = true;
+        if (filterType === "estado")
+          cumple = cumple && item.estado?.toLowerCase() === filterValLower;
 
-    // Filtro por selects
-    if (filterType && filterValue && filterValue !== "all") {
-      const filterValLower = String(filterValue).toLowerCase();
+        if (filterType === "productor")
+          cumple = cumple && item.productorNombre === filterValue;
 
-      if (filterType === "estado")
-        cumple = cumple && item.estado?.toLowerCase() === filterValLower;
+        if (filterType === "exportador")
+          cumple = cumple && item.exportadorNombre === filterValue;
 
-      if (filterType === "productor")
-        cumple = cumple && item.productorNombre === filterValue;
+        if (filterType === "producto")
+          cumple = cumple && item.producto === filterValue;
 
-      if (filterType === "exportador")
-        cumple = cumple && item.exportadorNombre === filterValue;
+        if (filterType === "lote")
+          cumple = cumple && String(item.loteNombre) === String(filterValue);
+      }
 
-      if (filterType === "producto") cumple = cumple && item.producto === filterValue;
-      
+      // Filtro por fechas
+      if (filterDateType && filterDateValue) {
+        if (filterDateType === "fecha")
+          cumple = cumple && item.fecha === filterDateValue;
 
-      if (filterType === "lote")
-        cumple = cumple && String(item.loteNombre) === String(filterValue);
-    }
+        if (filterDateType === "fechaProceso")
+          cumple = cumple && item.fechaProceso === filterDateValue;
+      }
 
-    // Filtro por fechas
-    if (filterDateType && filterDateValue) {
-      if (filterDateType === "fecha")
-        cumple = cumple && item.fecha === filterDateValue;
-
-      if (filterDateType === "fechaProceso")
-        cumple = cumple && item.fechaProceso === filterDateValue;
-    }
-
-    return cumple;
-  });
-}, [transformedData, filterType, filterValue, filterDateType, filterDateValue]);
+      return cumple;
+    });
+  }, [
+    transformedData,
+    filterType,
+    filterValue,
+    filterDateType,
+    filterDateValue,
+  ]);
 
   // Renderizado
-  if (isLoading) return <div>Cargando...</div>;
-  if (isError) return <div>Error: {error.message}</div>;
+  if (isLoading) return <RotuloLoading />;
+  if (isError)
+    return <RotuloError error={error} message="Error al cargar rotulo" />;
 
   if (!areasAllow.includes(userArea)) return navigate(`/admin`);
 
   return (
     <>
-      
-
       {/* FILTROS */}
       <div className="flex gap-4 mb-4">
         {/* Filtro principal */}
         <div className="flex gap-2">
-          <Select value={filterType} onValueChange={(val) => { setFilterType(val); setFilterValue(""); }}>
-            <SelectTrigger className="w-[180px]"><SelectValue placeholder="Seleccionar filtro" /></SelectTrigger>
+          <Select
+            value={filterType}
+            onValueChange={(val) => {
+              setFilterType(val);
+              setFilterValue("");
+            }}
+          >
+            <SelectTrigger className="w-[180px]">
+              <SelectValue placeholder="Seleccionar filtro" />
+            </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">Sin filtro</SelectItem>
               <SelectItem value="estado">Estado</SelectItem>
@@ -301,19 +330,61 @@ const filteredData = useMemo(() => {
 
           {filterType && (
             <Select value={filterValue} onValueChange={setFilterValue}>
-              <SelectTrigger className="w-[180px]"><SelectValue placeholder="Todos" /></SelectTrigger>
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Todos" />
+              </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">Todos</SelectItem>
                 {filterType === "estado" &&
-                  ["Confirmado", "No Confirmado"].map((val) => <SelectItem key={val} value={val}>{val}</SelectItem>)}
+                  ["Confirmado", "No Confirmado"].map((val) => (
+                    <SelectItem key={val} value={val}>
+                      {val}
+                    </SelectItem>
+                  ))}
                 {filterType === "productor" &&
-                  [...new Set(transformedData.map((i) => i.productorNombre).filter(Boolean))].map((val) => <SelectItem key={val} value={val}>{val}</SelectItem>)}
+                  [
+                    ...new Set(
+                      transformedData
+                        .map((i) => i.productorNombre)
+                        .filter(Boolean)
+                    ),
+                  ].map((val) => (
+                    <SelectItem key={val} value={val}>
+                      {val}
+                    </SelectItem>
+                  ))}
                 {filterType === "exportador" &&
-                  [...new Set(transformedData.map((i) => i.exportadorNombre).filter(Boolean))].map((val) => <SelectItem key={val} value={val}>{val}</SelectItem>)}
+                  [
+                    ...new Set(
+                      transformedData
+                        .map((i) => i.exportadorNombre)
+                        .filter(Boolean)
+                    ),
+                  ].map((val) => (
+                    <SelectItem key={val} value={val}>
+                      {val}
+                    </SelectItem>
+                  ))}
                 {filterType === "producto" &&
-                  [...new Set(transformedData.map((i) => i.producto).filter(Boolean))].map((val) => <SelectItem key={val} value={val}>{val}</SelectItem>)}
+                  [
+                    ...new Set(
+                      transformedData.map((i) => i.producto).filter(Boolean)
+                    ),
+                  ].map((val) => (
+                    <SelectItem key={val} value={val}>
+                      {val}
+                    </SelectItem>
+                  ))}
                 {filterType === "lote" &&
-                  [...new Set(transformedData.map((i) => i.loteNombre).filter(Boolean))].map((val) => <SelectItem key={val} value={val}>{val}</SelectItem>)}
+                  [
+                    ...new Set(
+                      transformedData.map((i) => i.loteNombre).filter(Boolean)
+                    ),
+                  ].map((val) => (
+                    <SelectItem key={val} value={val}>
+                      {val}
+                    </SelectItem>
+                  ))}
               </SelectContent>
             </Select>
           )}
@@ -321,8 +392,16 @@ const filteredData = useMemo(() => {
 
         {/* Filtro fechas */}
         <div className="flex gap-2">
-          <Select value={filterDateType} onValueChange={(val) => { setFilterDateType(val); setFilterDateValue(""); }}>
-            <SelectTrigger className="w-[180px]"><SelectValue placeholder="Tipo de fecha" /></SelectTrigger>
+          <Select
+            value={filterDateType}
+            onValueChange={(val) => {
+              setFilterDateType(val);
+              setFilterDateValue("");
+            }}
+          >
+            <SelectTrigger className="w-[180px]">
+              <SelectValue placeholder="Tipo de fecha" />
+            </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">Sin filtro</SelectItem>
               <SelectItem value="fecha">Fecha</SelectItem>
@@ -347,8 +426,15 @@ const filteredData = useMemo(() => {
           dynamic={dynamicFields}
           title="Rotulo"
           onSubmit={rotuloEditando ? handleUpdate : handleAdd}
-          initialData={rotuloEditando ? { ...rotuloEditando, chequeos: detectarChequeo(rotuloEditando) } : null}
-          onClose={() => { setRotuloEditando(null); setDialogOpen(false); }}
+          initialData={
+            rotuloEditando
+              ? { ...rotuloEditando, chequeos: detectarChequeo(rotuloEditando) }
+              : null
+          }
+          onClose={() => {
+            setRotuloEditando(null);
+            setDialogOpen(false);
+          }}
           open={dialogOpen}
           setOpen={setDialogOpen}
         />
