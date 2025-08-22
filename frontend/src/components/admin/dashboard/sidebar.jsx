@@ -46,7 +46,7 @@ const menuItems = [
   },
   {
     title: "Etiqueta",
-    url: "taetiqueta",
+    url: "etiqueta",
     icon: Tag,
     allowedRoles: ["Administrador", "Encargado", "Personal"],
     allowedAreas: ["Sistemas", "Produccion"],
