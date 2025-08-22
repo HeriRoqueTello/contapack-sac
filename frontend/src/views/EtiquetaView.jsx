@@ -23,7 +23,6 @@ import { useAuthStore } from "@/store/user-store";
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router";
 
-
 export function EtiquetaView() {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [etiquetaEditando, setEtiquetaEditando] = useState(null);
@@ -71,8 +70,7 @@ export function EtiquetaView() {
     // Filtro select
     if (filterType && filterValue) {
       if (filterType === "estado") {
-        cumple =
-          item.estado?.toLowerCase() === filterValue.toLowerCase();
+        cumple = item.estado?.toLowerCase() === filterValue.toLowerCase();
       }
       if (filterType === "productor") {
         cumple = item.Productor?.clp === filterValue;
@@ -132,7 +130,7 @@ export function EtiquetaView() {
       <EtiquetaError error={errorEtiqueta} message="Error al cargar etiqueta" />
     );
 
- if (areasAllow.includes(userArea)) {
+  if (areasAllow.includes(userArea)) {
     return (
       <>
         {/* Controles de filtro */}
@@ -150,13 +148,12 @@ export function EtiquetaView() {
                 <SelectValue placeholder="Seleccionar filtro" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all" >Sin filtro</SelectItem>
+                <SelectItem value="all">Sin filtro</SelectItem>
                 <SelectItem value="estado">Estado</SelectItem>
                 <SelectItem value="productor">CLP</SelectItem>
                 <SelectItem value="exportador">Exportador</SelectItem>
                 <SelectItem value="producto">Producto</SelectItem>
                 <SelectItem value="destino">Destino</SelectItem>
-                
               </SelectContent>
             </Select>
 
@@ -181,13 +178,17 @@ export function EtiquetaView() {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">Todos</SelectItem>
-                  {[...new Set(transformedData.map((i) => i.Productor?.clp).filter(Boolean))].map(
-                    (clp) => (
-                      <SelectItem key={clp} value={clp}>
-                        {clp}
-                      </SelectItem>
-                    )
-                  )}
+                  {[
+                    ...new Set(
+                      transformedData
+                        .map((i) => i.Productor?.clp)
+                        .filter(Boolean)
+                    ),
+                  ].map((clp) => (
+                    <SelectItem key={clp} value={clp}>
+                      {clp}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
             )}
@@ -199,9 +200,13 @@ export function EtiquetaView() {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">Todos</SelectItem>
-                  {[...new Set(
-                    transformedData.map((i) => i.Exportador?.nombreEmpresa).filter(Boolean)
-                  )].map((nombre) => (
+                  {[
+                    ...new Set(
+                      transformedData
+                        .map((i) => i.Exportador?.nombreEmpresa)
+                        .filter(Boolean)
+                    ),
+                  ].map((nombre) => (
                     <SelectItem key={nombre} value={nombre}>
                       {nombre}
                     </SelectItem>
@@ -217,9 +222,13 @@ export function EtiquetaView() {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">Todos</SelectItem>
-                  {[...new Set(
-                    transformedData.map((i) => i.Producto?.nombre).filter(Boolean)
-                  )].map((nombre) => (
+                  {[
+                    ...new Set(
+                      transformedData
+                        .map((i) => i.Producto?.nombre)
+                        .filter(Boolean)
+                    ),
+                  ].map((nombre) => (
                     <SelectItem key={nombre} value={nombre}>
                       {nombre}
                     </SelectItem>
@@ -235,9 +244,11 @@ export function EtiquetaView() {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">Todos</SelectItem>
-                  {[...new Set(
-                    transformedData.map((i) => i.destino).filter(Boolean)
-                  )].map((dest) => (
+                  {[
+                    ...new Set(
+                      transformedData.map((i) => i.destino).filter(Boolean)
+                    ),
+                  ].map((dest) => (
                     <SelectItem key={dest} value={dest}>
                       {dest}
                     </SelectItem>

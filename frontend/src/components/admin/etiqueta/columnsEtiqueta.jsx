@@ -6,6 +6,7 @@ import {
   DropdownMenuItem,
   DropdownMenuLabel,
 } from "@/components/ui/dropdown-menu";
+import { useAuthStore } from "@/store/user-store";
 import { MoreHorizontal } from "lucide-react";
 
 export const columnsEtiqueta = (onConfirmar, onEliminar, onEditar) => [
@@ -20,6 +21,12 @@ export const columnsEtiqueta = (onConfirmar, onEliminar, onEditar) => [
     enableHiding: false,
     cell: ({ row }) => {
       const etiqueta = row.original;
+      // eslint-disable-next-line react-hooks/rules-of-hooks
+      const { profile } = useAuthStore();
+      const userRole = profile.Rol.descripcion;
+
+      const isEncargado =
+        userRole === "Encargado" || userRole === "Administrador";
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -29,15 +36,21 @@ export const columnsEtiqueta = (onConfirmar, onEliminar, onEditar) => [
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Opciones</DropdownMenuLabel>
-            <DropdownMenuItem onClick={() => onConfirmar(etiqueta.id)}>
-              {etiqueta.estado === "Confirmado" ? "No confirmar" : "Confirmar"}
-            </DropdownMenuItem>
+            {isEncargado && (
+              <DropdownMenuItem onClick={() => onConfirmar(etiqueta.id)}>
+                {etiqueta.estado === "Confirmado"
+                  ? "No confirmar"
+                  : "Confirmar"}
+              </DropdownMenuItem>
+            )}
             <DropdownMenuItem onClick={() => onEditar(etiqueta)}>
               Editar
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => onEliminar(etiqueta.id)}>
-              Eliminar
-            </DropdownMenuItem>
+            {isEncargado && (
+              <DropdownMenuItem onClick={() => onEliminar(etiqueta.id)}>
+                Eliminar
+              </DropdownMenuItem>
+            )}
           </DropdownMenuContent>
         </DropdownMenu>
       );
@@ -107,23 +120,22 @@ export const columnsEtiqueta = (onConfirmar, onEliminar, onEditar) => [
   },
 
   {
-  accessorKey: "fechaEmp",
-  header: "Fecha de Empaque",
-  cell: ({ row }) => {
-    const fecha = row.getValue("fechaEmp");
-    if (!fecha) return <div className="text-center">N/A</div>;
-    try {
-      return (
-        <div className="text-center">
-          {new Date(fecha).toLocaleDateString("es-PE", { timeZone: "UTC" })}
-        </div>
-      );
-    } catch (e) {
-      return <div className="text-center">Fecha inválida</div>,e;
-    }
+    accessorKey: "fechaEmp",
+    header: "Fecha de Empaque",
+    cell: ({ row }) => {
+      const fecha = row.getValue("fechaEmp");
+      if (!fecha) return <div className="text-center">N/A</div>;
+      try {
+        return (
+          <div className="text-center">
+            {new Date(fecha).toLocaleDateString("es-PE", { timeZone: "UTC" })}
+          </div>
+        );
+      } catch (e) {
+        return (<div className="text-center">Fecha inválida</div>), e;
+      }
+    },
   },
-  },
-
 
   {
     accessorKey: "destino",

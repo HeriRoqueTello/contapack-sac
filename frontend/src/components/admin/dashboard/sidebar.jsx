@@ -49,7 +49,7 @@ const menuItems = [
     url: "etiqueta",
     icon: Tag,
     allowedRoles: ["Administrador", "Encargado", "Personal"],
-    allowedAreas: ["Sistemas", "Produccion"],
+    allowedAreas: ["Sistemas", "Calidad"],
   },
   {
     title: "Produccion",
