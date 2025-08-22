@@ -31,7 +31,7 @@ export const DataTable = ({
 
     // Mapear los datos de rotulo a un formato más simple para la tabla
     const mapped = dataRotulo.map((item) => ({
-      codigo: `RE-${(item.numIngreso ?? 0).toString().padStart(3, "0")}`, // Generar un código con el ID
+      codigo: `RE-${(item.id ?? 0).toString().padStart(3, "0")}`, // Generar un código con el ID
       id: item.id,
       fecha: new Date(item.createdAt).toLocaleDateString(), // Formatear la fecha
       createdAt: item.createdAt, // Campo para ordenar
