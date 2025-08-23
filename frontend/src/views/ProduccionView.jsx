@@ -107,10 +107,16 @@ export function ProduccionView() {
       let match = true;
 
       if (tipoFiltro === "Producto") {
-        match = valorFiltro ? item.productoNombre === valorFiltro : true;
+        match = valorFiltro && valorFiltro !== "all" 
+          ? item.productoNombre === valorFiltro 
+          : true;
       } else if (tipoFiltro === "Estado") {
-        match = valorFiltro
+        match = valorFiltro && valorFiltro !== "all"
           ? (item.estado || "").toLowerCase() === valorFiltro.toLowerCase()
+          : true;
+      } else if (tipoFiltro === "TipoEmpaque") {
+        match = valorFiltro && valorFiltro !== "all"
+          ? item.empaqueTipo === valorFiltro
           : true;
       }
 
@@ -163,6 +169,10 @@ export function ProduccionView() {
       ...new Set(transformedData.map((p) => p.productoNombre).filter(Boolean)),
     ];
 
+    const empaquesUnicos = [
+      ...new Set(transformedData.map((p) => p.empaqueTipo).filter(Boolean)),
+    ];
+
     return (
       <>
         {/* Filtros */}
@@ -182,6 +192,7 @@ export function ProduccionView() {
               <SelectItem value="all">Sin filtro</SelectItem>
               <SelectItem value="Estado">Estado</SelectItem>
               <SelectItem value="Producto">Producto</SelectItem>
+              <SelectItem value="TipoEmpaque">Tipo de Empaque</SelectItem>
             </SelectContent>
           </Select>
 
@@ -212,6 +223,22 @@ export function ProduccionView() {
                 <SelectItem value="all">Todos</SelectItem>
                 <SelectItem value="Confirmado">Confirmado</SelectItem>
                 <SelectItem value="No Confirmado">No Confirmado</SelectItem>
+              </SelectContent>
+            </Select>
+          )}
+
+          {tipoFiltro === "TipoEmpaque" && (
+            <Select value={valorFiltro} onValueChange={setValorFiltro}>
+              <SelectTrigger className="w-[200px]">
+                <SelectValue placeholder="Todos" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">Todos</SelectItem>
+                {empaquesUnicos.map((emp) => (
+                  <SelectItem key={emp} value={emp}>
+                    {emp}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
           )}
