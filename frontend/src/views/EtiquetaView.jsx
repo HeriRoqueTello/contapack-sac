@@ -68,23 +68,23 @@ export function EtiquetaView() {
     let cumple = true;
 
     // Filtro select
-    if (filterType && filterValue) {
-      if (filterType === "estado") {
-        cumple = item.estado?.toLowerCase() === filterValue.toLowerCase();
-      }
-      if (filterType === "productor") {
-        cumple = item.Productor?.clp === filterValue;
-      }
-      if (filterType === "exportador") {
-        cumple = item.Exportador?.nombreEmpresa === filterValue;
-      }
-      if (filterType === "producto") {
-        cumple = item.Producto?.nombre === filterValue;
-      }
-      if (filterType === "destino") {
-        cumple = item.destino === filterValue;
-      }
+    if (filterType && filterValue && filterValue !== "all") {
+    if (filterType === "estado") {
+      cumple = cumple && (item.estado || "").toLowerCase() === filterValue.toLowerCase();
     }
+    if (filterType === "productor") {
+      cumple = cumple && item.Productor?.clp === filterValue;
+    }
+    if (filterType === "exportador") {
+      cumple = cumple && item.Exportador?.nombreEmpresa === filterValue;
+    }
+    if (filterType === "producto") {
+      cumple = cumple && item.Producto?.nombre === filterValue;
+    }
+    if (filterType === "destino") {
+      cumple = cumple && item.destino === filterValue;
+    }
+  }
 
     // Filtro separado de fecha
     if (filterDate) {
@@ -165,6 +165,7 @@ export function EtiquetaView() {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">Todos</SelectItem>
+                  
                   <SelectItem value="Confirmado">Confirmado</SelectItem>
                   <SelectItem value="No Confirmado">No Confirmado</SelectItem>
                 </SelectContent>
